@@ -8,7 +8,7 @@ import { Table } from "lucide-react";
 const QuillEditor = dynamic(() => import("react-quill-new"), {
     ssr: false,
     loading: () => <div className="h-48 bg-gray-50 animate-pulse rounded-2xl border border-gray-200 flex items-center justify-center text-gray-400 font-semibold text-sm">Loading Editor...</div>,
-});
+}) as React.ComponentType<React.ComponentProps<typeof import("react-quill-new")["default"]> & { ref?: React.Ref<any> }>;
 
 type RichTextEditorProps = {
     value: string;

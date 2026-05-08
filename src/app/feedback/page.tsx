@@ -10,6 +10,7 @@ export default function FeedbackFormPage() {
     const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
     const [rating, setRating] = useState(5);
     const [hoverRating, setHoverRating] = useState(0);
+    const [isUploadingImage, setIsUploadingImage] = useState(false);
     const [imageUrlPreview, setImageUrlPreview] = useState<string | null>(null);
     const [certificateUrlPreview, setCertificateUrlPreview] = useState<string | null>(null);
     const [form, setForm] = useState({
