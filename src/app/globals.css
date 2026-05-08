@@ -1,0 +1,149 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+:root {
+  --background: #ffffff;
+  --foreground: #1E1E2F;
+  --primary: #a60303;
+  --primary-foreground: #ffffff;
+  --secondary: #F07C5A;
+  --secondary-foreground: #ffffff;
+  --accent: #fff5f5;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --border: #e2e8f0;
+  --card: #ffffff;
+  --card-border: #e8edf5;
+  
+  /* Button Settings */
+  --button-bg: #a60303;
+  --button-text: #ffffff;
+  --button-hover-bg: #800202;
+  --button-hover-text: #ffffff;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+
+  --color-button-bg: var(--button-bg);
+  --color-button-text: var(--button-text);
+  --color-button-hover-bg: var(--button-hover-bg);
+  --color-button-hover-text: var(--button-hover-text);
+
+  --font-sans: "Inter", var(--font-geist-sans);
+}
+
+/* Force light mode always - no dark mode override */
+
+html,
+body {
+  background: #ffffff !important;
+  color: var(--foreground);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Section alternating backgrounds */
+.section-alt {
+  background: #f8faff;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(166, 3, 3, 0.1);
+}
+
+/* Utility overrides to prevent dark mode from sneaking in */
+* {
+  color-scheme: light;
+}
+
+@keyframes bounce-slow {
+  0%, 100% { transform: translateY(-5%); animation-timing-function: cubic-bezier(0.8,0,1,1); }
+  50% { transform: none; animation-timing-function: cubic-bezier(0,0,0.2,1); }
+}
+
+.animate-bounce-slow {
+  animation: bounce-slow 3s infinite;
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
+@keyframes scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(-50% - 24px)); }
+}
+
+.animate-scroll {
+  animation: scroll 15s linear infinite;
+}
+
+.pause-scroll {
+  animation-play-state: paused;
+}
+
+/* ── TipTap editor styles ── */
+.tiptap-editor table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 12px 0;
+  table-layout: fixed;
+}
+
+.tiptap-editor table td,
+.tiptap-editor table th {
+  border: 1px solid #d1d5db;
+  padding: 8px 12px;
+  vertical-align: top;
+  min-width: 80px;
+  position: relative;
+}
+
+.tiptap-editor table th {
+  background: #f9fafb;
+  font-weight: 600;
+  text-align: left;
+}
+
+.tiptap-editor table .selectedCell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(166, 3, 3, 0.08);
+  pointer-events: none;
+}
+
+.tiptap-editor p { margin: 0 0 4px; }
+.tiptap-editor h2 { font-size: 1.125rem; font-weight: 700; margin: 12px 0 6px; }
+.tiptap-editor h3 { font-size: 1rem; font-weight: 700; margin: 10px 0 4px; }
+.tiptap-editor ul, .tiptap-editor ol { padding-left: 1.25rem; margin: 4px 0; }
+.tiptap-editor li { margin: 2px 0; }
+.tiptap-editor p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: #9ca3af;
+  pointer-events: none;
+  float: left;
+  height: 0;
+}

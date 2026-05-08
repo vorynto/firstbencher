@@ -1,0 +1,92 @@
+ALTER TABLE courses ALTER COLUMN requirements TYPE TEXT USING '';
+
+ALTER TABLE courses ADD COLUMN IF NOT EXISTS review_count INTEGER DEFAULT 0;
+ALTER TABLE courses ADD COLUMN IF NOT EXISTS tabs_enabled JSONB DEFAULT '{"overview":true,"training_dates":true,"key_features":true,"curriculum":true,"eligibility":true,"faq":true}'::jsonb;
+
+ALTER TABLE events ADD COLUMN IF NOT EXISTS link_type TEXT DEFAULT 'workshop';
+ALTER TABLE events ADD COLUMN IF NOT EXISTS link_slug TEXT DEFAULT '';
+
+-- Career: extend jobs table
+ALTER TABLE jobs ADD COLUMN IF NOT EXISTS department TEXT DEFAULT '';
+ALTER TABLE jobs ADD COLUMN IF NOT EXISTS salary_range TEXT DEFAULT '';
+ALTER TABLE jobs ADD COLUMN IF NOT EXISTS salary_icon TEXT DEFAULT '₹';
+
+-- Career: extend applications table with full candidate profile fields
+ALTER TABLE applications ADD COLUMN IF NOT EXISTS address TEXT DEFAULT '';
+ALTER TABLE applications ADD COLUMN IF NOT EXISTS linkedin_url TEXT DEFAULT '';
+ALTER TABLE applications ADD COLUMN IF NOT EXISTS degree TEXT DEFAULT '';
+ALTER TABLE applications ADD COLUMN IF NOT EXISTS field_of_study TEXT DEFAULT '';
+ALTER TABLE applications ADD COLUMN IF NOT EXISTS institution TEXT DEFAULT '';
+ALTER TABLE applications ADD COLUMN IF NOT EXISTS graduation_year TEXT DEFAULT '';
+ALTER TABLE applications ADD COLUMN IF NOT EXISTS work_experience_years TEXT DEFAULT '';
+ALTER TABLE applications ADD COLUMN IF NOT EXISTS current_company TEXT DEFAULT '';
+ALTER TABLE applications ADD COLUMN IF NOT EXISTS "current_role" TEXT DEFAULT '';
+ALTER TABLE applications ADD COLUMN IF NOT EXISTS skills TEXT[] DEFAULT '{}';
+ALTER TABLE applications ADD COLUMN IF NOT EXISTS cover_letter TEXT DEFAULT '';
+ALTER TABLE applications ADD COLUMN IF NOT EXISTS why_join TEXT DEFAULT '';
+ALTER TABLE applications ADD COLUMN IF NOT EXISTS portfolio_url TEXT DEFAULT '';
+-- resume_url already exists but currently NOT NULL — make it nullable for flexibility
+ALTER TABLE applications ALTER COLUMN resume_url DROP NOT NULL;
+ALTER TABLE applications ADD COLUMN IF NOT EXISTS education_list TEXT DEFAULT '[]';
+ALTER TABLE applications ADD COLUMN IF NOT EXISTS experience_list TEXT DEFAULT '[]';
+
+-- Mail Settings table
+CREATE TABLE IF NOT EXISTS mail_settings (
+    id INTEGER PRIMARY KEY DEFAULT 1,
+    admin_email TEXT DEFAULT '',
+    from_email TEXT DEFAULT '',
+    from_name TEXT DEFAULT 'ITech Gurus',
+    smtp_host TEXT DEFAULT '',
+    smtp_port INTEGER DEFAULT 587,
+    smtp_user TEXT DEFAULT '',
+    smtp_password TEXT DEFAULT '',
+    smtp_encryption TEXT DEFAULT 'tls',
+    imap_host TEXT DEFAULT '',
+    imap_port INTEGER DEFAULT 993,
+    imap_user TEXT DEFAULT '',
+    imap_password TEXT DEFAULT '',
+    imap_encryption TEXT DEFAULT 'ssl',
+    imap_protocol TEXT DEFAULT 'imap',
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+INSERT INTO mail_settings (id) VALUES (1) ON CONFLICT (id) DO NOTHING;
+
+-- Storage: allow public to upload and read resumes
+CREATE POLICY "Allow public uploads to resumes"
+ON storage.objects
+FOR INSERT
+TO public
+WITH CHECK (bucket_id = 'resumes');
+
+CREATE POLICY "Allow public read from resumes"
+ON storage.objects
+FOR SELECT
+TO public
+USING (bucket_id = 'resumes');
+
+-- Instructors table
+CREATE TABLE IF NOT EXISTS instructors (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name TEXT NOT NULL DEFAULT '',
+    qualification TEXT DEFAULT '',
+    experience TEXT DEFAULT '',
+    description TEXT DEFAULT '',
+    profile_image_url TEXT DEFAULT '',
+    active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Attach instructor IDs to courses (array of UUID strings)
+ALTER TABLE courses ADD COLUMN IF NOT EXISTS instructor_ids TEXT[] DEFAULT '{}';
+
+-- Extend instructors with title, qualifications pills, rating, review count
+ALTER TABLE instructors ADD COLUMN IF NOT EXISTS title TEXT DEFAULT '';
+ALTER TABLE instructors ADD COLUMN IF NOT EXISTS qualifications TEXT[] DEFAULT '{}';
+ALTER TABLE instructors ADD COLUMN IF NOT EXISTS rating NUMERIC(3,1) DEFAULT 0;
+ALTER TABLE instructors ADD COLUMN IF NOT EXISTS review_count INTEGER DEFAULT 0;
+
+-- Course videos (array of {title, url} objects)
+ALTER TABLE courses ADD COLUMN IF NOT EXISTS videos JSONB DEFAULT '[]'::jsonb;
+
+-- Also extend tabs_enabled to include instructors and videos keys
+-- (existing rows keep their current JSONB; new rows will get it from code defaults)
