@@ -7,32 +7,44 @@ export const metadata = {
     description: "Browse our comprehensive list of professional certification courses across various tech disciplines.",
 };
 
-// Revalidate every 1 hour
-export const revalidate = 3600;
+function slugify(str: string) {
+    return str.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+}
 
-export default async function CoursesPage() {
+export default async function CoursesPage({
+    searchParams,
+}: {
+    searchParams: Promise<{ cat?: string; search?: string }>;
+}) {
+    const { cat, search } = await searchParams;
+
     const supabase = await createClient();
 
-    // Fetch all active courses
     const { data: courses } = await supabase
         .from("courses")
         .select("*")
         .eq("active", true)
         .order("created_at", { ascending: false });
 
-    // Extract unique categories for the filter
     const categories: string[] = Array.from(
         new Set(
             (courses || [])
                 .map(c => c.category)
-                .filter((cat): cat is string => !!cat && typeof cat === 'string')
+                .filter((c): c is string => !!c && typeof c === "string")
         )
     ).sort();
 
+    // Match URL slug to actual category name (e.g. "project-management" → "Project Management")
+    const matchedCategory = cat
+        ? (categories.find(c => slugify(c) === cat) ?? null)
+        : null;
+
     return (
-        <CoursesPageClient 
-            initialCourses={courses || []} 
-            categories={categories} 
+        <CoursesPageClient
+            initialCourses={courses || []}
+            categories={categories}
+            initialCategory={matchedCategory}
+            initialSearch={search || ""}
         />
     );
 }

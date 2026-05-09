@@ -10,11 +10,15 @@ import PageHero from "@/components/ui/PageHero";
 interface CoursesPageClientProps {
     initialCourses: Course[];
     categories: string[];
+    initialCategory?: string | null;
+    initialSearch?: string;
 }
 
-export default function CoursesPageClient({ initialCourses, categories }: CoursesPageClientProps) {
-    const [searchTerm, setSearchTerm] = useState("");
-    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+export default function CoursesPageClient({ initialCourses, categories, initialCategory, initialSearch = "" }: CoursesPageClientProps) {
+    const [searchTerm, setSearchTerm] = useState(initialSearch);
+    const [selectedCategories, setSelectedCategories] = useState<string[]>(
+        initialCategory ? [initialCategory] : []
+    );
     const [minRating, setMinRating] = useState<number | null>(null);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
