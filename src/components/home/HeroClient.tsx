@@ -140,12 +140,12 @@ export default function HeroClient({ content }: { content: HeroContent }) {
                     <div className="lg:flex-[1.4] text-left max-w-[700px] relative z-10 pt-0 mr-auto">
 
                         {/* Bulb Icon */}
-                        <div className="absolute -top-2 -left-12 w-16 h-16 animate-pulse">
-                            <span className="text-4xl">💡</span>
+                        <div className="absolute -top-2 -left-4 lg:-left-12 w-12 h-12 lg:w-16 lg:h-16 animate-pulse hidden sm:block">
+                            <span className="text-3xl lg:text-4xl">💡</span>
                         </div>
 
                         {/* Big Headline */}
-                        <h1 className="text-5xl md:text-6xl lg:text-[72px] font-bold leading-[1.1] mb-6 text-[#1A202C] tracking-tight">
+                        <h1 className="text-[28px] sm:text-4xl md:text-5xl lg:text-6xl xl:text-[72px] font-bold leading-[1.1] mb-4 lg:mb-6 text-[#1A202C] tracking-tight">
                             {h.title_line1 && <>{h.title_line1} <br /></>}
                             {h.title_line2}
                             <br />
@@ -159,7 +159,7 @@ export default function HeroClient({ content }: { content: HeroContent }) {
 
                         {/* Description - Adjusted width & fixed overflow */}
                         <div
-                            className="text-[#64748B] text-[15px] leading-relaxed mb-10 max-w-[550px] w-full break-words whitespace-normal prose prose-sm prose-gray"
+                            className="text-[#64748B] text-[14px] sm:text-[15px] leading-relaxed mb-6 lg:mb-10 max-w-[550px] w-full break-words whitespace-normal prose prose-sm prose-gray"
                             dangerouslySetInnerHTML={{ __html: sanitize(h.description) }}
                         />
 
@@ -201,7 +201,7 @@ export default function HeroClient({ content }: { content: HeroContent }) {
                             </div>
 
                             {h.corporate_clients && h.corporate_clients.length > 0 && (
-                                <div className="mt-10 overflow-hidden w-full max-w-[500px]">
+                                <div className="mt-8 lg:mt-10 overflow-hidden w-full max-w-full">
                                     <h3 className="text-[13px] font-bold text-gray-700 mb-4 flex items-center gap-2">
                                         Corporate Clients
                                         <div className="h-[1px] flex-1 bg-gray-200" />
@@ -235,7 +235,7 @@ export default function HeroClient({ content }: { content: HeroContent }) {
                     </div>
 
                     {/* ════════ RIGHT — HERO IMAGE ════════ */}
-                    <div className="lg:flex-[1] relative flex justify-center lg:justify-end items-end min-h-[500px] lg:mt-0 mt-12 w-full max-w-[500px] ml-auto pb-4">
+                    <div className="lg:flex-[1] relative flex justify-center lg:justify-end items-end min-h-[260px] sm:min-h-[380px] lg:min-h-[500px] lg:mt-0 mt-6 w-full max-w-[500px] mx-auto lg:ml-auto pb-4">
 
                         {/* Purple Circular Backdrop */}
                         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[420px] h-[420px] bg-gradient-to-tr from-[#ede4ff] to-[#fcfaff] rounded-full z-0 pointer-events-none" />
@@ -246,14 +246,14 @@ export default function HeroClient({ content }: { content: HeroContent }) {
                         <div className="absolute bottom-32 left-8 w-3 h-3 text-[#a60303] font-bold text-xl z-0">+</div>
 
                         {/* Floating elements from the mockup edges */}
-                        <div className="absolute bottom-4 -left-12 w-16 h-16 animate-bounce" style={{ animationDuration: '4s' }}>
+                        <div className="absolute bottom-4 left-0 lg:-left-12 w-12 h-12 lg:w-16 lg:h-16 animate-bounce" style={{ animationDuration: '4s' }}>
                             {h.clock_icon ? (
                                 <Image src={h.clock_icon} alt="Clock" width={64} height={64} className="drop-shadow-xl object-contain" />
                             ) : (
                                 <span className="text-6xl drop-shadow-xl inline-block">⏰</span>
                             )}
                         </div>
-                        <div className="absolute top-1/2 -right-8 w-14 h-14 animate-bounce" style={{ animationDuration: '3.5s' }}>
+                        <div className="absolute top-1/2 right-0 lg:-right-8 w-11 h-11 lg:w-14 lg:h-14 animate-bounce" style={{ animationDuration: '3.5s' }}>
                             {h.thumbs_up_icon ? (
                                 <Image src={h.thumbs_up_icon} alt="Thumbs up" width={56} height={56} className="drop-shadow-xl object-contain" />
                             ) : (
@@ -283,7 +283,7 @@ export default function HeroClient({ content }: { content: HeroContent }) {
                         </div>
 
                         {/* Floating Card: Success Students */}
-                        <div className="absolute top-28 -right-8 bg-white rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.06)] p-3.5 flex flex-col items-center gap-1.5 min-w-[150px] border border-gray-50 z-20">
+                        <div className="absolute top-16 lg:top-28 right-0 lg:-right-8 bg-white rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.06)] p-2.5 lg:p-3.5 flex flex-col items-center gap-1.5 min-w-[130px] lg:min-w-[150px] border border-gray-50 z-20">
                             <div className="flex -space-x-1.5 w-full justify-center relative">
                                 <Image src={h.student_avatar_1 || "https://i.pravatar.cc/32?u=fc1"} alt="" width={30} height={30} className="rounded-full border-2 border-white relative z-10 aspect-square object-cover" />
                                 <Image src={h.student_avatar_2 || "https://i.pravatar.cc/32?u=fc2"} alt="" width={30} height={30} className="rounded-full border-2 border-white relative z-20 aspect-square object-cover" />
@@ -300,12 +300,12 @@ export default function HeroClient({ content }: { content: HeroContent }) {
                 </div>
 
                 {/* ════════ COURSE SEARCH ════════ */}
-                <div className="mt-2 relative z-[30] w-full flex flex-col items-center" ref={searchRef}>
-                    <div className="flex items-stretch bg-white rounded-xl shadow-[0_15px_50px_rgba(0,0,0,0.05)] overflow-visible w-full max-w-[850px] mx-auto relative px-1 py-1 h-[68px]">
+                <div className="mt-4 lg:mt-2 relative z-[30] w-full flex flex-col items-center" ref={searchRef}>
+                    <div className="flex flex-col sm:flex-row items-stretch bg-white rounded-2xl sm:rounded-xl shadow-[0_15px_50px_rgba(0,0,0,0.05)] overflow-visible w-full max-w-[850px] mx-auto relative sm:px-1 sm:py-1 sm:h-[68px]">
                         {/* Category */}
                         <button
                             onClick={() => setCatOpen(!catOpen)}
-                            className="flex items-center justify-between w-[220px] px-5 text-[13px] font-semibold text-[#64748B] hover:text-[#a60303] transition-colors whitespace-nowrap border-r border-gray-200"
+                            className="flex items-center justify-between sm:w-[220px] px-5 py-4 sm:py-0 text-[13px] font-semibold text-[#64748B] hover:text-[#a60303] transition-colors whitespace-nowrap border-b sm:border-b-0 sm:border-r border-gray-200 rounded-t-2xl sm:rounded-none"
                         >
                             {category === "All Categories" ? "All Categories" : category}
                             <ChevronDown size={14} className={`transition-transform opacity-50 ${catOpen ? "rotate-180" : ""}`} />
@@ -317,12 +317,12 @@ export default function HeroClient({ content }: { content: HeroContent }) {
                             value={query}
                             onChange={e => setQuery(e.target.value)}
                             onKeyDown={e => e.key === "Enter" && handleSearch()}
-                            className="flex-1 px-6 outline-none text-[14px] font-medium text-gray-800 placeholder-[#94A3B8] bg-transparent"
+                            className="flex-1 px-6 py-4 sm:py-0 outline-none text-[14px] font-medium text-gray-800 placeholder-[#94A3B8] bg-transparent border-b sm:border-b-0 border-gray-200"
                         />
 
                         <Button
                             onClick={handleSearch}
-                            className="px-8 font-bold text-[14px] rounded-lg shrink-0 ml-1 h-[54px] shadow-sm my-auto"
+                            className="px-8 font-bold text-[14px] rounded-b-2xl sm:rounded-lg shrink-0 sm:ml-1 sm:h-[54px] py-4 sm:py-0 sm:my-auto"
                         >
                             Search
                         </Button>
@@ -344,7 +344,7 @@ export default function HeroClient({ content }: { content: HeroContent }) {
 
                         {/* AJAX results */}
                         {showResults && (
-                            <div className="absolute top-[80px] left-0 w-full bg-white rounded-2xl shadow-2xl border border-gray-100 py-3 z-50 max-h-80 overflow-y-auto">
+                            <div className="absolute top-[calc(100%+8px)] left-0 w-full bg-white rounded-2xl shadow-2xl border border-gray-100 py-3 z-50 max-h-80 overflow-y-auto">
                                 <div className="flex items-center justify-between px-5 mb-2 pb-2 border-b border-gray-100">
                                     <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Search Results</span>
                                     <button onClick={() => setShowResults(false)} className="text-gray-400 hover:text-gray-700">

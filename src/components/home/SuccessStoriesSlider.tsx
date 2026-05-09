@@ -48,7 +48,7 @@ export default function SuccessStoriesSlider({ stories }: { stories: SuccessStor
         <section className="py-12 bg-gradient-to-b from-white to-gray-50 overflow-hidden">
             <div className="max-w-7xl mx-auto px-4 sm:px-6">
                 <div className="text-center mb-2">
-                    <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-1 tracking-tight">
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-gray-900 mb-1 tracking-tight">
                         Real People. <span className="text-[#a60303]">Real Success.</span>
                     </h2>
                     <p className="text-gray-500 max-w-2xl mx-auto text-lg leading-relaxed font-medium">
@@ -56,8 +56,8 @@ export default function SuccessStoriesSlider({ stories }: { stories: SuccessStor
                     </p>
                 </div>
 
-                <div 
-                    className="relative h-[440px] w-full max-w-[1200px] mx-auto flex items-center justify-center"
+                <div
+                    className="relative h-[420px] sm:h-[440px] w-full max-w-[1200px] mx-auto flex items-center justify-center overflow-hidden"
                     onMouseEnter={() => setIsPaused(true)}
                     onMouseLeave={() => setIsPaused(false)}
                 >
@@ -71,7 +71,7 @@ export default function SuccessStoriesSlider({ stories }: { stories: SuccessStor
                                 <motion.div
                                     key={story.id + offset}
                                     initial={{ opacity: 0, scale: 0.8, x: offset * 350, rotateY: offset * 45 }}
-                                    animate={{ 
+                                    animate={{
                                         opacity: Math.abs(offset) > 2 ? 0 : 1 - Math.abs(offset) * 0.3,
                                         scale: 1 - Math.abs(offset) * 0.15,
                                         x: offset * 320,
@@ -80,7 +80,7 @@ export default function SuccessStoriesSlider({ stories }: { stories: SuccessStor
                                         filter: offset === 0 ? "blur(0px)" : "blur(2px)"
                                     }}
                                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                                    className="absolute w-full max-w-[550px] cursor-pointer"
+                                    className="absolute w-[calc(100vw-2rem)] sm:w-full sm:max-w-[550px] cursor-pointer"
                                     onClick={() => offset !== 0 && setCurrentIndex(index)}
                                 >
                                     <div className={`bg-white rounded-[32px] px-8 py-6 md:px-10 md:py-8 shadow-2xl border border-gray-100 flex flex-col gap-5 relative transition-all duration-300 ${offset === 0 ? " ring-4 ring-red-500/10" : "scale-95 grayscale-[0.5]"}`}>

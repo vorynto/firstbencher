@@ -66,9 +66,9 @@ export default function AboutSection() {
                 <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
                     
                     {/* ════════ LEFT: IMAGE COMPOSITE ════════ */}
-                    <div className="flex-1 relative">
+                    <div className="flex-1 relative hidden sm:block">
                         {/* Dot Pattern Decoration */}
-                        <div className="absolute -left-12 -top-12 w-48 h-48 opacity-10 pointer-events-none">
+                        <div className="absolute -left-12 -top-12 w-48 h-48 opacity-10 pointer-events-none hidden lg:block">
                             <div className="grid grid-cols-6 gap-4">
                                 {[...Array(36)].map((_, i) => (
                                     <div key={i} className="w-1.5 h-1.5 rounded-full bg-[#a60303]" />
@@ -77,10 +77,10 @@ export default function AboutSection() {
                         </div>
 
                         {/* Main Image Grid/Composite */}
-                        <div className="relative z-10 flex gap-6">
-                            {/* Image 1 (Top-Left) */}
-                            <div className="mt-12">
-                                <div className="relative rounded-[32px] overflow-hidden border-8 border-white shadow-2xl w-[260px] h-[340px] lg:w-[300px] lg:h-[400px]">
+                        <div className="relative z-10 flex gap-4 lg:gap-6 justify-center lg:justify-start">
+                            {/* Image 1 (Top-Left) — hidden on small tablet, shown on lg+ */}
+                            <div className="mt-8 lg:mt-12 hidden lg:block">
+                                <div className="relative rounded-[32px] overflow-hidden border-8 border-white shadow-2xl w-[240px] h-[320px] lg:w-[300px] lg:h-[400px]">
                                     <Image
                                         src={content.image1_url}
                                         alt="Learning"
@@ -92,7 +92,7 @@ export default function AboutSection() {
 
                             {/* Image 2 (Bottom-Right) */}
                             <div className="relative">
-                                <div className="rounded-[32px] overflow-hidden border-8 border-white shadow-2xl w-[260px] h-[340px] lg:w-[300px] lg:h-[400px]">
+                                <div className="rounded-[32px] overflow-hidden border-8 border-white shadow-2xl w-[240px] h-[320px] sm:w-[280px] sm:h-[360px] lg:w-[300px] lg:h-[400px]">
                                     <Image
                                         src={content.image2_url}
                                         alt="Students"
@@ -101,8 +101,8 @@ export default function AboutSection() {
                                     />
                                 </div>
 
-                                {/* Experience Badge */}
-                                <div className="absolute -top-10 -right-10 bg-white p-6 rounded-2xl shadow-xl border border-gray-50 flex items-center gap-4 animate-bounce-slow">
+                                {/* Experience Badge — hidden on sm, visible on lg */}
+                                <div className="hidden lg:flex absolute -top-10 -right-10 bg-white p-6 rounded-2xl shadow-xl border border-gray-50 items-center gap-4 animate-bounce-slow">
                                     <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
                                         <svg className="w-7 h-7 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
                                     </div>
@@ -112,8 +112,8 @@ export default function AboutSection() {
                                     </div>
                                 </div>
 
-                                {/* Awards Badge */}
-                                <div className="absolute -bottom-8 -left-16 bg-white p-5 rounded-2xl shadow-xl border border-gray-50 flex flex-col items-center text-center min-w-[140px]">
+                                {/* Awards Badge — hidden on sm, visible on lg */}
+                                <div className="hidden lg:flex absolute -bottom-8 -left-16 bg-white p-5 rounded-2xl shadow-xl border border-gray-50 flex-col items-center text-center min-w-[140px]">
                                     <p className="text-3xl font-black text-[#a60303] leading-none">{content.awards_count}</p>
                                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">{content.awards_label}</p>
                                     <div className="mt-2 flex -space-x-2">
@@ -142,7 +142,7 @@ export default function AboutSection() {
                             {content.badge_text}
                         </div>
 
-                        <h2 className="text-4xl lg:text-[52px] font-black text-gray-900 leading-[1.1] mb-8 max-w-2xl">
+                        <h2 className="text-3xl sm:text-4xl lg:text-[52px] font-black text-gray-900 leading-[1.1] mb-6 lg:mb-8 max-w-2xl">
                             {renderTitle(content.title)}
                         </h2>
 

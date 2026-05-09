@@ -211,7 +211,7 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
             <header className="relative z-50 w-full min-h-[118px]">
                 {/* ── Top Bar ── */}
                 <div className="bg-[#1a1a1a] text-[#c2c9d6] h-[42px]">
-                    <div className="max-w-390 mx-auto px-6 lg:px-12 flex items-center justify-between h-full text-[13px] font-medium tracking-wide">
+                    <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12 flex items-center justify-between h-full text-[13px] font-medium tracking-wide">
                         <div className="flex items-center gap-6">
                             <a href={`mailto:${topBar.email}`} className="flex items-center gap-2 hover:text-white transition-colors">
                                 <Mail size={14} className="text-yellow-400 shrink-0" />
@@ -236,7 +236,7 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
                     isFixed ? "fixed top-0 left-0 right-0 w-full" : "relative",
                     isVisible || !isFixed ? "translate-y-0" : "-translate-y-full"
                 )}>
-                    <div className="max-w-390 mx-auto px-6 lg:px-12 flex items-center h-full gap-6">
+                    <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12 flex items-center h-full gap-6">
 
                         {/* Logo */}
                         <Link href="/" className="flex items-center shrink-0 mr-2 lg:mr-6">

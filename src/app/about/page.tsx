@@ -87,10 +87,10 @@ export default async function AboutPage() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6">
                     <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
                         
-                        {/* LEFT: IMAGE COMPOSITE */}
-                        <div className="flex-1 relative">
+                        {/* LEFT: IMAGE COMPOSITE — hidden on mobile, shown on sm+ */}
+                        <div className="flex-1 relative hidden sm:block">
                             {/* Dot Pattern Decoration */}
-                            <div className="absolute -left-12 -top-12 w-48 h-48 opacity-10 pointer-events-none">
+                            <div className="absolute -left-12 -top-12 w-48 h-48 opacity-10 pointer-events-none hidden lg:block">
                                 <div className="grid grid-cols-6 gap-4">
                                     {[...Array(36)].map((_, i) => (
                                         <div key={i} className="w-1.5 h-1.5 rounded-full bg-[#a60303]" />
@@ -98,10 +98,10 @@ export default async function AboutPage() {
                                 </div>
                             </div>
 
-                            <div className="relative z-10 flex gap-6">
-                                {/* Image 1 */}
-                                <div className="mt-12">
-                                    <div className="relative rounded-[32px] overflow-hidden border-8 border-white shadow-2xl w-[260px] h-[340px] lg:w-[300px] lg:h-[400px]">
+                            <div className="relative z-10 flex gap-4 lg:gap-6 justify-center lg:justify-start">
+                                {/* Image 1 — only shown on lg+ */}
+                                <div className="mt-8 lg:mt-12 hidden lg:block">
+                                    <div className="relative rounded-[32px] overflow-hidden border-8 border-white shadow-2xl w-[240px] h-[320px] lg:w-[300px] lg:h-[400px]">
                                         <Image
                                             src={ha.image1_url || "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop"}
                                             alt="Learning"
@@ -113,7 +113,7 @@ export default async function AboutPage() {
 
                                 {/* Image 2 */}
                                 <div className="relative">
-                                    <div className="rounded-[32px] overflow-hidden border-8 border-white shadow-2xl w-[260px] h-[340px] lg:w-[300px] lg:h-[400px]">
+                                    <div className="rounded-[32px] overflow-hidden border-8 border-white shadow-2xl w-[240px] h-[320px] sm:w-[280px] sm:h-[360px] lg:w-[300px] lg:h-[400px]">
                                         <Image
                                             src={ha.image2_url || "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=2070&auto=format&fit=crop"}
                                             alt="Students"
@@ -122,8 +122,8 @@ export default async function AboutPage() {
                                         />
                                     </div>
 
-                                    {/* Experience Badge */}
-                                    <div className="absolute -top-10 -right-10 bg-white p-6 rounded-2xl shadow-xl border border-gray-50 flex items-center gap-4 animate-bounce-slow z-20">
+                                    {/* Experience Badge — lg only */}
+                                    <div className="hidden lg:flex absolute -top-10 -right-10 bg-white p-6 rounded-2xl shadow-xl border border-gray-50 items-center gap-4 animate-bounce-slow z-20">
                                         <div className="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center">
                                             <Award className="text-[#a60303]" size={24} />
                                         </div>
@@ -133,8 +133,8 @@ export default async function AboutPage() {
                                         </div>
                                     </div>
 
-                                    {/* Awards Badge */}
-                                    <div className="absolute -bottom-8 -left-16 bg-white p-5 rounded-2xl shadow-xl border border-gray-50 flex flex-col items-center text-center min-w-[140px] z-20">
+                                    {/* Awards Badge — lg only */}
+                                    <div className="hidden lg:flex absolute -bottom-8 -left-16 bg-white p-5 rounded-2xl shadow-xl border border-gray-50 flex-col items-center text-center min-w-[140px] z-20">
                                         <p className="text-3xl font-black text-[#a60303] leading-none">{ha.awards_count || "25+"}</p>
                                         <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">{ha.awards_label || "Awards"}</p>
                                         <div className="mt-2 flex -space-x-2">
@@ -149,7 +149,7 @@ export default async function AboutPage() {
 
                         {/* RIGHT: TEXT CONTENT */}
                         <div className="flex-1">
-                            <h2 className="text-4xl lg:text-[52px] font-black text-gray-900 leading-[1.1] mb-8 max-w-2xl">
+                            <h2 className="text-3xl sm:text-4xl lg:text-[52px] font-black text-gray-900 leading-[1.1] mb-6 lg:mb-8 max-w-2xl">
                                 {ha.title ? (
                                     ha.title.includes("Innovation") ? (
                                         <>

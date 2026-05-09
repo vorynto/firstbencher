@@ -53,45 +53,45 @@ export default function StatsCTAClient({ content }: { content: StatsCTAContent }
                 <div className="flex flex-col lg:flex-row items-center">
                     
                     {/* Stats List */}
-                    <div className="flex-1 px-6" style={{ paddingTop: py, paddingBottom: py }}>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-12 lg:gap-8 max-w-4xl">
+                    <div className="w-full lg:flex-1 px-4 sm:px-6" style={{ paddingTop: py, paddingBottom: py }}>
+                        <div className="grid grid-cols-3 gap-4 sm:gap-12 lg:gap-8 max-w-4xl">
                             {/* Stat 1 */}
-                            <div className="text-center sm:text-left">
-                                <div className="text-6xl lg:text-7xl font-black mb-2 opacity-100" 
+                            <div className="text-center">
+                                <div className="text-4xl sm:text-6xl lg:text-7xl font-black mb-1 sm:mb-2 opacity-100"
                                      style={{ WebkitTextStroke: `2px ${strokeColor}`, color: 'transparent' }}>
                                     {content.stat1_number}
                                 </div>
-                                <div className="font-bold text-lg" style={{ color: labelColor }}>
+                                <div className="font-bold text-sm sm:text-lg" style={{ color: labelColor }}>
                                     {content.stat1_label}
                                 </div>
                             </div>
 
                             {/* Stat 2 */}
-                            <div className="text-center sm:text-left">
-                                <div className="text-6xl lg:text-7xl font-black mb-2 opacity-100" 
+                            <div className="text-center">
+                                <div className="text-4xl sm:text-6xl lg:text-7xl font-black mb-1 sm:mb-2 opacity-100"
                                      style={{ WebkitTextStroke: `2px ${strokeColor}`, color: 'transparent' }}>
                                     {content.stat2_number}
                                 </div>
-                                <div className="font-bold text-lg" style={{ color: labelColor }}>
+                                <div className="font-bold text-sm sm:text-lg" style={{ color: labelColor }}>
                                     {content.stat2_label}
                                 </div>
                             </div>
 
                             {/* Stat 3 */}
-                            <div className="text-center sm:text-left">
-                                <div className="text-6xl lg:text-7xl font-black mb-2 opacity-100" 
+                            <div className="text-center">
+                                <div className="text-4xl sm:text-6xl lg:text-7xl font-black mb-1 sm:mb-2 opacity-100"
                                      style={{ WebkitTextStroke: `2px ${strokeColor}`, color: 'transparent' }}>
                                     {content.stat3_number}
                                 </div>
-                                <div className="font-bold text-lg" style={{ color: labelColor }}>
+                                <div className="font-bold text-sm sm:text-lg" style={{ color: labelColor }}>
                                     {content.stat3_label}
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Image Area - Moved to centered right corner */}
-                    <div className="absolute right-0 top-1/2 -translate-y-1/2 lg:w-[45%] w-full flex justify-end items-center pointer-events-none" style={{ height: imgH }}>
+                    {/* Image Area - hidden on mobile, absolute on desktop */}
+                    <div className="hidden lg:flex absolute right-0 top-1/2 -translate-y-1/2 lg:w-[45%] justify-end items-center pointer-events-none" style={{ height: imgH }}>
                         <div className="relative w-full h-full p-0.5 lg:rounded-l-full overflow-hidden group pointer-events-auto">
                             <Image 
                                 src={content.image_url} 
