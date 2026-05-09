@@ -121,7 +121,7 @@ export default function HeroClient({ content }: { content: HeroContent }) {
     };
 
     return (
-        <section className="relative min-h-[500px] lg:min-h-screen flex flex-col pt-5 bg-[#F8F9FF] z-[10]"
+        <section className="relative min-h-[500px] lg:min-h-screen flex flex-col pt-5 bg-[#F8F9FF] z-[10] overflow-x-hidden"
             style={{
                 backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'40\' height=\'40\' viewBox=\'0 0 40 40\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M20 0l20 10v20L20 40 0 30V10z\' fill=\'none\' stroke=\'%23EEF0FA\' stroke-width=\'1\' opacity=\'0.8\'/%3E%3C/svg%3E")',
             }}
@@ -137,7 +137,7 @@ export default function HeroClient({ content }: { content: HeroContent }) {
                 <div className="flex flex-col lg:flex-row items-center justify-between w-full gap-6 lg:gap-6">
 
                     {/* ════════ LEFT CONTENT ════════ */}
-                    <div className="lg:flex-[1.4] text-left max-w-[700px] relative z-10 pt-0 mr-auto">
+                    <div className="w-full lg:flex-[1.4] text-left max-w-[700px] relative z-10 pt-0 lg:mr-auto">
 
                         {/* Bulb Icon */}
                         <div className="absolute -top-2 -left-4 lg:-left-12 w-12 h-12 lg:w-16 lg:h-16 animate-pulse hidden sm:block">
@@ -159,7 +159,7 @@ export default function HeroClient({ content }: { content: HeroContent }) {
 
                         {/* Description - Adjusted width & fixed overflow */}
                         <div
-                            className="text-[#64748B] text-[14px] sm:text-[15px] leading-relaxed mb-6 lg:mb-10 max-w-[550px] w-full break-words whitespace-normal prose prose-sm prose-gray"
+                            className="text-[#64748B] text-[14px] sm:text-[15px] leading-relaxed mb-6 lg:mb-10 w-full max-w-none lg:max-w-[550px] break-words whitespace-normal prose prose-sm prose-gray"
                             dangerouslySetInnerHTML={{ __html: sanitize(h.description) }}
                         />
 
@@ -238,7 +238,7 @@ export default function HeroClient({ content }: { content: HeroContent }) {
                     <div className="lg:flex-[1] relative flex justify-center lg:justify-end items-end min-h-[260px] sm:min-h-[380px] lg:min-h-[500px] lg:mt-0 mt-6 w-full max-w-[500px] mx-auto lg:ml-auto pb-4">
 
                         {/* Purple Circular Backdrop */}
-                        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[420px] h-[420px] bg-gradient-to-tr from-[#ede4ff] to-[#fcfaff] rounded-full z-0 pointer-events-none" />
+                        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[260px] h-[260px] sm:w-[340px] sm:h-[340px] lg:w-[420px] lg:h-[420px] bg-gradient-to-tr from-[#ede4ff] to-[#fcfaff] rounded-full z-0 pointer-events-none" />
 
                         {/* Decorative swirls & plus signs */}
                         <svg className="absolute top-10 left-10 text-[#f5a3b7] opacity-60 z-0" width="100" height="60" fill="none" viewBox="0 0 100 60"><path d="M0 30 C 30 -10, 70 -10, 80 30 S 60 70, 70 20" stroke="currentColor" strokeWidth="2" /></svg>

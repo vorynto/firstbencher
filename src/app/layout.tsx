@@ -125,7 +125,7 @@ export default function RootLayout({
         <html lang="en" className="scroll-pt-30" style={{ colorScheme: "light" }}>
             <body
                 suppressHydrationWarning
-                className={`${inter.variable} font-sans antialiased bg-background text-foreground`}
+                className={`${inter.variable} font-sans antialiased bg-background text-foreground overflow-x-hidden`}
             >
                 <JsonLd data={organizationJsonLd} />
                 <JsonLd data={websiteJsonLd} />
