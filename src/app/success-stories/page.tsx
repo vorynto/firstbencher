@@ -1,7 +1,9 @@
 import React from "react";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase";
 import { Star, MessageSquareQuote, ChevronRight, Award } from "lucide-react";
+import { createServerSupabaseClient } from "@/lib/supabase-server";
+import { supabaseAdmin } from "@/lib/supabase-admin";
+import PageHero from "@/components/ui/PageHero";
 
 export const metadata = {
     title: "Success Stories | First Bencher",
@@ -10,12 +12,11 @@ export const metadata = {
 
 export const revalidate = 60;
 
-import PageHero from "@/components/ui/PageHero";
-
 export default async function SuccessStoriesPage() {
-    const supabase = await createClient();
+    const supabase = await createServerSupabaseClient();
+    const { data: { user } } = await supabase.auth.getUser();
 
-    const { data: stories } = await supabase
+    const { data: stories } = await supabaseAdmin
         .from("success_stories")
         .select("*")
         .eq("is_approved", true)
@@ -24,10 +25,10 @@ export default async function SuccessStoriesPage() {
     return (
         <>
             {/* Hero Section */}
-            <PageHero 
+            <PageHero
                 title="Real People."
                 highlightedTitle="Real Success."
-                subtitle="Discover how our students have leveraged First Bencher' training programs to achieve their goals, secure promotions, and transition into rewarding new roles."
+                subtitle="Discover how our students have leveraged First Bencher's training programs to achieve their goals, secure promotions, and transition into rewarding new roles."
                 badgeText="Over 10,000+ Careers Transformed"
                 badgeIcon={Award}
             />
@@ -39,9 +40,11 @@ export default async function SuccessStoriesPage() {
                         <MessageSquareQuote size={64} className="text-gray-300 mx-auto mb-4" />
                         <h3 className="text-2xl font-bold text-gray-800 mb-2">More stories coming soon!</h3>
                         <p className="text-gray-500 mb-6 max-w-lg mx-auto">We are constantly collecting amazing experiences from our students. Check back soon for inspiring testimonials.</p>
-                        <Link href="/feedback" className="bg-[#a60303] text-white px-8 py-3 rounded-full font-bold hover:bg-[#800202] transition-colors inline-block">
-                            Submit Your Story
-                        </Link>
+                        {user && (
+                            <Link href="/feedback" className="bg-[#a60303] text-white px-8 py-3 rounded-full font-bold hover:bg-[#800202] transition-colors inline-block">
+                                Submit Your Story
+                            </Link>
+                        )}
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -73,7 +76,7 @@ export default async function SuccessStoriesPage() {
 
                                 {/* 3. Review message */}
                                 <div className="border-l-4 border-[#a60303]/20 pl-4">
-                                    <p className="text-gray-700 italic leading-relaxed">"{story.message}"</p>
+                                    <p className="text-gray-700 italic leading-relaxed">&ldquo;{story.message}&rdquo;</p>
                                 </div>
 
                                 {/* 4. Certificate — full size, not cropped */}
@@ -96,13 +99,27 @@ export default async function SuccessStoriesPage() {
                     </div>
                 )}
 
-                {/* CTA */}
+                {/* CTA — only show submit link for logged-in users */}
                 <div className="mt-20 bg-red-50 rounded-3xl p-10 lg:p-14 text-center border border-red-100">
                     <h2 className="text-3xl font-black text-gray-900 mb-4">Have your own success story?</h2>
-                    <p className="text-gray-600 mb-8 max-w-2xl mx-auto text-lg">Did our courses help you clear a certification or land a new job? We'd love to hear from you and feature you on our wall of fame!</p>
-                    <Link href="/feedback" className="bg-[#1a1a1a] text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-[#a60303] transition-colors shadow-xl shadow-red-900/10 inline-flex items-center gap-2 group">
-                        Share Your Experience <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
-                    </Link>
+                    <p className="text-gray-600 mb-8 max-w-2xl mx-auto text-lg">
+                        Did our courses help you clear a certification or land a new job? We&apos;d love to hear from you and feature you on our wall of fame!
+                    </p>
+                    {user ? (
+                        <Link
+                            href="/feedback"
+                            className="bg-[#1a1a1a] text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-[#a60303] transition-colors shadow-xl shadow-red-900/10 inline-flex items-center gap-2 group"
+                        >
+                            Share Your Experience <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                        </Link>
+                    ) : (
+                        <Link
+                            href="/login?redirect=/feedback"
+                            className="bg-[#1a1a1a] text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-[#a60303] transition-colors shadow-xl shadow-red-900/10 inline-flex items-center gap-2 group"
+                        >
+                            Sign In to Share Your Story <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                        </Link>
+                    )}
                 </div>
             </div>
         </>

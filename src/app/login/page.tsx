@@ -16,6 +16,7 @@ function LoginForm() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const redirect = searchParams.get("redirect") || "/";
+    const errorParam = searchParams.get("error");
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -29,6 +30,23 @@ function LoginForm() {
             setError("Invalid email or password. Please try again.");
             setLoading(false);
             return;
+        }
+
+        // Check if account is active
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+            const { data: profile } = await supabase
+                .from("user_profiles")
+                .select("is_active")
+                .eq("id", user.id)
+                .single();
+
+            if (profile && !profile.is_active) {
+                await supabase.auth.signOut();
+                setError("Your account has been disabled. Please contact support.");
+                setLoading(false);
+                return;
+            }
         }
 
         router.push(redirect);
@@ -56,10 +74,17 @@ function LoginForm() {
                 <p className="text-gray-500 font-medium">Please enter your details to sign in.</p>
             </header>
 
-            {error && (
-                <div className="flex items-center gap-3 bg-red-50 border border-red-100 text-red-600 rounded-2xl px-5 py-4 mb-8 text-sm font-semibold animate-shake">
+            {(error || errorParam === "disabled") && (
+                <div className="flex items-center gap-3 bg-red-50 border border-red-100 text-red-600 rounded-2xl px-5 py-4 mb-8 text-sm font-semibold">
                     <AlertCircle size={18} className="shrink-0" />
-                    {error}
+                    {error || "Your account has been disabled. Please contact support."}
+                </div>
+            )}
+
+            {!error && errorParam !== "disabled" && redirect !== "/" && (
+                <div className="flex items-center gap-3 bg-blue-50 border border-blue-100 text-blue-600 rounded-2xl px-5 py-4 mb-8 text-sm font-semibold">
+                    <AlertCircle size={18} className="shrink-0" />
+                    Please sign in to access that page.
                 </div>
             )}
 

@@ -17,7 +17,8 @@ import {
     LogOut,
     Settings,
     MailCheck,
-    UserCheck
+    UserCheck,
+    Users
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { signOut } from "@/app/admin/actions";
@@ -32,6 +33,7 @@ const menuItems = [
     { name: "Workshops", href: "/admin/workshops", icon: Calendar },
     { name: "Inquiries", href: "/admin/inquiries", icon: Mail },
     { name: "Career", href: "/admin/career", icon: Briefcase },
+    { name: "Users", href: "/admin/users", icon: Users },
     { name: "Mail Settings", href: "/admin/mail", icon: MailCheck },
     { name: "Settings", href: "/admin/settings", icon: Settings },
 ];

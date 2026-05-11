@@ -6,6 +6,9 @@ const NEW_STORAGE_HOST = process.env.NEXT_PUBLIC_SUPABASE_URL
   ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname
   : "db.firstbencher.com";
 
+// Routes that require a logged-in, active user account
+const USER_PROTECTED_PATHS = ["/success-stories", "/feedback"];
+
 export async function middleware(request: NextRequest) {
   // Rewrite Next.js image optimization requests that still use the old storage domain
   if (request.nextUrl.pathname === "/_next/image") {
@@ -52,13 +55,38 @@ export async function middleware(request: NextRequest) {
   const isAdminLogin = path === "/admin/login";
   const isAdminRoute = path.startsWith("/admin") && !isAdminLogin;
 
+  // ── User-protected routes (/success-stories, /feedback) ─────────────────
+  const isUserProtected = USER_PROTECTED_PATHS.some(p => path === p || path.startsWith(p + "/"));
+
+  if (isUserProtected) {
+    // Not logged in → redirect to login
+    if (!user) {
+      const loginUrl = new URL("/login", request.url);
+      loginUrl.searchParams.set("redirect", path);
+      return NextResponse.redirect(loginUrl);
+    }
+
+    // Logged in — check if account is active
+    const { data: profile } = await supabase
+      .from("user_profiles")
+      .select("is_active")
+      .eq("id", user.id)
+      .single();
+
+    if (!profile?.is_active) {
+      // Account disabled — redirect to login with error flag
+      const loginUrl = new URL("/login", request.url);
+      loginUrl.searchParams.set("error", "disabled");
+      return NextResponse.redirect(loginUrl);
+    }
+  }
+
+  // ── Admin routes ──────────────────────────────────────────────────────────
   // Redirect unauthenticated users away from /admin/*
   if (isAdminRoute && !user) {
     return NextResponse.redirect(new URL("/admin/login", request.url));
   }
 
-  // [Optional] If you want to strictly check if the user is an admin in the database:
-  // This adds latency to every admin request, but is more secure.
   if (isAdminRoute && user) {
     const { data: adminData } = await supabase
       .from("admin_users")
@@ -67,7 +95,6 @@ export async function middleware(request: NextRequest) {
       .single();
 
     if (!adminData) {
-      // Not an admin? Log them out of the admin area and send to student login or home
       return NextResponse.redirect(new URL("/login", request.url));
     }
   }
@@ -81,5 +108,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/_next/image"],
+  matcher: ["/admin/:path*", "/_next/image", "/success-stories", "/success-stories/:path*", "/feedback", "/feedback/:path*"],
 };
