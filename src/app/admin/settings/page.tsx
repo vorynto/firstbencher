@@ -521,15 +521,10 @@ export default function SettingsPage() {
                             </div>
 
                             {/* Head Code */}
-                            <div className="rounded-2xl border border-gray-200 overflow-hidden">
-                                <div className="flex items-center gap-3 px-5 py-3.5 bg-gray-900 border-b border-gray-700">
-                                    <div className="flex gap-1.5">
-                                        <span className="w-3 h-3 rounded-full bg-red-500" />
-                                        <span className="w-3 h-3 rounded-full bg-yellow-500" />
-                                        <span className="w-3 h-3 rounded-full bg-green-500" />
-                                    </div>
-                                    <span className="text-xs font-bold text-gray-400 font-mono ml-2">&lt;head&gt; — injected before &lt;/head&gt;</span>
-                                    <span className="ml-auto text-[10px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full">
+                            <div className="rounded-xl border border-gray-200 overflow-hidden">
+                                <div className="flex items-center justify-between px-4 py-2.5 bg-gray-50 border-b border-gray-200">
+                                    <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">&lt;head&gt; — injected before &lt;/head&gt;</span>
+                                    <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
                                         Google Analytics · GTM · Meta Pixel
                                     </span>
                                 </div>
@@ -538,21 +533,15 @@ export default function SettingsPage() {
                                     onChange={e => setCustomCode(prev => ({ ...prev, header_code: e.target.value }))}
                                     rows={12}
                                     spellCheck={false}
-                                    placeholder={`<!-- Google Tag Manager -->\n<script>(function(w,d,s,l,i){w[l]=w[l]||[];...})(window,document,'script','dataLayer','GTM-XXXX');</script>\n\n<!-- Google Analytics -->\n<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>\n<script>\n  window.dataLayer = window.dataLayer || [];\n  function gtag(){dataLayer.push(arguments);}\n  gtag('js', new Date());\n  gtag('config', 'G-XXXXXXXXXX');\n</script>\n\n<!-- Meta Pixel -->\n<script>!function(f,b,e,v,n,t,s)...</script>`}
-                                    className="w-full px-5 py-4 bg-gray-950 text-gray-100 font-mono text-[13px] leading-relaxed resize-none outline-none placeholder:text-gray-600 focus:ring-2 focus:ring-inset focus:ring-primary/40"
+                                    className="w-full px-4 py-3 bg-white text-gray-800 font-mono text-[13px] leading-relaxed resize-none outline-none focus:ring-2 focus:ring-inset focus:ring-primary/20 border-0"
                                 />
                             </div>
 
                             {/* Body Code */}
-                            <div className="rounded-2xl border border-gray-200 overflow-hidden">
-                                <div className="flex items-center gap-3 px-5 py-3.5 bg-gray-900 border-b border-gray-700">
-                                    <div className="flex gap-1.5">
-                                        <span className="w-3 h-3 rounded-full bg-red-500" />
-                                        <span className="w-3 h-3 rounded-full bg-yellow-500" />
-                                        <span className="w-3 h-3 rounded-full bg-green-500" />
-                                    </div>
-                                    <span className="text-xs font-bold text-gray-400 font-mono ml-2">&lt;body&gt; — injected after &lt;body&gt; opens</span>
-                                    <span className="ml-auto text-[10px] font-bold uppercase tracking-wider text-blue-400 bg-blue-400/10 px-2 py-0.5 rounded-full">
+                            <div className="rounded-xl border border-gray-200 overflow-hidden">
+                                <div className="flex items-center justify-between px-4 py-2.5 bg-gray-50 border-b border-gray-200">
+                                    <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">&lt;body&gt; — injected after &lt;body&gt; opens</span>
+                                    <span className="text-[10px] font-bold uppercase tracking-wider text-blue-700 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-full">
                                         Chat Widgets · GTM noscript · Pixels
                                     </span>
                                 </div>
@@ -561,8 +550,7 @@ export default function SettingsPage() {
                                     onChange={e => setCustomCode(prev => ({ ...prev, body_code: e.target.value }))}
                                     rows={12}
                                     spellCheck={false}
-                                    placeholder={`<!-- Google Tag Manager (noscript) -->\n<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXX"\nheight="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>\n\n<!-- Intercom / Crisp / Tidio chat widget -->\n<script>\n  window.intercomSettings = { app_id: "XXXXXXXX" };\n</script>`}
-                                    className="w-full px-5 py-4 bg-gray-950 text-gray-100 font-mono text-[13px] leading-relaxed resize-none outline-none placeholder:text-gray-600 focus:ring-2 focus:ring-inset focus:ring-primary/40"
+                                    className="w-full px-4 py-3 bg-white text-gray-800 font-mono text-[13px] leading-relaxed resize-none outline-none focus:ring-2 focus:ring-inset focus:ring-primary/20 border-0"
                                 />
                             </div>
 
