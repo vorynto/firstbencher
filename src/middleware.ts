@@ -7,7 +7,7 @@ const NEW_STORAGE_HOST = process.env.NEXT_PUBLIC_SUPABASE_URL
   : "db.firstbencher.com";
 
 // Routes that require a logged-in, active user account
-const USER_PROTECTED_PATHS = ["/success-stories", "/feedback"];
+const USER_PROTECTED_PATHS = ["/feedback"];
 
 export async function middleware(request: NextRequest) {
   // Rewrite Next.js image optimization requests that still use the old storage domain
@@ -108,5 +108,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/_next/image", "/success-stories", "/success-stories/:path*", "/feedback", "/feedback/:path*"],
+  matcher: ["/admin/:path*", "/_next/image", "/feedback", "/feedback/:path*"],
 };
