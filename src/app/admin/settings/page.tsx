@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { 
-    Save, Loader2, Image as ImageIcon, Palette, Type, MousePointer2, 
-    AlertCircle, CheckCircle2, PanelTop, PanelBottom, Plus, Trash2, GripVertical 
+import {
+    Save, Loader2, Image as ImageIcon, Palette, Type, MousePointer2,
+    AlertCircle, CheckCircle2, PanelTop, PanelBottom, Plus, Trash2, GripVertical,
+    Code2
 } from "lucide-react";
 import { Reorder } from "framer-motion";
 import ImageUploadField from "@/components/admin/ImageUploadField";
@@ -38,17 +39,28 @@ const defaultSettings: GlobalSettings = {
     button_hover_text: "#ffffff",
 };
 
+type CustomCode = {
+    header_code: string;
+    body_code: string;
+};
+
+const defaultCustomCode: CustomCode = {
+    header_code: "",
+    body_code: "",
+};
+
 // ── Settings Page ──────────────────────────────────────────────
 export default function SettingsPage() {
     // State
     const [settings, setSettings] = useState<GlobalSettings>(defaultSettings);
     const [header, setHeader] = useState<Record<string, any>>({});
     const [footer, setFooter] = useState<Record<string, any>>({});
-    
+    const [customCode, setCustomCode] = useState<CustomCode>(defaultCustomCode);
+
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [statusMenu, setStatusMenu] = useState<{ type: 'success' | 'error', msg: string } | null>(null);
-    const [activeTab, setActiveTab] = useState<"branding" | "colors" | "typography" | "buttons" | "header" | "footer">("branding");
+    const [activeTab, setActiveTab] = useState<"branding" | "colors" | "typography" | "buttons" | "header" | "footer" | "custom_code">("branding");
 
     useEffect(() => {
         fetchAllSettings();
@@ -65,10 +77,11 @@ export default function SettingsPage() {
 
     const fetchAllSettings = async () => {
         try {
-            const [gRes, hRes, fRes] = await Promise.all([
+            const [gRes, hRes, fRes, cRes] = await Promise.all([
                 fetch("/api/pages-content?page=global_settings"),
                 fetch("/api/pages-content?page=site_header"),
-                fetch("/api/pages-content?page=site_footer")
+                fetch("/api/pages-content?page=site_footer"),
+                fetch("/api/pages-content?page=custom_code"),
             ]);
 
             if (gRes.ok) {
@@ -92,6 +105,12 @@ export default function SettingsPage() {
                     setFooter(content);
                 }
             }
+            if (cRes.ok) {
+                const data = await cRes.json();
+                if (data.content && Object.keys(data.content).length > 0) {
+                    setCustomCode(prev => ({ ...prev, ...data.content }));
+                }
+            }
         } catch (err) {
             console.error("Failed to fetch settings:", err);
         } finally {
@@ -107,7 +126,8 @@ export default function SettingsPage() {
             const reqs = [
                 fetch("/api/pages-content", { method: "PUT", headers, body: JSON.stringify({ page_name: "global_settings", content: settings }) }),
                 fetch("/api/pages-content", { method: "PUT", headers, body: JSON.stringify({ page_name: "site_header", content: header }) }),
-                fetch("/api/pages-content", { method: "PUT", headers, body: JSON.stringify({ page_name: "site_footer", content: footer }) })
+                fetch("/api/pages-content", { method: "PUT", headers, body: JSON.stringify({ page_name: "site_footer", content: footer }) }),
+                fetch("/api/pages-content", { method: "PUT", headers, body: JSON.stringify({ page_name: "custom_code", content: customCode }) }),
             ];
 
             const results = await Promise.all(reqs);
@@ -141,6 +161,7 @@ export default function SettingsPage() {
         { id: "buttons", label: "Buttons", icon: MousePointer2 },
         { id: "header", label: "Header Config", icon: PanelTop },
         { id: "footer", label: "Footer Config", icon: PanelBottom },
+        { id: "custom_code", label: "Custom Code", icon: Code2 },
     ] as const;
 
     return (
@@ -487,6 +508,75 @@ export default function SettingsPage() {
                             </div>
                         </div>
                     )}
+                    {/* CUSTOM CODE TAB */}
+                    {activeTab === "custom_code" && (
+                        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                            <div>
+                                <h3 className="text-lg font-bold text-gray-900 mb-1">Custom Code Injection</h3>
+                                <p className="text-sm text-gray-500 mb-6">
+                                    Add tracking pixels, analytics scripts, chat widgets, or any custom HTML/JS.
+                                    Scripts in the <strong>Head</strong> section load before the page renders (ideal for Google Tag Manager, Meta Pixel, Google Analytics).
+                                    Scripts in the <strong>Body</strong> section load after content (ideal for chat widgets, noscript tags, conversion pixels).
+                                </p>
+                            </div>
+
+                            {/* Head Code */}
+                            <div className="rounded-2xl border border-gray-200 overflow-hidden">
+                                <div className="flex items-center gap-3 px-5 py-3.5 bg-gray-900 border-b border-gray-700">
+                                    <div className="flex gap-1.5">
+                                        <span className="w-3 h-3 rounded-full bg-red-500" />
+                                        <span className="w-3 h-3 rounded-full bg-yellow-500" />
+                                        <span className="w-3 h-3 rounded-full bg-green-500" />
+                                    </div>
+                                    <span className="text-xs font-bold text-gray-400 font-mono ml-2">&lt;head&gt; — injected before &lt;/head&gt;</span>
+                                    <span className="ml-auto text-[10px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-400/10 px-2 py-0.5 rounded-full">
+                                        Google Analytics · GTM · Meta Pixel
+                                    </span>
+                                </div>
+                                <textarea
+                                    value={customCode.header_code}
+                                    onChange={e => setCustomCode(prev => ({ ...prev, header_code: e.target.value }))}
+                                    rows={12}
+                                    spellCheck={false}
+                                    placeholder={`<!-- Google Tag Manager -->\n<script>(function(w,d,s,l,i){w[l]=w[l]||[];...})(window,document,'script','dataLayer','GTM-XXXX');</script>\n\n<!-- Google Analytics -->\n<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>\n<script>\n  window.dataLayer = window.dataLayer || [];\n  function gtag(){dataLayer.push(arguments);}\n  gtag('js', new Date());\n  gtag('config', 'G-XXXXXXXXXX');\n</script>\n\n<!-- Meta Pixel -->\n<script>!function(f,b,e,v,n,t,s)...</script>`}
+                                    className="w-full px-5 py-4 bg-gray-950 text-gray-100 font-mono text-[13px] leading-relaxed resize-none outline-none placeholder:text-gray-600 focus:ring-2 focus:ring-inset focus:ring-primary/40"
+                                />
+                            </div>
+
+                            {/* Body Code */}
+                            <div className="rounded-2xl border border-gray-200 overflow-hidden">
+                                <div className="flex items-center gap-3 px-5 py-3.5 bg-gray-900 border-b border-gray-700">
+                                    <div className="flex gap-1.5">
+                                        <span className="w-3 h-3 rounded-full bg-red-500" />
+                                        <span className="w-3 h-3 rounded-full bg-yellow-500" />
+                                        <span className="w-3 h-3 rounded-full bg-green-500" />
+                                    </div>
+                                    <span className="text-xs font-bold text-gray-400 font-mono ml-2">&lt;body&gt; — injected after &lt;body&gt; opens</span>
+                                    <span className="ml-auto text-[10px] font-bold uppercase tracking-wider text-blue-400 bg-blue-400/10 px-2 py-0.5 rounded-full">
+                                        Chat Widgets · GTM noscript · Pixels
+                                    </span>
+                                </div>
+                                <textarea
+                                    value={customCode.body_code}
+                                    onChange={e => setCustomCode(prev => ({ ...prev, body_code: e.target.value }))}
+                                    rows={12}
+                                    spellCheck={false}
+                                    placeholder={`<!-- Google Tag Manager (noscript) -->\n<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXX"\nheight="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>\n\n<!-- Intercom / Crisp / Tidio chat widget -->\n<script>\n  window.intercomSettings = { app_id: "XXXXXXXX" };\n</script>`}
+                                    className="w-full px-5 py-4 bg-gray-950 text-gray-100 font-mono text-[13px] leading-relaxed resize-none outline-none placeholder:text-gray-600 focus:ring-2 focus:ring-inset focus:ring-primary/40"
+                                />
+                            </div>
+
+                            {/* Info banner */}
+                            <div className="flex gap-3 bg-amber-50 border border-amber-200 rounded-xl px-5 py-4">
+                                <AlertCircle size={18} className="text-amber-500 shrink-0 mt-0.5" />
+                                <p className="text-sm text-amber-800 leading-relaxed">
+                                    <strong>Only paste code from trusted sources.</strong> Scripts entered here run on every page of your website and have full access to the page. Invalid HTML or JS errors will affect all visitors.
+                                    Hit <strong>Save Settings</strong> above when done — changes go live within 60 seconds.
+                                </p>
+                            </div>
+                        </div>
+                    )}
+
                 </div>
             </div>
         </div>

@@ -7,8 +7,28 @@ import Footer from "@/components/layout/Footer";
 import GlobalSettingsProvider from "@/components/layout/GlobalSettingsProvider";
 import { EnquiryProvider } from "@/components/EnquiryModal";
 import { JsonLd } from "@/components/JsonLd";
+import { unstable_cache } from "next/cache";
+import { supabaseAdmin } from "@/lib/supabase-admin";
+import CustomCodeInjector from "@/components/layout/CustomCodeInjector";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://firstbencher.com";
+
+// Cached fetch — re-validates every 60 seconds so new scripts go live quickly
+const getCustomCode = unstable_cache(
+    async () => {
+        const { data } = await supabaseAdmin
+            .from("pages_content")
+            .select("content")
+            .eq("page_name", "custom_code")
+            .single();
+        return {
+            header_code: (data?.content?.header_code as string) || "",
+            body_code: (data?.content?.body_code as string) || "",
+        };
+    },
+    ["custom_code"],
+    { revalidate: 60 }
+);
 
 const inter = Inter({
     variable: "--font-inter",
@@ -118,15 +138,21 @@ const websiteJsonLd = {
     },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
     children,
 }: Readonly<{ children: React.ReactNode }>) {
+    const { header_code, body_code } = await getCustomCode();
+
     return (
         <html lang="en" className="scroll-pt-30" style={{ colorScheme: "light" }}>
             <body
                 suppressHydrationWarning
                 className={`${inter.variable} font-sans antialiased bg-background text-foreground overflow-x-hidden`}
             >
+                {/* Injects admin-configured tracking scripts into <head> and <body> */}
+                {(header_code || body_code) && (
+                    <CustomCodeInjector headCode={header_code} bodyCode={body_code} />
+                )}
                 <JsonLd data={organizationJsonLd} />
                 <JsonLd data={websiteJsonLd} />
                 <GlobalSettingsProvider>
