@@ -9,7 +9,7 @@ const NEW_STORAGE_HOST = process.env.NEXT_PUBLIC_SUPABASE_URL
 // Routes that require a logged-in, active user account
 const USER_PROTECTED_PATHS = ["/feedback"];
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   // Rewrite Next.js image optimization requests that still use the old storage domain
   if (request.nextUrl.pathname === "/_next/image") {
     const urlParam = request.nextUrl.searchParams.get("url");
