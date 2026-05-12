@@ -1,4 +1,5 @@
-import { createServerSupabaseClient } from "@/lib/supabase-server";
+import { headers } from "next/headers";
+import { supabaseAdmin } from "@/lib/supabase-admin";
 import HeaderClient from "./HeaderClient";
 
 type HeaderContent = {
@@ -36,28 +37,59 @@ const defaults: HeaderContent = {
     register_href: "/register",
 };
 
+/** Resolve which pages_content key to use for a given pathname */
+async function resolveHeaderKey(pathname: string): Promise<string> {
+    // Strip leading slash to get the slug
+    const slug = pathname.replace(/^\//, "").split("/")[0];
+    if (!slug) return "site_header"; // home page or root
+
+    try {
+        // Look up whether this custom page has an assigned header
+        const [pagesRes, headersRes] = await Promise.all([
+            supabaseAdmin.from("pages_content").select("content").eq("page_name", "system:custom_pages").single(),
+            supabaseAdmin.from("pages_content").select("content").eq("page_name", "system:headers").single(),
+        ]);
+
+        const customPages: Array<{ slug: string; header_id?: string }> =
+            (pagesRes.data?.content as any)?.pages || [];
+        const page = customPages.find(p => p.slug === slug);
+
+        if (!page) return "site_header"; // not a custom page → use default
+
+        const headerId = page.header_id;
+        if (!headerId || headerId === "default") return "site_header";
+
+        // Find the page_key for this variant
+        const variants: Array<{ id: string; page_key: string }> =
+            (headersRes.data?.content as any)?.variants || [];
+        const variant = variants.find(v => v.id === headerId);
+        return variant?.page_key || "site_header";
+    } catch {
+        return "site_header";
+    }
+}
+
 export default async function Header() {
     let content: HeaderContent = defaults;
     try {
-        const supabase = await createServerSupabaseClient();
-        
-        // Fetch both site_header and global_settings concurrently
+        const headersList = await headers();
+        const pathname = headersList.get("x-next-pathname") || "/";
+        const headerKey = await resolveHeaderKey(pathname);
+
         const [headerRes, globalRes] = await Promise.all([
-            supabase.from("pages_content").select("content").eq("page_name", "site_header").single(),
-            supabase.from("pages_content").select("content").eq("page_name", "global_settings").single()
+            supabaseAdmin.from("pages_content").select("content").eq("page_name", headerKey).single(),
+            supabaseAdmin.from("pages_content").select("content").eq("page_name", "global_settings").single(),
         ]);
-        
+
         if (headerRes.data?.content) {
             content = { ...defaults, ...(headerRes.data.content as Partial<HeaderContent>) };
         }
         if (globalRes.data?.content) {
-            const globalSettings = globalRes.data.content as Record<string, unknown>;
-            if (typeof globalSettings.logo_header === 'string') {
-                content.logo_header = globalSettings.logo_header;
-            }
+            const gs = globalRes.data.content as Record<string, unknown>;
+            if (typeof gs.logo_header === "string") content.logo_header = gs.logo_header;
         }
     } catch {
-        // Use defaults
+        // fall through to defaults
     }
     return <HeaderClient topBar={content} />;
 }

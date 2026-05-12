@@ -18,7 +18,9 @@ import {
     Settings,
     MailCheck,
     UserCheck,
-    Users
+    Users,
+    PanelTop,
+    PanelBottom,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { signOut } from "@/app/admin/actions";
@@ -34,6 +36,8 @@ const menuItems = [
     { name: "Inquiries", href: "/admin/inquiries", icon: Mail },
     { name: "Career", href: "/admin/career", icon: Briefcase },
     { name: "Users", href: "/admin/users", icon: Users },
+    { name: "Headers", href: "/admin/headers", icon: PanelTop },
+    { name: "Footers", href: "/admin/footers", icon: PanelBottom },
     { name: "Mail Settings", href: "/admin/mail", icon: MailCheck },
     { name: "Settings", href: "/admin/settings", icon: Settings },
 ];

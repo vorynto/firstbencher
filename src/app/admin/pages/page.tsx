@@ -5,7 +5,8 @@ import {
     Save, RotateCcw, ChevronRight, Layout,
     CheckCircle, AlertCircle, Plus, Trash2,
     Home, Info, Phone, Globe, Settings, GripVertical,
-    ArrowLeft, Search, ExternalLink, X, Target, TrendingUp
+    ArrowLeft, Search, ExternalLink, X, Target, TrendingUp,
+    PanelTop, PanelBottom,
 } from "lucide-react";
 import { Reorder } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -733,6 +734,9 @@ export default function WebPagesEditor() {
     const [newPageData, setNewPageData] = useState({ title: "", slug: "" });
     const [newKw, setNewKw] = useState("");
     const [listSearch, setListSearch] = useState("");
+    const [headerVariants, setHeaderVariants] = useState<Array<{ id: string; name: string }>>([]);
+    const [footerVariants, setFooterVariants] = useState<Array<{ id: string; name: string }>>([]);
+    const [pageSettings, setPageSettings] = useState<{ header_id?: string; footer_id?: string }>({});
 
     const showToast = (type: "success" | "error", msg: string) => {
         setToast({ type, msg });
@@ -741,18 +745,40 @@ export default function WebPagesEditor() {
 
     const fetchAllData = useCallback(async () => {
         try {
-            const res = await fetch("/api/pages-content?page=system:custom_pages");
-            const data = await res.json();
-            const customList = (data.content?.pages as any[]) || [];
+            const [pagesRes, headersRes, footersRes] = await Promise.all([
+                fetch("/api/pages-content?page=system:custom_pages"),
+                fetch("/api/pages-content?page=system:headers"),
+                fetch("/api/pages-content?page=system:footers"),
+            ]);
+            const pagesData = await pagesRes.json();
+            const headersData = await headersRes.json();
+            const footersData = await footersRes.json();
+
+            const customList = (pagesData.content?.pages as any[]) || [];
             const customPages = customList.map(p => ({
                 id: `custom_page:${p.slug}`,
                 name: p.name,
                 slug: `/${p.slug}`,
                 icon: Globe,
                 isCustom: true,
+                rawSlug: p.slug,
+                header_id: p.header_id,
+                footer_id: p.footer_id,
                 sections: [{ id: `custom_page:${p.slug}`, name: "Page Content Builder" }]
             }));
             setPages([...BASE_PAGES, ...customPages]);
+
+            const hVariants = (headersData.content?.variants as any[]) || [];
+            if (!hVariants.find((v: any) => v.id === "default")) {
+                hVariants.unshift({ id: "default", name: "Default Header" });
+            }
+            setHeaderVariants(hVariants.map((v: any) => ({ id: v.id, name: v.name })));
+
+            const fVariants = (footersData.content?.variants as any[]) || [];
+            if (!fVariants.find((v: any) => v.id === "default")) {
+                fVariants.unshift({ id: "default", name: "Default Footer" });
+            }
+            setFooterVariants(fVariants.map((v: any) => ({ id: v.id, name: v.name })));
         } catch (err) {
             console.error("Failed to fetch custom pages index", err);
         }
@@ -767,6 +793,8 @@ export default function WebPagesEditor() {
         setSelectedSection(firstSection);
         setView("edit");
         setLoadingSection(true);
+        // Restore page-level settings (header/footer) from the page object
+        setPageSettings({ header_id: page.header_id, footer_id: page.footer_id });
         try {
             const [secRes, seoRes] = await Promise.all([
                 fetch(`/api/pages-content?page=${firstSection.id}`),
@@ -807,7 +835,7 @@ export default function WebPagesEditor() {
         if (!editingPage || !selectedSection) return;
         setIsSaving(true);
         try {
-            await Promise.all([
+            const saves: Promise<any>[] = [
                 fetch("/api/pages-content", {
                     method: "PUT", headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ page_name: selectedSection.id, content: currentContent }),
@@ -816,7 +844,26 @@ export default function WebPagesEditor() {
                     method: "PUT", headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ page_name: `seo:${editingPage.id}`, content: seoData }),
                 }),
-            ]);
+            ];
+
+            // For custom pages also persist header_id / footer_id
+            if (editingPage.isCustom) {
+                const res = await fetch("/api/pages-content?page=system:custom_pages");
+                const data = await res.json();
+                const customList: any[] = (data.content?.pages as any[]) || [];
+                const rawSlug = editingPage.rawSlug || editingPage.id.replace("custom_page:", "");
+                const updatedList = customList.map(p =>
+                    p.slug === rawSlug
+                        ? { ...p, header_id: pageSettings.header_id, footer_id: pageSettings.footer_id }
+                        : p
+                );
+                saves.push(fetch("/api/pages-content", {
+                    method: "PUT", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ page_name: "system:custom_pages", content: { pages: updatedList } }),
+                }));
+            }
+
+            await Promise.all(saves);
             showToast("success", "Saved successfully!");
         } catch {
             showToast("error", "Network error — changes not saved.");
@@ -1104,6 +1151,45 @@ export default function WebPagesEditor() {
 
                 {/* ── SEO Panel ── */}
                 <div className="flex flex-col gap-4">
+
+                    {/* Page Layout (custom pages only) */}
+                    {editingPage?.isCustom && (
+                        <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-5 flex flex-col gap-4">
+                            <div className="flex items-center gap-2 border-b border-gray-100 pb-3">
+                                <Layout size={16} className="text-primary" />
+                                <h3 className="font-black text-gray-900 text-sm">Page Layout</h3>
+                            </div>
+                            <div className="space-y-1.5">
+                                <label className="flex items-center gap-1.5 text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                    <PanelTop size={12} /> Header
+                                </label>
+                                <select
+                                    value={pageSettings.header_id || "default"}
+                                    onChange={e => setPageSettings(s => ({ ...s, header_id: e.target.value }))}
+                                    className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none bg-white"
+                                >
+                                    {headerVariants.map(v => (
+                                        <option key={v.id} value={v.id}>{v.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="space-y-1.5">
+                                <label className="flex items-center gap-1.5 text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                    <PanelBottom size={12} /> Footer
+                                </label>
+                                <select
+                                    value={pageSettings.footer_id || "default"}
+                                    onChange={e => setPageSettings(s => ({ ...s, footer_id: e.target.value }))}
+                                    className="w-full px-3 py-2 text-sm rounded-lg border border-gray-200 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none bg-white"
+                                >
+                                    {footerVariants.map(v => (
+                                        <option key={v.id} value={v.id}>{v.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <p className="text-[11px] text-gray-400 leading-snug">Select which header and footer variant to show on this page. Changes are saved with the page.</p>
+                        </div>
+                    )}
 
                     {/* Score card */}
                     <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-5">

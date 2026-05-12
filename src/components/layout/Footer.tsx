@@ -1,4 +1,5 @@
-import { createServerSupabaseClient } from "@/lib/supabase-server";
+import { headers } from "next/headers";
+import { supabaseAdmin } from "@/lib/supabase-admin";
 import FooterClient from "./FooterClient";
 
 type FooterContent = {
@@ -42,28 +43,56 @@ const defaults: FooterContent = {
     ],
 };
 
+/** Resolve which pages_content key to use for a given pathname */
+async function resolveFooterKey(pathname: string): Promise<string> {
+    const slug = pathname.replace(/^\//, "").split("/")[0];
+    if (!slug) return "site_footer";
+
+    try {
+        const [pagesRes, footersRes] = await Promise.all([
+            supabaseAdmin.from("pages_content").select("content").eq("page_name", "system:custom_pages").single(),
+            supabaseAdmin.from("pages_content").select("content").eq("page_name", "system:footers").single(),
+        ]);
+
+        const customPages: Array<{ slug: string; footer_id?: string }> =
+            (pagesRes.data?.content as any)?.pages || [];
+        const page = customPages.find(p => p.slug === slug);
+
+        if (!page) return "site_footer";
+
+        const footerId = page.footer_id;
+        if (!footerId || footerId === "default") return "site_footer";
+
+        const variants: Array<{ id: string; page_key: string }> =
+            (footersRes.data?.content as any)?.variants || [];
+        const variant = variants.find(v => v.id === footerId);
+        return variant?.page_key || "site_footer";
+    } catch {
+        return "site_footer";
+    }
+}
+
 export default async function Footer() {
     let content: FooterContent = defaults;
     try {
-        const supabase = await createServerSupabaseClient();
-        
-        // Fetch both site_footer and global_settings concurrently
+        const headersList = await headers();
+        const pathname = headersList.get("x-next-pathname") || "/";
+        const footerKey = await resolveFooterKey(pathname);
+
         const [footerRes, globalRes] = await Promise.all([
-            supabase.from("pages_content").select("content").eq("page_name", "site_footer").single(),
-            supabase.from("pages_content").select("content").eq("page_name", "global_settings").single()
+            supabaseAdmin.from("pages_content").select("content").eq("page_name", footerKey).single(),
+            supabaseAdmin.from("pages_content").select("content").eq("page_name", "global_settings").single(),
         ]);
-        
+
         if (footerRes.data?.content) {
             content = { ...defaults, ...(footerRes.data.content as Partial<FooterContent>) };
         }
         if (globalRes.data?.content) {
-            const globalSettings = globalRes.data.content as Record<string, unknown>;
-            if (typeof globalSettings.logo_footer === 'string') {
-                content.logo_footer = globalSettings.logo_footer;
-            }
+            const gs = globalRes.data.content as Record<string, unknown>;
+            if (typeof gs.logo_footer === "string") content.logo_footer = gs.logo_footer;
         }
     } catch {
-        // Use defaults
+        // fall through to defaults
     }
     return <FooterClient content={content} />;
 }

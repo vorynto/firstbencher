@@ -23,7 +23,14 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  let supabaseResponse = NextResponse.next({ request });
+  // Inject current pathname into request headers so server components can read it
+  // (used by Header.tsx / Footer.tsx to resolve per-page header/footer variants)
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-next-pathname", request.nextUrl.pathname);
+
+  let supabaseResponse = NextResponse.next({
+    request: { headers: requestHeaders },
+  });
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -37,7 +44,9 @@ export async function middleware(request: NextRequest) {
           cookiesToSet.forEach(({ name, value }) =>
             request.cookies.set(name, value),
           );
-          supabaseResponse = NextResponse.next({ request });
+          supabaseResponse = NextResponse.next({
+            request: { headers: requestHeaders },
+          });
           cookiesToSet.forEach(({ name, value, options }) =>
             supabaseResponse.cookies.set(name, value, options),
           );
@@ -55,26 +64,21 @@ export async function middleware(request: NextRequest) {
   const isAdminLogin = path === "/admin/login";
   const isAdminRoute = path.startsWith("/admin") && !isAdminLogin;
 
-  // ── User-protected routes (/success-stories, /feedback) ─────────────────
+  // ── User-protected routes (/feedback) ──────────────────────────────────────
   const isUserProtected = USER_PROTECTED_PATHS.some(p => path === p || path.startsWith(p + "/"));
 
   if (isUserProtected) {
-    // Not logged in → redirect to login
     if (!user) {
       const loginUrl = new URL("/login", request.url);
       loginUrl.searchParams.set("redirect", path);
       return NextResponse.redirect(loginUrl);
     }
-
-    // Logged in — check if account is active
     const { data: profile } = await supabase
       .from("user_profiles")
       .select("is_active")
       .eq("id", user.id)
       .single();
-
     if (!profile?.is_active) {
-      // Account disabled — redirect to login with error flag
       const loginUrl = new URL("/login", request.url);
       loginUrl.searchParams.set("error", "disabled");
       return NextResponse.redirect(loginUrl);
@@ -82,7 +86,6 @@ export async function middleware(request: NextRequest) {
   }
 
   // ── Admin routes ──────────────────────────────────────────────────────────
-  // Redirect unauthenticated users away from /admin/*
   if (isAdminRoute && !user) {
     return NextResponse.redirect(new URL("/admin/login", request.url));
   }
@@ -93,13 +96,11 @@ export async function middleware(request: NextRequest) {
       .select("role")
       .eq("id", user.id)
       .single();
-
     if (!adminData) {
       return NextResponse.redirect(new URL("/login", request.url));
     }
   }
 
-  // Redirect logged-in users away from /admin/login → dashboard
   if (isAdminLogin && user) {
     return NextResponse.redirect(new URL("/admin/dashboard", request.url));
   }
@@ -108,5 +109,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/_next/image", "/feedback", "/feedback/:path*"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };
