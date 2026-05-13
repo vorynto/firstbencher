@@ -139,11 +139,6 @@ export default function HeroClient({ content }: { content: HeroContent }) {
                     {/* ════════ LEFT CONTENT ════════ */}
                     <div className="w-full lg:flex-[1.4] text-left max-w-[700px] relative z-10 pt-0 lg:mr-auto">
 
-                        {/* Bulb Icon */}
-                        <div className="absolute -top-2 -left-4 lg:-left-12 w-12 h-12 lg:w-16 lg:h-16 animate-pulse hidden sm:block">
-                            <span className="text-3xl lg:text-4xl">💡</span>
-                        </div>
-
                         {/* Big Headline */}
                         <h1 className="text-[28px] sm:text-4xl md:text-5xl lg:text-6xl xl:text-[72px] font-bold leading-[1.1] mb-4 lg:mb-6 text-[#1A202C] tracking-tight">
                             {h.title_line1 && <>{h.title_line1} <br /></>}
@@ -187,79 +182,46 @@ export default function HeroClient({ content }: { content: HeroContent }) {
                             </div>
                         </div>
 
-                        {/* PMI Partner Logo & Corporate Clients */}
-                        <div className="mt-8">
-                            <div className="mb-6">
-                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Authorized partner</p>
-                                <img
-                                    src="/pmi-atp-logo.png"
-                                    alt="Authorized Training Partner - Project Management Institute"
-                                    width={180}
-                                    height={50}
-                                    className="object-contain opacity-90 transition-opacity hover:opacity-100"
-                                />
-                            </div>
-
-                            {h.corporate_clients && h.corporate_clients.length > 0 && (
-                                <div className="mt-8 lg:mt-10 overflow-hidden w-full max-w-full">
-                                    <h3 className="text-[13px] font-bold text-gray-700 mb-4 flex items-center gap-2">
-                                        Corporate Clients
-                                        <div className="h-[1px] flex-1 bg-gray-200" />
-                                    </h3>
-                                    <div className="relative group">
-                                        {/* Continuous Scroll Container */}
-                                        <div className="flex items-center gap-12 animate-scroll group-hover:pause-scroll py-2">
-                                            {/* Double the logos for seamless loop */}
-                                            {[...h.corporate_clients, ...h.corporate_clients].map((client, idx) => (
-                                                <div 
-                                                    key={`${client._id}-${idx}`} 
-                                                    className="flex-shrink-0 transition-all duration-300 transform hover:scale-110"
-                                                    title={client.name}
-                                                >
-                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                                                    <img 
-                                                        src={client.logo_url} 
-                                                        alt={client.name} 
-                                                        className="h-7 lg:h-8 object-contain w-auto" 
-                                                    />
-                                                </div>
-                                            ))}
-                                        </div>
-                                        {/* Fading Edges */}
-                                        <div className="absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-[#F8F9FF] to-transparent z-10" />
-                                        <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-[#F8F9FF] to-transparent z-10" />
+                        {/* Corporate Clients */}
+                        {h.corporate_clients && h.corporate_clients.length > 0 && (
+                            <div className="mt-8 lg:mt-10 overflow-hidden w-full max-w-full">
+                                <h3 className="text-[13px] font-bold text-gray-700 mb-4 flex items-center gap-2">
+                                    Corporate Clients
+                                    <div className="h-[1px] flex-1 bg-gray-200" />
+                                </h3>
+                                <div className="relative group">
+                                    {/* Continuous Scroll Container */}
+                                    <div className="flex items-center gap-12 animate-scroll group-hover:pause-scroll py-2">
+                                        {/* Double the logos for seamless loop */}
+                                        {[...h.corporate_clients, ...h.corporate_clients].map((client, idx) => (
+                                            <div
+                                                key={`${client._id}-${idx}`}
+                                                className="flex-shrink-0 transition-all duration-300 transform hover:scale-110"
+                                                title={client.name}
+                                            >
+                                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                <img
+                                                    src={client.logo_url}
+                                                    alt={client.name}
+                                                    className="h-7 lg:h-8 object-contain w-auto"
+                                                />
+                                            </div>
+                                        ))}
                                     </div>
+                                    {/* Fading Edges */}
+                                    <div className="absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-[#F8F9FF] to-transparent z-10" />
+                                    <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-[#F8F9FF] to-transparent z-10" />
                                 </div>
-                            )}
-                        </div>
+                            </div>
+                        )}
                     </div>
 
                     {/* ════════ RIGHT — HERO IMAGE ════════ */}
                     <div className="lg:flex-[1] relative flex justify-center lg:justify-end items-end min-h-[260px] sm:min-h-[380px] lg:min-h-[500px] lg:mt-0 mt-6 w-full max-w-[500px] mx-auto lg:ml-auto pb-4">
 
-                        {/* Purple Circular Backdrop */}
-                        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[260px] h-[260px] sm:w-[340px] sm:h-[340px] lg:w-[420px] lg:h-[420px] bg-gradient-to-tr from-[#ede4ff] to-[#fcfaff] rounded-full z-0 pointer-events-none" />
-
-                        {/* Decorative swirls & plus signs */}
-                        <svg className="absolute top-10 left-10 text-[#f5a3b7] opacity-60 z-0" width="100" height="60" fill="none" viewBox="0 0 100 60"><path d="M0 30 C 30 -10, 70 -10, 80 30 S 60 70, 70 20" stroke="currentColor" strokeWidth="2" /></svg>
+                        {/* Decorative plus signs */}
                         <div className="absolute top-24 right-16 w-3 h-3 text-[#a60303] font-bold text-xl z-0">+</div>
                         <div className="absolute bottom-32 left-8 w-3 h-3 text-[#a60303] font-bold text-xl z-0">+</div>
-
-                        {/* Floating elements from the mockup edges */}
-                        <div className="absolute bottom-4 left-0 lg:-left-12 w-12 h-12 lg:w-16 lg:h-16 animate-bounce" style={{ animationDuration: '4s' }}>
-                            {h.clock_icon ? (
-                                <Image src={h.clock_icon} alt="Clock" width={64} height={64} className="drop-shadow-xl object-contain" />
-                            ) : (
-                                <span className="text-6xl drop-shadow-xl inline-block">⏰</span>
-                            )}
-                        </div>
-                        <div className="absolute top-1/2 right-0 lg:-right-8 w-11 h-11 lg:w-14 lg:h-14 animate-bounce" style={{ animationDuration: '3.5s' }}>
-                            {h.thumbs_up_icon ? (
-                                <Image src={h.thumbs_up_icon} alt="Thumbs up" width={56} height={56} className="drop-shadow-xl object-contain" />
-                            ) : (
-                                <span className="text-5xl drop-shadow-xl inline-block">👍</span>
-                            )}
-                        </div>
 
                         {/* Hero image */}
                         <div className="relative z-10 w-full flex justify-center h-full items-end pb-8">
