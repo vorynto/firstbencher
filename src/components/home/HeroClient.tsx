@@ -282,12 +282,14 @@ export default function HeroClient({ content }: { content: HeroContent }) {
                             className="flex-1 px-6 py-4 sm:py-0 outline-none text-[14px] font-medium text-gray-800 placeholder-[#94A3B8] bg-transparent border-b sm:border-b-0 border-gray-200"
                         />
 
-                        <Button
-                            onClick={handleSearch}
-                            className="px-8 font-bold text-[14px] rounded-b-2xl sm:rounded-lg shrink-0 sm:ml-1 sm:h-[54px] py-4 sm:py-0 sm:my-auto"
-                        >
-                            Search
-                        </Button>
+                        <div className="flex justify-center py-3 sm:py-0 sm:contents">
+                            <Button
+                                onClick={handleSearch}
+                                className="px-10 py-2.5 font-bold text-[14px] rounded-xl sm:rounded-lg shrink-0 sm:ml-1 sm:h-[54px] sm:py-0 sm:my-auto sm:w-auto"
+                            >
+                                Search
+                            </Button>
+                        </div>
 
                         {/* Category dropdown */}
                         {catOpen && (
