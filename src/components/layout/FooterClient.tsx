@@ -25,7 +25,7 @@ export default function FooterClient({ content }: { content: FooterContent }) {
     const copyrightText = (content.copyright_text || "© {year} First Bencher. All rights reserved.").replace("{year}", currentYear.toString());
     return (
         <footer className="bg-[#1E1E2F] text-white pt-12 pb-8">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6">
+            <div className="container mx-auto px-6 lg:px-12">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
                     {/* Company Info */}
                     <div className="flex flex-col gap-6">
