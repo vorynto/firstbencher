@@ -46,7 +46,7 @@ export default async function CoursesPage({
         ? (
             categories.find(c => slugify(c) === slugify(cat)) ??
             categories.find(c => c.toLowerCase() === cat.toLowerCase()) ??
-            null
+            cat  // raw param — no DB match, filter will return 0 results → empty state shown
           )
         : null;
 
