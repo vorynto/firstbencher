@@ -116,7 +116,7 @@ export default function SuccessStoriesSlider({ stories }: { stories: SuccessStor
 
                                         {/* Review text */}
                                         <div className="relative">
-                                            <p className="text-gray-700 text-lg leading-relaxed italic line-clamp-4 font-medium">
+                                            <p className="text-gray-700 text-lg leading-relaxed line-clamp-4 font-medium">
                                                 "{story.message}"
                                             </p>
                                         </div>

@@ -89,7 +89,7 @@ export default async function SuccessStoriesPage() {
 
                                 {/* Review message */}
                                 <div className="border-l-4 border-[#a60303]/20 pl-4">
-                                    <p className="text-gray-700 italic leading-relaxed">&ldquo;{story.message}&rdquo;</p>
+                                    <p className="text-gray-700 leading-relaxed">&ldquo;{story.message}&rdquo;</p>
                                 </div>
 
                                 {/* Certificate */}
