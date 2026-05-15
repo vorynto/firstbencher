@@ -12,12 +12,15 @@ import {
 import Button from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 
+type NavCategory = { name: string; emoji: string; count: number };
+
 type TopBarContent = {
     email: string;
     phone: string;
     address: string;
     logo_header?: string;
     nav_links?: Array<{ name: string; href: string; hasDropdown: boolean; subLinks?: Array<{ name: string; href: string }> }>;
+    nav_categories?: NavCategory[];
     show_search?: boolean;
     show_cart?: boolean;
     auth_buttons_active?: boolean;
@@ -37,7 +40,7 @@ function slugify(str: string) {
         .trim();
 }
 
-const categories = [
+const DEFAULT_CATEGORIES: NavCategory[] = [
     { name: "Project Management", count: 12, emoji: "📋" },
     { name: "Program Management", count: 8, emoji: "🗂️" },
     { name: "Quality Management", count: 10, emoji: "✅" },
@@ -46,7 +49,7 @@ const categories = [
     { name: "Supply Chain", count: 7, emoji: "🔗" },
     { name: "IT Programming", count: 11, emoji: "💻" },
     { name: "Operations", count: 6, emoji: "⚙️" },
-].map(c => ({ ...c, href: `/courses?cat=${slugify(c.name)}` }));
+];
 
 export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -125,6 +128,13 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
     };
 
     const isFixed = lastScrollY > 42;
+
+    // Use admin-configured categories if available, otherwise fall back to defaults
+    const categories = (
+        topBar.nav_categories && topBar.nav_categories.length > 0
+            ? topBar.nav_categories
+            : DEFAULT_CATEGORIES
+    ).map(c => ({ ...c, href: `/courses?cat=${slugify(c.name)}` }));
 
     const defaultNav: NonNullable<TopBarContent["nav_links"]> = [
         { name: "Home", href: "/", hasDropdown: false },

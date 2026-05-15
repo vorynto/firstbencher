@@ -2,12 +2,15 @@ import { headers } from "next/headers";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import HeaderClient from "./HeaderClient";
 
+type NavCategory = { name: string; emoji: string; count: number };
+
 type HeaderContent = {
     email: string;
     phone: string;
     address: string;
     logo_header?: string;
     nav_links?: Array<{ name: string; href: string; hasDropdown: boolean }>;
+    nav_categories?: NavCategory[];
     show_search?: boolean;
     show_cart?: boolean;
     auth_buttons_active?: boolean;

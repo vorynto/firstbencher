@@ -10,10 +10,12 @@ import { cn } from "@/lib/utils";
 
 // ── Types ─────────────────────────────────────────────────────
 type NavLink = { name: string; href: string; hasDropdown: boolean; subLinks?: NavLink[]; _id: string };
+type NavCategory = { name: string; emoji: string; count: number; _id: string };
 type HeaderVariant = { id: string; name: string; is_default: boolean; page_key: string };
 type HeaderContent = {
     email: string; phone: string; address: string;
     nav_links: NavLink[];
+    nav_categories: NavCategory[];
     show_search: boolean; show_cart: boolean; auth_buttons_active: boolean;
     login_text: string; login_href: string;
     register_text: string; register_href: string;
@@ -22,6 +24,7 @@ type HeaderContent = {
 const BLANK_CONTENT: HeaderContent = {
     email: "", phone: "", address: "",
     nav_links: [],
+    nav_categories: [],
     show_search: true, show_cart: true, auth_buttons_active: true,
     login_text: "Login", login_href: "/login",
     register_text: "Register", register_href: "/register",
@@ -50,10 +53,24 @@ function ensureIds(links: any[]): NavLink[] {
     }));
 }
 
+function ensureCategoryIds(cats: any[]): NavCategory[] {
+    return (cats || []).map(c => ({
+        name: c.name || "",
+        emoji: c.emoji || "📚",
+        count: c.count ?? 0,
+        _id: c._id || Math.random().toString(36).slice(2),
+    }));
+}
+
 // ── Header content editor (mirrors Settings > Header Config) ──
-function HeaderEditor({ content, onChange }: { content: HeaderContent; onChange: (c: HeaderContent) => void }) {
+function HeaderEditor({ content, onChange, dbCategories }: {
+    content: HeaderContent;
+    onChange: (c: HeaderContent) => void;
+    dbCategories: string[];
+}) {
     const u = (key: keyof HeaderContent, val: any) => onChange({ ...content, [key]: val });
     const links = content.nav_links || [];
+    const cats = content.nav_categories || [];
 
     return (
         <div className="space-y-6">
@@ -136,6 +153,87 @@ function HeaderEditor({ content, onChange }: { content: HeaderContent; onChange:
                 </button>
             </div>
 
+            {/* Category Dropdown */}
+            <div className="bg-gray-50 rounded-xl p-4 border border-gray-100 space-y-3">
+                <div className="flex items-center justify-between">
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Category Dropdown</p>
+                    <span className="text-[10px] text-gray-400 font-medium">Shown in header nav &amp; mobile drawer</span>
+                </div>
+                {cats.length === 0 && (
+                    <p className="text-xs text-gray-400 italic py-1">No categories configured — using built-in defaults.</p>
+                )}
+                <Reorder.Group axis="y" values={cats} onReorder={v => u("nav_categories", v)} className="space-y-2">
+                    {cats.map((cat, idx) => (
+                        <Reorder.Item key={cat._id} value={cat} className="flex items-center gap-2 bg-white p-2.5 rounded-xl border border-gray-200 relative pl-9">
+                            <div className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-300 cursor-grab">
+                                <GripVertical size={16} />
+                            </div>
+
+                            {/* Emoji */}
+                            <input
+                                type="text"
+                                value={cat.emoji}
+                                onChange={e => { const n = [...cats]; n[idx] = { ...n[idx], emoji: e.target.value }; u("nav_categories", n); }}
+                                placeholder="📋"
+                                className="w-12 px-2 py-1.5 rounded-lg border border-gray-200 text-sm outline-none focus:border-primary text-center"
+                                title="Emoji"
+                            />
+
+                            {/* Category name — dropdown of DB course categories */}
+                            <select
+                                value={cat.name}
+                                onChange={e => { const n = [...cats]; n[idx] = { ...n[idx], name: e.target.value }; u("nav_categories", n); }}
+                                className="flex-1 px-2 py-1.5 rounded-lg border border-gray-200 text-sm outline-none focus:border-primary bg-white"
+                            >
+                                <option value="">— Select course category —</option>
+                                {dbCategories.map(c => (
+                                    <option key={c} value={c}>{c}</option>
+                                ))}
+                                {/* Keep existing value visible even if not in DB yet */}
+                                {cat.name && !dbCategories.includes(cat.name) && (
+                                    <option value={cat.name}>{cat.name} (custom)</option>
+                                )}
+                            </select>
+
+                            {/* Course count label */}
+                            <div className="flex items-center gap-1">
+                                <input
+                                    type="number"
+                                    value={cat.count}
+                                    onChange={e => { const n = [...cats]; n[idx] = { ...n[idx], count: parseInt(e.target.value) || 0 }; u("nav_categories", n); }}
+                                    placeholder="0"
+                                    min={0}
+                                    className="w-16 px-2 py-1.5 rounded-lg border border-gray-200 text-sm outline-none focus:border-primary text-center"
+                                    title="Course count shown as label"
+                                />
+                                <span className="text-xs text-gray-400 font-medium whitespace-nowrap">courses</span>
+                            </div>
+
+                            <button
+                                onClick={() => u("nav_categories", cats.filter((_, i) => i !== idx))}
+                                className="text-red-400 hover:text-red-600"
+                            >
+                                <Trash2 size={16} />
+                            </button>
+                        </Reorder.Item>
+                    ))}
+                </Reorder.Group>
+                <button
+                    onClick={() => u("nav_categories", [...cats, { name: "", emoji: "📚", count: 0, _id: Math.random().toString(36).slice(2) }])}
+                    className="w-full py-2 border-2 border-dashed border-gray-300 rounded-xl text-sm font-bold text-gray-500 hover:border-primary hover:text-primary flex items-center justify-center gap-2"
+                >
+                    <Plus size={16} /> Add Category
+                </button>
+                {cats.length > 0 && (
+                    <button
+                        onClick={() => u("nav_categories", [])}
+                        className="w-full py-1.5 text-xs font-bold text-gray-400 hover:text-red-500 transition-colors"
+                    >
+                        Reset to defaults (clear all)
+                    </button>
+                )}
+            </div>
+
             {/* Buttons & toggles */}
             <div className="bg-gray-50 rounded-xl p-4 border border-gray-100 space-y-4">
                 <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Actions & Buttons</p>
@@ -182,6 +280,7 @@ export default function AdminHeadersPage() {
     const [toast, setToast] = useState<{ type: "success" | "error"; msg: string } | null>(null);
     const [createModal, setCreateModal] = useState(false);
     const [newName, setNewName] = useState("");
+    const [dbCategories, setDbCategories] = useState<string[]>([]);
 
     const showToast = (type: "success" | "error", msg: string) => {
         setToast({ type, msg });
@@ -208,6 +307,14 @@ export default function AdminHeadersPage() {
 
     useEffect(() => { fetchRegistry(); }, [fetchRegistry]);
 
+    // Fetch course categories from DB for the category dropdown editor
+    useEffect(() => {
+        fetch("/api/courses/categories")
+            .then(r => r.json())
+            .then(data => setDbCategories(data.categories || []))
+            .catch(() => {});
+    }, []);
+
     // Fetch content for a variant when selected
     useEffect(() => {
         if (!selected) return;
@@ -219,6 +326,7 @@ export default function AdminHeadersPage() {
                     ...BLANK_CONTENT,
                     ...(data.content || {}),
                     nav_links: ensureIds((data.content?.nav_links as any[]) || []),
+                    nav_categories: ensureCategoryIds((data.content?.nav_categories as any[]) || []),
                 };
                 setContentMap(prev => ({ ...prev, [selected.id]: c }));
             });
@@ -272,7 +380,7 @@ export default function AdminHeadersPage() {
         const updated = [...variants, newVariant];
         await saveRegistry(updated);
         setVariants(updated);
-        setContentMap(prev => ({ ...prev, [id]: { ...defaultContent, nav_links: ensureIds(defaultContent.nav_links) } }));
+        setContentMap(prev => ({ ...prev, [id]: { ...defaultContent, nav_links: ensureIds(defaultContent.nav_links), nav_categories: ensureCategoryIds(defaultContent.nav_categories) } }));
         setSelected(newVariant);
         setCreateModal(false);
         setNewName("");
@@ -430,6 +538,7 @@ export default function AdminHeadersPage() {
                                 <HeaderEditor
                                     content={currentContent}
                                     onChange={c => setContentMap(prev => ({ ...prev, [selected.id]: c }))}
+                                    dbCategories={dbCategories}
                                 />
                             </div>
                         </div>
