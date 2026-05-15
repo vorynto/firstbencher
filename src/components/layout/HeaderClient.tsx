@@ -27,16 +27,26 @@ type TopBarContent = {
     register_href?: string;
 };
 
+function slugify(str: string) {
+    return str
+        .toLowerCase()
+        .replace(/&/g, "and")
+        .replace(/[^a-z0-9\s-]/g, "")
+        .replace(/\s+/g, "-")
+        .replace(/-+/g, "-")
+        .trim();
+}
+
 const categories = [
-    { name: "Project Management", count: 12, href: "/courses?cat=project-management", emoji: "📋" },
-    { name: "Program Management", count: 8, href: "/courses?cat=program-management", emoji: "🗂️" },
-    { name: "Quality Management", count: 10, href: "/courses?cat=quality-management", emoji: "✅" },
-    { name: "Business Analysis", count: 9, href: "/courses?cat=business-analysis", emoji: "📊" },
-    { name: "AI & Machine Learning", count: 14, href: "/courses?cat=ai-ml", emoji: "🤖" },
-    { name: "Supply Chain", count: 7, href: "/courses?cat=supply-chain", emoji: "🔗" },
-    { name: "IT Programming", count: 11, href: "/courses?cat=it-programming", emoji: "💻" },
-    { name: "Operations", count: 6, href: "/courses?cat=operations", emoji: "⚙️" },
-];
+    { name: "Project Management", count: 12, emoji: "📋" },
+    { name: "Program Management", count: 8, emoji: "🗂️" },
+    { name: "Quality Management", count: 10, emoji: "✅" },
+    { name: "Business Analysis", count: 9, emoji: "📊" },
+    { name: "AI & Machine Learning", count: 14, emoji: "🤖" },
+    { name: "Supply Chain", count: 7, emoji: "🔗" },
+    { name: "IT Programming", count: 11, emoji: "💻" },
+    { name: "Operations", count: 6, emoji: "⚙️" },
+].map(c => ({ ...c, href: `/courses?cat=${slugify(c.name)}` }));
 
 export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
     const [isOpen, setIsOpen] = useState(false);

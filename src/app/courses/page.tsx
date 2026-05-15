@@ -8,7 +8,13 @@ export const metadata = {
 };
 
 function slugify(str: string) {
-    return str.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+    return str
+        .toLowerCase()
+        .replace(/&/g, "and")
+        .replace(/[^a-z0-9\s-]/g, "")
+        .replace(/\s+/g, "-")
+        .replace(/-+/g, "-")
+        .trim();
 }
 
 export default async function CoursesPage({
@@ -34,9 +40,14 @@ export default async function CoursesPage({
         )
     ).sort();
 
-    // Match URL slug to actual category name (e.g. "project-management" → "Project Management")
+    // Match URL cat param to actual category name —
+    // supports both slugified ("project-management") and raw ("Project Management") values
     const matchedCategory = cat
-        ? (categories.find(c => slugify(c) === cat) ?? null)
+        ? (
+            categories.find(c => slugify(c) === slugify(cat)) ??
+            categories.find(c => c.toLowerCase() === cat.toLowerCase()) ??
+            null
+          )
         : null;
 
     return (

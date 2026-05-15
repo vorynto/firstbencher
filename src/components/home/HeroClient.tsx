@@ -8,6 +8,16 @@ import Button from "@/components/ui/Button";
 import { useEnquiry } from "@/components/EnquiryModal";
 import { sanitize } from "@/lib/sanitize";
 
+function slugify(str: string) {
+    return str
+        .toLowerCase()
+        .replace(/&/g, "and")
+        .replace(/[^a-z0-9\s-]/g, "")
+        .replace(/\s+/g, "-")
+        .replace(/-+/g, "-")
+        .trim();
+}
+
 type HeroContent = {
     badge: string;
     title_line1: string;
@@ -362,7 +372,7 @@ export default function HeroClient({ content }: { content: HeroContent }) {
                                 return (
                                     <Link
                                         key={index}
-                                        href={`/courses?cat=${encodeURIComponent(trimmed)}`}
+                                        href={`/courses?cat=${slugify(trimmed)}`}
                                         className="bg-white hover:bg-[#a60303] hover:text-white text-[#64748B] px-5 py-2 rounded-full text-[13px] font-semibold transition-colors border border-gray-200 shadow-sm"
                                     >
                                         {trimmed}
