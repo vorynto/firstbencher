@@ -252,8 +252,8 @@ export default function HeroClient({ content }: { content: HeroContent }) {
                                 <div className="absolute -top-1 -right-2 w-4 h-4 text-[#a60303]">✺</div>
                             </div>
                             <div className="text-center w-full mt-1">
-                                <p className="text-[#a60303] font-black text-lg italic">{h.stat1_value}</p>
-                                <p className="text-[11px] font-bold text-gray-800 italic">{h.stat1_label}</p>
+                                <p className="text-[#a60303] font-black text-lg">{h.stat1_value}</p>
+                                <p className="text-[11px] font-bold text-gray-800">{h.stat1_label}</p>
                             </div>
                         </div>
 
