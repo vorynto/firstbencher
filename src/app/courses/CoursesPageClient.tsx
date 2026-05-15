@@ -206,13 +206,43 @@ export default function CoursesPageClient({ initialCourses, categories, initialC
 
                         {/* Grid */}
                         {filteredCourses.length === 0 ? (
-                            <div className="py-12 text-center bg-white rounded-3xl border border-dashed border-gray-200">
-                                <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <Search size={32} className="text-gray-300" />
+                            <div className="py-16 text-center bg-white rounded-3xl border border-dashed border-gray-200">
+                                <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-5">
+                                    <Search size={32} className="text-[#a60303]/40" />
                                 </div>
-                                <h3 className="text-xl font-black text-gray-900 mb-2">No courses found</h3>
-                                <p className="text-gray-500 mb-6 px-4">We couldn't find any courses matching your current filters. Try adjusting your search term or filters.</p>
-                                <button onClick={clearFilters} className="text-[#a60303] font-black uppercase tracking-widest text-xs hover:underline">Clear all filters</button>
+                                {selectedCategories.length > 0 && !searchTerm ? (
+                                    <>
+                                        <h3 className="text-xl font-black text-gray-900 mb-2">
+                                            No courses found in this category
+                                        </h3>
+                                        <p className="text-gray-500 mb-8 px-4">
+                                            There are currently no courses available under{" "}
+                                            <span className="font-bold text-gray-800">
+                                                {selectedCategories.join(", ")}
+                                            </span>
+                                            .
+                                        </p>
+                                        <button
+                                            onClick={clearFilters}
+                                            className="inline-flex items-center gap-2 bg-[#a60303] hover:bg-[#8a0202] text-white font-bold text-sm px-6 py-3 rounded-xl transition-colors shadow-md shadow-red-900/10"
+                                        >
+                                            View All Courses
+                                        </button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <h3 className="text-xl font-black text-gray-900 mb-2">No courses found</h3>
+                                        <p className="text-gray-500 mb-8 px-4">
+                                            We couldn't find any courses matching your search. Try adjusting your filters.
+                                        </p>
+                                        <button
+                                            onClick={clearFilters}
+                                            className="inline-flex items-center gap-2 bg-[#a60303] hover:bg-[#8a0202] text-white font-bold text-sm px-6 py-3 rounded-xl transition-colors shadow-md shadow-red-900/10"
+                                        >
+                                            View All Courses
+                                        </button>
+                                    </>
+                                )}
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-8">
