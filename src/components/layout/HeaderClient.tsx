@@ -406,95 +406,147 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
                         {/* Mobile Search and Toggle */}
                         <div className="flex items-center gap-2 lg:hidden ml-auto">
                             {topBar.show_search !== false && (
-                                <button 
+                                <button
                                     onClick={() => setIsSearchOpen(true)}
                                     className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-[#a60303] hover:bg-[#a60303] hover:text-white transition-all shadow-sm"
                                 >
                                     <Search size={18} />
                                 </button>
                             )}
-                            <button className="text-gray-700 p-2" onClick={() => setIsOpen(!isOpen)}>
-                                {isOpen ? <X size={24} /> : <Menu size={24} />}
+                            <button
+                                className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-700 hover:text-[#a60303] hover:border-red-200 transition-all"
+                                onClick={() => setIsOpen(true)}
+                                aria-label="Open menu"
+                            >
+                                <Menu size={22} />
                             </button>
                         </div>
                     </div>
                 </div>
+            </header>
 
-                {/* ── Mobile Drawer ── */}
-                <div className={cn(
-                    "lg:hidden bg-white border-b shadow-xl transition-all duration-300 overflow-hidden",
-                    isOpen ? "max-h-[700px] opacity-100" : "max-h-0 opacity-0"
-                )}>
-                    <div className="flex flex-col p-4 gap-1">
-                        <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-4 pt-2 pb-1">Categories</p>
-                        <div className="grid grid-cols-2 gap-2 mb-3">
-                            {categories.slice(0, 6).map((cat) => (
-                                <Link
-                                    key={cat.href}
-                                    href={cat.href}
-                                    className="flex items-center gap-2 p-3 rounded-xl bg-gray-50 hover:bg-primary/5 hover:text-primary transition-all"
-                                    onClick={() => setIsOpen(false)}
-                                >
-                                    <span className="text-xl">{cat.emoji}</span>
-                                    <div>
-                                        <p className="text-xs font-bold text-gray-800 leading-tight">{cat.name}</p>
-                                        <p className="text-[10px] text-gray-400">{cat.count}+ Courses</p>
-                                    </div>
-                                </Link>
-                            ))}
-                        </div>
-                        <div className="border-t border-gray-100 pt-2">
-                            {navLinks.map((link) => (
-                                <div key={link.href}>
-                                    <Link
-                                        href={link.href}
-                                        className={cn(
-                                            "block text-sm font-semibold px-4 py-3 rounded-lg transition-colors",
-                                            pathname === link.href ? "bg-red-50 text-[#a60303]" : "text-gray-700 hover:bg-gray-50"
-                                        )}
-                                        onClick={() => setIsOpen(false)}
-                                    >
-                                        {link.name}
-                                    </Link>
-                                    {link.hasDropdown && link.subLinks && link.subLinks.length > 0 && (
-                                        <div className="pl-6 border-l-2 border-gray-100 ml-6 pb-2">
-                                            {link.subLinks.map((sub, i) => (
-                                                <Link
-                                                    key={i}
-                                                    href={sub.href}
-                                                    className="block text-[13px] font-medium px-2 py-2 text-gray-500 hover:text-[#a60303] transition-colors"
-                                                    onClick={() => setIsOpen(false)}
-                                                >
-                                                    {sub.name}
-                                                </Link>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                        <div className="flex gap-3 pt-3 mt-2 border-t border-gray-100">
-                            {topBar.auth_buttons_active !== false && (
-                                <Button 
-                                    variant="outline"
-                                    href={topBar.login_href || "/login"} 
-                                    className="flex-1 text-sm font-bold rounded-full py-3" 
-                                    onClick={() => setIsOpen(false)}
-                                >
-                                    {topBar.login_text || "Login"}
-                                </Button>
-                            )}
-                            <Button 
-                                href={topBar.register_href || "/register"} 
-                                className="flex-1 text-sm font-bold rounded-full py-3" 
+            {/* ── Mobile Drawer Backdrop ── */}
+            <div
+                className={cn(
+                    "fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm lg:hidden transition-opacity duration-300",
+                    isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+                )}
+                onClick={() => setIsOpen(false)}
+                aria-hidden="true"
+            />
+
+            {/* ── Mobile Drawer (left slide-in) ── */}
+            <div className={cn(
+                "fixed top-0 left-0 z-[70] h-full w-[300px] bg-white shadow-2xl flex flex-col lg:hidden transition-transform duration-300 ease-in-out",
+                isOpen ? "translate-x-0" : "-translate-x-full"
+            )}>
+                {/* Drawer header — logo + close */}
+                <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 shrink-0">
+                    <Link href="/" onClick={() => setIsOpen(false)}>
+                        {topBar.logo_header ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                                src={topBar.logo_header}
+                                alt="First Bencher Logo"
+                                className="h-10 w-auto object-contain"
+                            />
+                        ) : (
+                            <span className="text-[22px] font-bold tracking-tight text-gray-800 flex items-center">
+                                <span className="text-[#a60303]">Fi</span>
+                                <span>Study</span>
+                                <span className="w-1.5 h-1.5 rounded-full bg-[#a60303] ml-0.5 mt-1.5" />
+                            </span>
+                        )}
+                    </Link>
+                    <button
+                        onClick={() => setIsOpen(false)}
+                        aria-label="Close menu"
+                        className="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:text-[#a60303] hover:border-red-200 transition-all"
+                    >
+                        <X size={20} />
+                    </button>
+                </div>
+
+                {/* Scrollable body */}
+                <div className="flex-1 overflow-y-auto p-4 space-y-1">
+
+                    {/* Categories */}
+                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2 pt-2 pb-2">
+                        Categories
+                    </p>
+                    <div className="grid grid-cols-2 gap-2 pb-3">
+                        {categories.map((cat) => (
+                            <Link
+                                key={cat.href}
+                                href={cat.href}
+                                className="flex items-center gap-2 p-3 rounded-xl bg-gray-50 hover:bg-red-50 hover:text-[#a60303] transition-all"
                                 onClick={() => setIsOpen(false)}
                             >
-                                {topBar.register_text || "Register"}
-                            </Button>
-                        </div>
+                                <span className="text-xl leading-none">{cat.emoji}</span>
+                                <div className="min-w-0">
+                                    <p className="text-xs font-bold text-gray-800 leading-tight truncate">{cat.name}</p>
+                                    <p className="text-[10px] text-gray-400">{cat.count}+ Courses</p>
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
+
+                    {/* Nav links */}
+                    <div className="border-t border-gray-100 pt-2">
+                        {navLinks.map((link) => (
+                            <div key={link.href}>
+                                <Link
+                                    href={link.href}
+                                    className={cn(
+                                        "flex items-center gap-2 text-sm font-semibold px-4 py-3 rounded-lg transition-colors",
+                                        pathname === link.href
+                                            ? "bg-red-50 text-[#a60303]"
+                                            : "text-gray-700 hover:bg-gray-50"
+                                    )}
+                                    onClick={() => setIsOpen(false)}
+                                >
+                                    {link.name}
+                                </Link>
+                                {link.hasDropdown && link.subLinks && link.subLinks.length > 0 && (
+                                    <div className="pl-6 border-l-2 border-gray-100 ml-6 pb-1">
+                                        {link.subLinks.map((sub, i) => (
+                                            <Link
+                                                key={i}
+                                                href={sub.href}
+                                                className="block text-[13px] font-medium px-2 py-2 text-gray-500 hover:text-[#a60303] transition-colors"
+                                                onClick={() => setIsOpen(false)}
+                                            >
+                                                {sub.name}
+                                            </Link>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        ))}
                     </div>
                 </div>
-            </header>
+
+                {/* Auth buttons pinned to bottom */}
+                {topBar.auth_buttons_active !== false && (
+                    <div className="shrink-0 p-4 border-t border-gray-100 flex flex-col gap-2.5">
+                        <Button
+                            variant="outline"
+                            href={topBar.login_href || "/login"}
+                            className="w-full text-sm font-bold rounded-full py-3"
+                            onClick={() => setIsOpen(false)}
+                        >
+                            {topBar.login_text || "Login"}
+                        </Button>
+                        <Button
+                            href={topBar.register_href || "/register"}
+                            className="w-full text-sm font-bold rounded-full py-3"
+                            onClick={() => setIsOpen(false)}
+                        >
+                            {topBar.register_text || "Register"}
+                        </Button>
+                    </div>
+                )}
+            </div>
         </>
     );
 }
