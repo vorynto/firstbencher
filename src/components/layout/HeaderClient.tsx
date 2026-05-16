@@ -54,6 +54,7 @@ const DEFAULT_CATEGORIES: NavCategory[] = [
 export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
     const [isOpen, setIsOpen] = useState(false);
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+    const [openMobileSubMenu, setOpenMobileSubMenu] = useState<string | null>(null);
     const [catOpen, setCatOpen] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
@@ -111,6 +112,7 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
         setLastScrollY(0);
         setIsOpen(false);
         setOpenDropdown(null);
+        setOpenMobileSubMenu(null);
         setCatOpen(false);
         // Add a tiny delay to ensure Next.js has completed the navigation
         const timer = setTimeout(() => {
@@ -493,36 +495,59 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
 
                     {/* Nav links */}
                     <div className="border-t border-gray-100 pt-2">
-                        {navLinks.map((link) => (
-                            <div key={link.href}>
-                                <Link
-                                    href={link.href}
-                                    className={cn(
-                                        "flex items-center gap-2 text-sm font-semibold px-4 py-3 rounded-lg transition-colors",
-                                        pathname === link.href
-                                            ? "bg-red-50 text-[#a60303]"
-                                            : "text-gray-700 hover:bg-gray-50"
-                                    )}
-                                    onClick={() => setIsOpen(false)}
-                                >
-                                    {link.name}
-                                </Link>
-                                {link.hasDropdown && link.subLinks && link.subLinks.length > 0 && (
-                                    <div className="pl-6 border-l-2 border-gray-100 ml-6 pb-1">
-                                        {link.subLinks.map((sub, i) => (
-                                            <Link
-                                                key={i}
-                                                href={sub.href}
-                                                className="block text-[13px] font-medium px-2 py-2 text-gray-500 hover:text-[#a60303] transition-colors"
-                                                onClick={() => setIsOpen(false)}
+                        {navLinks.map((link) => {
+                            const hasSubLinks = link.hasDropdown && link.subLinks && link.subLinks.length > 0;
+                            const isSubOpen = openMobileSubMenu === link.href;
+                            return (
+                                <div key={link.href}>
+                                    <div className="flex items-center">
+                                        <Link
+                                            href={link.href}
+                                            className={cn(
+                                                "flex-1 text-sm font-semibold px-4 py-3 rounded-lg transition-colors",
+                                                pathname === link.href
+                                                    ? "bg-red-50 text-[#a60303]"
+                                                    : "text-gray-700 hover:bg-gray-50"
+                                            )}
+                                            onClick={() => setIsOpen(false)}
+                                        >
+                                            {link.name}
+                                        </Link>
+                                        {hasSubLinks && (
+                                            <button
+                                                onClick={() => setOpenMobileSubMenu(isSubOpen ? null : link.href)}
+                                                aria-label={isSubOpen ? "Close submenu" : "Open submenu"}
+                                                className={cn(
+                                                    "w-8 h-8 mr-2 rounded-full flex items-center justify-center border transition-all shrink-0",
+                                                    isSubOpen
+                                                        ? "bg-red-50 border-red-200 text-[#a60303]"
+                                                        : "border-gray-200 text-gray-400 hover:border-gray-300 hover:text-gray-600"
+                                                )}
                                             >
-                                                {sub.name}
-                                            </Link>
-                                        ))}
+                                                <ChevronDown
+                                                    size={15}
+                                                    className={cn("transition-transform duration-200", isSubOpen ? "rotate-180" : "")}
+                                                />
+                                            </button>
+                                        )}
                                     </div>
-                                )}
-                            </div>
-                        ))}
+                                    {hasSubLinks && isSubOpen && (
+                                        <div className="pl-6 border-l-2 border-red-100 ml-6 pb-1 mt-0.5">
+                                            {link.subLinks!.map((sub, i) => (
+                                                <Link
+                                                    key={i}
+                                                    href={sub.href}
+                                                    className="block text-[13px] font-medium px-2 py-2 text-gray-500 hover:text-[#a60303] transition-colors"
+                                                    onClick={() => setIsOpen(false)}
+                                                >
+                                                    {sub.name}
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        })}
                     </div>
                 </div>
 
