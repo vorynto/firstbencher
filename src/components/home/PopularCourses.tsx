@@ -115,7 +115,7 @@ export default async function PopularCourses() {
 
                                 {/* Content */}
                                 <div className="p-6 pt-2 flex flex-col flex-1">
-                                    <h4 className="text-[17px] font-extrabold text-[#1a202c] leading-tight mb-8 line-clamp-2 min-h-[40px] group-hover:text-primary transition-colors">
+                                    <h4 className="text-[19px] font-extrabold text-[#1a202c] leading-tight mb-8 line-clamp-2 min-h-[48px] group-hover:text-primary transition-colors">
                                         {course.title}
                                     </h4>
 

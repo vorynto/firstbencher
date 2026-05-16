@@ -40,38 +40,35 @@ export default function CourseCard({ course, index }: CourseCardProps) {
             href={`/courses/${course.slug}`}
             className="bg-white rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgb(166,3,3,0.08)] transition-all duration-300 overflow-hidden flex flex-col border border-gray-200 hover:border-[#a60303]/25 group h-full cursor-pointer"
         >
-            
-            {/* Header / Image Area */}
-            <div className="p-3 relative">
-                <div className="w-full h-48 rounded-lg flex items-center justify-center relative overflow-hidden">
+            {/* Header / Image Area — gradient always shown, image blended on top */}
+            <div className="p-3">
+                <div className={cn("w-full h-48 rounded-lg flex items-center justify-center relative overflow-hidden", bgClass)}>
+                    {/* Subtle texture overlay */}
+                    <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-repeat" />
+
                     {course.image_url ? (
-                        <img 
-                            src={course.image_url} 
-                            alt={course.title} 
-                            className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
+                        <img
+                            src={course.image_url}
+                            alt={course.title}
+                            className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-60 group-hover:scale-110 transition-transform duration-500"
                         />
-                    ) : (
-                        <div className={cn("w-full h-full flex items-center justify-center", bgClass)}>
-                            <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-repeat" />
-                            <h3 className="text-white text-3xl font-black text-center px-4 relative z-10">
-                                {displayTitle}
-                            </h3>
-                        </div>
-                    )}
+                    ) : null}
+
+                    <h3 className="text-white text-3xl font-black text-center px-4 relative z-10 drop-shadow-md group-hover:scale-105 transition-transform duration-500">
+                        {displayTitle}
+                    </h3>
                 </div>
             </div>
-            
+
             {/* Content Area */}
             <div className="p-6 pt-2 flex flex-col flex-1">
-                <h4 className="text-[17px] font-extrabold text-[#1a202c] leading-tight mb-8 line-clamp-2 min-h-[40px] group-hover:text-[#a60303] transition-colors">
+                <h4 className="text-[19px] font-extrabold text-[#1a202c] leading-tight mb-8 line-clamp-2 min-h-[48px] group-hover:text-[#a60303] transition-colors">
                     {course.title}
                 </h4>
 
                 {/* Action Button */}
                 <div className="mt-auto">
-                    <Button 
-                        className="w-full rounded-md shadow-md pointer-events-none"
-                    >
+                    <Button className="w-full rounded-md shadow-md pointer-events-none">
                         Know More
                     </Button>
                 </div>
