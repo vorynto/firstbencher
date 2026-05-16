@@ -76,7 +76,9 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
     const [stickyNavVisible, setStickyNavVisible] = useState(false);
     const [openCurriculum, setOpenCurriculum] = useState<number | null>(0);
     const [openFaq, setOpenFaq] = useState<number | null>(0);
+    const [isFormFixed, setIsFormFixed] = useState(false);
     const heroRef = useRef<HTMLDivElement>(null);
+    const sentinelRef = useRef<HTMLDivElement>(null);
     const tabsContainerRef = useRef<HTMLElement>(null);
 
     // Inline hero card enquiry form state
@@ -123,9 +125,18 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
 
     useEffect(() => {
         const handleScroll = () => {
-            if (heroRef.current) {
-                const heroBottom = heroRef.current.getBoundingClientRect().bottom;
-                setStickyNavVisible(heroBottom <= 0);
+            if (!heroRef.current) return;
+            const heroBottom = heroRef.current.getBoundingClientRect().bottom;
+            const heroPast = heroBottom <= 0;
+            setStickyNavVisible(heroPast);
+
+            // Fix the enquiry form to the right side once hero is scrolled past,
+            // until the sentinel (placed before the footer) enters the viewport.
+            if (heroPast && sentinelRef.current) {
+                const sentinelTop = sentinelRef.current.getBoundingClientRect().top;
+                setIsFormFixed(sentinelTop > window.innerHeight);
+            } else {
+                setIsFormFixed(false);
             }
         };
         window.addEventListener("scroll", handleScroll, { passive: true });
@@ -222,10 +233,9 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
 
                     {/* Right: Inline Enquiry Form */}
                     <div className="relative">
-                        <div className="bg-white rounded-2xl shadow-2xl shadow-black/30 overflow-hidden">
+                        <div className="bg-white shadow-2xl shadow-black/30 overflow-hidden">
                             <div className="bg-[#a60303] px-5 py-3.5">
-                                <h3 className="text-white font-black text-lg">Enquire About This Course</h3>
-                                <p className="text-red-200 text-xs mt-0.5">We&apos;ll get back to you within 24 hours</p>
+                                <h3 className="text-white font-black text-lg">Enquiry Form</h3>
                             </div>
 
                             {submitted ? (
@@ -259,7 +269,7 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
                                                 value={formData[key as keyof typeof formData]}
                                                 onChange={e => setFormData(p => ({ ...p, [key]: e.target.value }))}
                                                 placeholder={placeholder}
-                                                className="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm outline-none focus:border-[#a60303] focus:ring-2 focus:ring-red-100 transition-all"
+                                                className="w-full px-3 py-2 rounded border border-gray-200 text-sm outline-none focus:border-[#a60303] focus:ring-2 focus:ring-red-100 transition-all"
                                             />
                                         </div>
                                     ))}
@@ -272,14 +282,14 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
                                             value={formData.message}
                                             onChange={e => setFormData(p => ({ ...p, message: e.target.value }))}
                                             placeholder="Any specific questions or requirements..."
-                                            className="w-full px-3 py-2 rounded-xl border border-gray-200 text-sm outline-none focus:border-[#a60303] focus:ring-2 focus:ring-red-100 resize-none transition-all"
+                                            className="w-full px-3 py-2 rounded border border-gray-200 text-sm outline-none focus:border-[#a60303] focus:ring-2 focus:ring-red-100 resize-none transition-all"
                                         />
                                     </div>
                                     {formError && <p className="text-red-500 text-xs font-medium">{formError}</p>}
                                     <button
                                         type="submit"
                                         disabled={submitting}
-                                        className="w-full bg-[#a60303] hover:bg-[#800202] text-white py-2.5 rounded-xl font-bold text-sm transition-colors shadow-lg shadow-red-900/20 flex items-center justify-center gap-2 disabled:opacity-60"
+                                        className="w-full bg-[#a60303] hover:bg-[#800202] text-white py-2.5 font-bold text-sm transition-colors shadow-lg shadow-red-900/20 flex items-center justify-center gap-2 disabled:opacity-60"
                                     >
                                         {submitting
                                             ? <><Loader2 size={16} className="animate-spin" /> Submitting...</>
@@ -683,8 +693,84 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
                 </div>
             </div>
 
+            {/* Sentinel — when this enters the viewport the fixed form stops floating */}
+            <div ref={sentinelRef} className="h-px" aria-hidden="true" />
+
             {/* Sticky bottom CTA bar — slides in once hero is scrolled past */}
             <CourseCtaBar courseTitle={title} visible={stickyNavVisible} />
+
+            {/* ── FIXED ENQUIRY FORM (lg+ only) ─────────────────────────── */}
+            {isFormFixed && (
+                <div className="hidden lg:block fixed right-6 top-[90px] z-40 w-[340px] shadow-2xl shadow-black/20">
+                    <div className="bg-white overflow-hidden border border-gray-200">
+                        <div className="bg-[#a60303] px-5 py-3.5">
+                            <h3 className="text-white font-black text-lg">Enquiry Form</h3>
+                        </div>
+
+                        {submitted ? (
+                            <div className="p-8 flex flex-col items-center gap-4 text-center">
+                                <div className="w-14 h-14 rounded-full bg-green-50 flex items-center justify-center">
+                                    <CheckCircle2 size={28} className="text-green-500" />
+                                </div>
+                                <div>
+                                    <p className="font-black text-[#1a202c] text-lg">Enquiry Received!</p>
+                                    <p className="text-gray-500 text-sm mt-1">Our team will contact you shortly.</p>
+                                </div>
+                                <button
+                                    onClick={() => setSubmitted(false)}
+                                    className="text-sm text-[#a60303] font-bold hover:underline mt-2"
+                                >
+                                    Submit another enquiry
+                                </button>
+                            </div>
+                        ) : (
+                            <form onSubmit={handleEnquiry} className="p-5 space-y-3">
+                                {[
+                                    { label: "Full Name *", type: "text", key: "name", placeholder: "e.g. John Smith" },
+                                    { label: "Email Address *", type: "email", key: "email", placeholder: "e.g. john@example.com" },
+                                    { label: "Phone Number *", type: "tel", key: "phone", placeholder: "e.g. +1 234 567 8900" },
+                                ].map(({ label, type, key, placeholder }) => (
+                                    <div key={key}>
+                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">{label}</label>
+                                        <input
+                                            type={type}
+                                            required
+                                            value={formData[key as keyof typeof formData]}
+                                            onChange={e => setFormData(p => ({ ...p, [key]: e.target.value }))}
+                                            placeholder={placeholder}
+                                            className="w-full px-3 py-2 rounded border border-gray-200 text-sm outline-none focus:border-[#a60303] focus:ring-2 focus:ring-red-100 transition-all"
+                                        />
+                                    </div>
+                                ))}
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
+                                        Message <span className="normal-case font-normal text-gray-400">(optional)</span>
+                                    </label>
+                                    <textarea
+                                        rows={2}
+                                        value={formData.message}
+                                        onChange={e => setFormData(p => ({ ...p, message: e.target.value }))}
+                                        placeholder="Any specific questions or requirements..."
+                                        className="w-full px-3 py-2 rounded border border-gray-200 text-sm outline-none focus:border-[#a60303] focus:ring-2 focus:ring-red-100 resize-none transition-all"
+                                    />
+                                </div>
+                                {formError && <p className="text-red-500 text-xs font-medium">{formError}</p>}
+                                <button
+                                    type="submit"
+                                    disabled={submitting}
+                                    className="w-full bg-[#a60303] hover:bg-[#800202] text-white py-2.5 font-bold text-sm transition-colors shadow-lg shadow-red-900/20 flex items-center justify-center gap-2 disabled:opacity-60"
+                                >
+                                    {submitting
+                                        ? <><Loader2 size={16} className="animate-spin" /> Submitting...</>
+                                        : <><Send size={16} /> Send Enquiry</>
+                                    }
+                                </button>
+                                <p className="text-[11px] text-center text-gray-400">By submitting, you agree to be contacted by our team.</p>
+                            </form>
+                        )}
+                    </div>
+                </div>
+            )}
 
         </div>
     );
