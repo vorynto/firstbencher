@@ -1,6 +1,5 @@
 import React from "react";
 import Link from "next/link";
-import { Check, Clock, Tag, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Button from "@/components/ui/Button";
 
@@ -37,9 +36,9 @@ export default function CourseCard({ course, index }: CourseCardProps) {
     const displayTitle = course.card_inner_text || course.title.split(" ")[0];
 
     return (
-        <Link 
+        <Link
             href={`/courses/${course.slug}`}
-            className="bg-white rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 overflow-hidden flex flex-col border border-gray-100 group h-full cursor-pointer"
+            className="bg-white rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgb(166,3,3,0.08)] transition-all duration-300 overflow-hidden flex flex-col border border-gray-200 hover:border-[#a60303]/25 group h-full cursor-pointer"
         >
             
             {/* Header / Image Area */}
@@ -64,15 +63,6 @@ export default function CourseCard({ course, index }: CourseCardProps) {
             
             {/* Content Area */}
             <div className="p-6 pt-2 flex flex-col flex-1">
-                {/* Rating */}
-                <div className="flex gap-1 mb-4">
-                    {[...Array(5)].map((_, i) => (
-                        <svg key={i} className={cn("w-4 h-4", i < Math.floor(course.rating || 5) ? "text-[#feca57]" : "text-gray-200")} fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                        </svg>
-                    ))}
-                </div>
-
                 <h4 className="text-[17px] font-extrabold text-[#1a202c] leading-tight mb-8 line-clamp-2 min-h-[40px] group-hover:text-[#a60303] transition-colors">
                     {course.title}
                 </h4>
