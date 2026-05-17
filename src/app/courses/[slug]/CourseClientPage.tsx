@@ -394,7 +394,7 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
             </div>
 
             {/* ── MAIN BODY ─────────────────────────────────────────────── */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-12 items-start">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-12">
 
                 {/* LEFT CONTENT */}
                 <div className="space-y-10">
@@ -650,7 +650,7 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
 
                 {/* RIGHT SIDEBAR */}
                 <div className="hidden lg:block">
-                    <div className="sticky top-32 space-y-6">
+                    <div className="sticky top-[68px] space-y-6">
 
                         {/* "Have Questions?" — shown only before hero is scrolled past */}
                         {!isFormFixed && (
