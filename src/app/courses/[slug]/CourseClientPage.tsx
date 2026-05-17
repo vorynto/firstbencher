@@ -651,126 +651,133 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
                 {/* RIGHT SIDEBAR */}
                 <div className="hidden lg:block">
                     <div className="sticky top-32 space-y-6">
-                        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
-                            <h3 className="font-black text-lg text-[#1a202c]">Have Questions?</h3>
-                            <p className="text-gray-500 text-sm">Our advisors are ready to help you choose the right training path.</p>
-                            <a href="tel:+1234567890" className="flex items-center gap-3 p-3 rounded-xl bg-red-50 border border-red-100 hover:bg-red-200 transition-colors">
-                                <div className="w-10 h-10 bg-[#a60303] rounded-lg flex items-center justify-center shrink-0">
-                                    <Phone size={18} className="text-white" />
-                                </div>
-                                <div>
-                                    <p className="text-xs text-gray-400 font-medium">Call Us</p>
-                                    <p className="font-black text-[#1a202c] text-sm">+1 (234) 567-8900</p>
-                                </div>
-                            </a>
-                            <a href="mailto:info@firstbencher.com" className="flex items-center gap-3 p-3 rounded-xl bg-red-50 border border-red-100 hover:bg-red-200 transition-colors">
-                                <div className="w-10 h-10 bg-[#800202] rounded-lg flex items-center justify-center shrink-0">
-                                    <Mail size={18} className="text-white" />
-                                </div>
-                                <div>
-                                    <p className="text-xs text-gray-400 font-medium">Email Us</p>
-                                    <p className="font-black text-[#1a202c] text-sm">info@firstbencher.com</p>
-                                </div>
-                            </a>
-                            <button
-                                onClick={() => openEnquiry(`Request Callback — ${title}`)}
-                                className="w-full bg-[#a60303] text-white py-3 rounded-xl font-bold text-sm hover:bg-[#800202] transition-colors"
-                            >
-                                Request a Callback
-                            </button>
-                        </div>
 
+                        {/* "Have Questions?" — shown only before hero is scrolled past */}
+                        {!isFormFixed && (
+                            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
+                                <h3 className="font-black text-lg text-[#1a202c]">Have Questions?</h3>
+                                <p className="text-gray-500 text-sm">Our advisors are ready to help you choose the right training path.</p>
+                                <a href="tel:+1234567890" className="flex items-center gap-3 p-3 rounded-xl bg-red-50 border border-red-100 hover:bg-red-200 transition-colors">
+                                    <div className="w-10 h-10 bg-[#a60303] rounded-lg flex items-center justify-center shrink-0">
+                                        <Phone size={18} className="text-white" />
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-gray-400 font-medium">Call Us</p>
+                                        <p className="font-black text-[#1a202c] text-sm">+1 (234) 567-8900</p>
+                                    </div>
+                                </a>
+                                <a href="mailto:info@firstbencher.com" className="flex items-center gap-3 p-3 rounded-xl bg-red-50 border border-red-100 hover:bg-red-200 transition-colors">
+                                    <div className="w-10 h-10 bg-[#800202] rounded-lg flex items-center justify-center shrink-0">
+                                        <Mail size={18} className="text-white" />
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-gray-400 font-medium">Email Us</p>
+                                        <p className="font-black text-[#1a202c] text-sm">info@firstbencher.com</p>
+                                    </div>
+                                </a>
+                                <button
+                                    onClick={() => openEnquiry(`Request Callback — ${title}`)}
+                                    className="w-full bg-[#a60303] text-white py-3 rounded-xl font-bold text-sm hover:bg-[#800202] transition-colors"
+                                >
+                                    Request a Callback
+                                </button>
+                            </div>
+                        )}
+
+                        {/* Course Highlights — always shown */}
                         <div className="bg-[#111111] rounded-2xl p-6 text-white">
                             <p className="text-red-200 text-xs font-bold uppercase tracking-wider mb-3">Course Highlights</p>
                             <ul className="space-y-3 text-sm">
                                 <li className="flex items-center gap-2 text-red-50"><Star size={14} className="text-yellow-400" fill="currentColor" /> Industry-recognized certification</li>
                                 <li className="flex items-center gap-2 text-red-50"><Users size={14} className="text-[#a60303]" /> Expert-led live sessions</li>
-                                <li className="flex items-center gap-2 text-red-50"><CheckCircle2 size={14} className="text-green-400" /> Hands-on projects & real cases</li>
+                                <li className="flex items-center gap-2 text-red-50"><CheckCircle2 size={14} className="text-green-400" /> Hands-on projects &amp; real cases</li>
                                 <li className="flex items-center gap-2 text-red-50"><Award size={14} className="text-yellow-400" /> Dedicated career support</li>
                             </ul>
                         </div>
+
+                        {/* Enquiry Form — slides in after hero is scrolled past */}
+                        {isFormFixed && (
+                            <div
+                                key="sidebar-enquiry"
+                                className="animate-in fade-in slide-in-from-top-8 duration-500 bg-white overflow-hidden border border-gray-200 shadow-lg"
+                            >
+                                <div className="bg-[#a60303] px-5 py-3.5">
+                                    <h3 className="text-white font-black text-lg">Enquiry Form</h3>
+                                </div>
+
+                                {submitted ? (
+                                    <div className="p-8 flex flex-col items-center gap-4 text-center">
+                                        <div className="w-14 h-14 rounded-full bg-green-50 flex items-center justify-center">
+                                            <CheckCircle2 size={28} className="text-green-500" />
+                                        </div>
+                                        <div>
+                                            <p className="font-black text-[#1a202c] text-lg">Enquiry Received!</p>
+                                            <p className="text-gray-500 text-sm mt-1">Our team will contact you shortly.</p>
+                                        </div>
+                                        <button
+                                            onClick={() => setSubmitted(false)}
+                                            className="text-sm text-[#a60303] font-bold hover:underline mt-2"
+                                        >
+                                            Submit another enquiry
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <form onSubmit={handleEnquiry} className="p-5 space-y-3">
+                                        {[
+                                            { label: "Full Name *", type: "text", key: "name", placeholder: "e.g. John Smith" },
+                                            { label: "Email Address *", type: "email", key: "email", placeholder: "e.g. john@example.com" },
+                                            { label: "Phone Number *", type: "tel", key: "phone", placeholder: "e.g. +1 234 567 8900" },
+                                        ].map(({ label, type, key, placeholder }) => (
+                                            <div key={key}>
+                                                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">{label}</label>
+                                                <input
+                                                    type={type}
+                                                    required
+                                                    value={formData[key as keyof typeof formData]}
+                                                    onChange={e => setFormData(p => ({ ...p, [key]: e.target.value }))}
+                                                    placeholder={placeholder}
+                                                    className="w-full px-3 py-2 rounded border border-gray-200 text-sm outline-none focus:border-[#a60303] focus:ring-2 focus:ring-red-100 transition-all"
+                                                />
+                                            </div>
+                                        ))}
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
+                                                Message <span className="normal-case font-normal text-gray-400">(optional)</span>
+                                            </label>
+                                            <textarea
+                                                rows={2}
+                                                value={formData.message}
+                                                onChange={e => setFormData(p => ({ ...p, message: e.target.value }))}
+                                                placeholder="Any specific questions or requirements..."
+                                                className="w-full px-3 py-2 rounded border border-gray-200 text-sm outline-none focus:border-[#a60303] focus:ring-2 focus:ring-red-100 resize-none transition-all"
+                                            />
+                                        </div>
+                                        {formError && <p className="text-red-500 text-xs font-medium">{formError}</p>}
+                                        <button
+                                            type="submit"
+                                            disabled={submitting}
+                                            className="w-full bg-[#a60303] hover:bg-[#800202] text-white py-2.5 font-bold text-sm transition-colors shadow-lg shadow-red-900/20 flex items-center justify-center gap-2 disabled:opacity-60"
+                                        >
+                                            {submitting
+                                                ? <><Loader2 size={16} className="animate-spin" /> Submitting...</>
+                                                : <><Send size={16} /> Send Enquiry</>
+                                            }
+                                        </button>
+                                        <p className="text-[11px] text-center text-gray-400">By submitting, you agree to be contacted by our team.</p>
+                                    </form>
+                                )}
+                            </div>
+                        )}
+
                     </div>
                 </div>
             </div>
 
-            {/* Sentinel — when this enters the viewport the fixed form stops floating */}
+            {/* Sentinel — enquiry form stops floating when this enters the viewport */}
             <div ref={sentinelRef} className="h-px" aria-hidden="true" />
 
-            {/* Sticky bottom CTA bar — slides in once hero is scrolled past */}
+            {/* Sticky bottom CTA bar */}
             <CourseCtaBar courseTitle={title} visible={stickyNavVisible} />
-
-            {/* ── FIXED ENQUIRY FORM (lg+ only) ─────────────────────────── */}
-            {isFormFixed && (
-                <div className="hidden lg:block fixed right-6 top-[90px] z-40 w-[340px] shadow-2xl shadow-black/20">
-                    <div className="bg-white overflow-hidden border border-gray-200">
-                        <div className="bg-[#a60303] px-5 py-3.5">
-                            <h3 className="text-white font-black text-lg">Enquiry Form</h3>
-                        </div>
-
-                        {submitted ? (
-                            <div className="p-8 flex flex-col items-center gap-4 text-center">
-                                <div className="w-14 h-14 rounded-full bg-green-50 flex items-center justify-center">
-                                    <CheckCircle2 size={28} className="text-green-500" />
-                                </div>
-                                <div>
-                                    <p className="font-black text-[#1a202c] text-lg">Enquiry Received!</p>
-                                    <p className="text-gray-500 text-sm mt-1">Our team will contact you shortly.</p>
-                                </div>
-                                <button
-                                    onClick={() => setSubmitted(false)}
-                                    className="text-sm text-[#a60303] font-bold hover:underline mt-2"
-                                >
-                                    Submit another enquiry
-                                </button>
-                            </div>
-                        ) : (
-                            <form onSubmit={handleEnquiry} className="p-5 space-y-3">
-                                {[
-                                    { label: "Full Name *", type: "text", key: "name", placeholder: "e.g. John Smith" },
-                                    { label: "Email Address *", type: "email", key: "email", placeholder: "e.g. john@example.com" },
-                                    { label: "Phone Number *", type: "tel", key: "phone", placeholder: "e.g. +1 234 567 8900" },
-                                ].map(({ label, type, key, placeholder }) => (
-                                    <div key={key}>
-                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">{label}</label>
-                                        <input
-                                            type={type}
-                                            required
-                                            value={formData[key as keyof typeof formData]}
-                                            onChange={e => setFormData(p => ({ ...p, [key]: e.target.value }))}
-                                            placeholder={placeholder}
-                                            className="w-full px-3 py-2 rounded border border-gray-200 text-sm outline-none focus:border-[#a60303] focus:ring-2 focus:ring-red-100 transition-all"
-                                        />
-                                    </div>
-                                ))}
-                                <div>
-                                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
-                                        Message <span className="normal-case font-normal text-gray-400">(optional)</span>
-                                    </label>
-                                    <textarea
-                                        rows={2}
-                                        value={formData.message}
-                                        onChange={e => setFormData(p => ({ ...p, message: e.target.value }))}
-                                        placeholder="Any specific questions or requirements..."
-                                        className="w-full px-3 py-2 rounded border border-gray-200 text-sm outline-none focus:border-[#a60303] focus:ring-2 focus:ring-red-100 resize-none transition-all"
-                                    />
-                                </div>
-                                {formError && <p className="text-red-500 text-xs font-medium">{formError}</p>}
-                                <button
-                                    type="submit"
-                                    disabled={submitting}
-                                    className="w-full bg-[#a60303] hover:bg-[#800202] text-white py-2.5 font-bold text-sm transition-colors shadow-lg shadow-red-900/20 flex items-center justify-center gap-2 disabled:opacity-60"
-                                >
-                                    {submitting
-                                        ? <><Loader2 size={16} className="animate-spin" /> Submitting...</>
-                                        : <><Send size={16} /> Send Enquiry</>
-                                    }
-                                </button>
-                                <p className="text-[11px] text-center text-gray-400">By submitting, you agree to be contacted by our team.</p>
-                            </form>
-                        )}
-                    </div>
-                </div>
-            )}
 
         </div>
     );
