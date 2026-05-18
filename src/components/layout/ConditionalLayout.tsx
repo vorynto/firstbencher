@@ -6,10 +6,12 @@ export default function ConditionalLayout({
     children,
     header,
     footer,
+    floatingContact,
 }: {
     children: React.ReactNode;
     header: React.ReactNode;
     footer: React.ReactNode;
+    floatingContact?: React.ReactNode;
 }) {
     const pathname = usePathname();
     const isAdminRoute = pathname?.startsWith("/admin");
@@ -23,6 +25,7 @@ export default function ConditionalLayout({
             {header}
             <main className="min-h-screen">{children}</main>
             {footer}
+            {floatingContact}
         </>
     );
 }
