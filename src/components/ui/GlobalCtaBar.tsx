@@ -1,12 +1,12 @@
 import { supabaseAdmin } from "@/lib/supabase-admin";
-import FloatingContactWidget from "./FloatingContactWidget";
+import GlobalCtaBarClient from "./GlobalCtaBarClient";
 
 const DEFAULTS = {
     phone: "+1 (234) 567-8900",
     email: "info@firstbencher.com",
 };
 
-export default async function FloatingContact() {
+export default async function GlobalCtaBar() {
     let phone = DEFAULTS.phone;
     let email = DEFAULTS.email;
 
@@ -24,5 +24,5 @@ export default async function FloatingContact() {
         // fall through to defaults
     }
 
-    return <FloatingContactWidget phone={phone} email={email} />;
+    return <GlobalCtaBarClient phone={phone} email={email} />;
 }

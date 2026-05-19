@@ -10,7 +10,6 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase";
 import { useEnquiry } from "@/components/EnquiryModal";
-import CourseCtaBar from "@/components/courses/CourseCtaBar";
 import { sanitize } from "@/lib/sanitize";
 
 type Instructor = {
@@ -181,7 +180,7 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
     const TABS = ALL_TABS.filter(t => te[t.key as keyof typeof te] !== false);
 
     return (
-        <div className="min-h-screen bg-gray-50 text-[#1a202c]">
+        <div className="min-h-screen bg-gray-50 text-[#1a202c] pb-16">
 
             {/* ── HERO SECTION ─────────────────────────────────────────── */}
             <div ref={heroRef} className="bg-[#111111]">
@@ -397,10 +396,10 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
             <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-12">
 
                 {/* LEFT CONTENT */}
-                <div className="space-y-10">
+                <div className="space-y-12">
 
                     {/* OVERVIEW */}
-                    {te.overview !== false && <section id="overview" className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
+                    {te.overview !== false && <section id="overview" className="border-b border-gray-100 pb-8">
                         <h2 className="text-2xl font-black text-[#1a202c] mb-5">Course Overview</h2>
                         {description ? (
                             <div
@@ -518,15 +517,15 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
                     )}
 
                     {/* KEY FEATURES */}
-                    {te.key_features !== false && <section id="key-features" className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
+                    {te.key_features !== false && <section id="key-features" className="border-b border-gray-100 pb-8">
                         <h2 className="text-2xl font-black text-[#1a202c] mb-2">Key Features</h2>
                         <p className="text-gray-500 text-sm mb-6">What you&apos;ll gain from this program</p>
                         {features && features.length > 0 ? (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 {features.map((feat, i) => (
-                                    <div key={i} className="flex items-start gap-3 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                                    <div key={i} className="flex items-start gap-3">
                                         <CheckCircle2 className="text-green-500 shrink-0 mt-0.5" size={18} />
-                                        <span className="text-gray-700 text-sm font-medium leading-snug">{feat}</span>
+                                        <span className="text-gray-700 text-sm leading-snug">{feat}</span>
                                     </div>
                                 ))}
                             </div>
@@ -536,31 +535,31 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
                     </section>}
 
                     {/* CURRICULUM */}
-                    {te.curriculum !== false && <section id="curriculum" className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
+                    {te.curriculum !== false && <section id="curriculum" className="border-b border-gray-100 pb-8">
                         <h2 className="text-2xl font-black text-[#1a202c] mb-2">Course Curriculum</h2>
                         <p className="text-gray-500 text-sm mb-6">Detailed breakdown of what&apos;s covered</p>
                         {curriculum && Array.isArray(curriculum) && curriculum.length > 0 ? (
-                            <div className="space-y-3">
+                            <div className="space-y-2">
                                 {curriculum.map((module, idx) => (
-                                    <div key={idx} className="border border-gray-200 rounded-xl overflow-hidden">
+                                    <div key={idx} className="border border-gray-200 rounded-lg overflow-hidden">
                                         <button
                                             onClick={() => setOpenCurriculum(openCurriculum === idx ? null : idx)}
-                                            className="w-full flex items-center justify-between p-5 text-left bg-gray-50 hover:bg-gray-100 transition-colors"
+                                            className="w-full flex items-center justify-between p-4 text-left bg-gray-50 hover:bg-gray-100 transition-colors"
                                         >
                                             <div className="flex items-center gap-3">
-                                                <span className="w-7 h-7 rounded-full bg-red-50 text-[#a60303] text-xs font-black flex items-center justify-center shrink-0">{idx + 1}</span>
+                                                <span className="w-6 h-6 rounded-full bg-red-50 text-[#a60303] text-xs font-black flex items-center justify-center shrink-0">{idx + 1}</span>
                                                 <span className="font-bold text-[#1a202c] text-sm">{module.title}</span>
                                             </div>
                                             {openCurriculum === idx
-                                                ? <ChevronUp size={18} className="text-gray-400 shrink-0" />
-                                                : <ChevronDown size={18} className="text-gray-400 shrink-0" />
+                                                ? <ChevronUp size={16} className="text-gray-400 shrink-0" />
+                                                : <ChevronDown size={16} className="text-gray-400 shrink-0" />
                                             }
                                         </button>
                                         {openCurriculum === idx && (
-                                            <ul className="p-5 pt-3 space-y-2 border-t border-gray-100">
+                                            <ul className="px-4 py-3 space-y-2 border-t border-gray-100">
                                                 {module.lessons && module.lessons.map((lesson: string, li: number) => (
                                                     <li key={li} className="flex items-start gap-2.5 text-sm text-gray-600">
-                                                        <CheckCircle2 size={16} className="text-[#a60303] shrink-0 mt-0.5" />
+                                                        <CheckCircle2 size={15} className="text-[#a60303] shrink-0 mt-0.5" />
                                                         {lesson}
                                                     </li>
                                                 ))}
@@ -570,14 +569,12 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
                                 ))}
                             </div>
                         ) : (
-                            <div className="bg-gray-50 rounded-xl p-6 text-center text-gray-500 text-sm">
-                                Curriculum details coming soon.
-                            </div>
+                            <p className="text-gray-500 italic text-sm">Curriculum details coming soon.</p>
                         )}
                     </section>}
 
                     {/* ELIGIBILITY */}
-                    {te.eligibility !== false && <section id="eligibility" className="rounded-2xl border border-red-100 shadow-sm p-8" style={{ background: "linear-gradient(135deg, #fff5f5 0%, #fff0f0 50%, #fff0f8 100%)" }}>
+                    {te.eligibility !== false && <section id="eligibility" className="border-b border-gray-100 pb-8">
                         <h2 className="text-2xl font-black text-[#1a202c] mb-2">Eligibility & Prerequisites</h2>
                         <p className="text-gray-500 text-sm mb-6">Make sure you&apos;re prepared before enrolling</p>
                         {requirements ? (
@@ -603,10 +600,10 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
                     </section>}
 
                     {/* FAQ */}
-                    {te.faq !== false && <section id="faq" className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
+                    {te.faq !== false && <section id="faq" className="border-b border-gray-100 pb-8">
                         <h2 className="text-2xl font-black text-[#1a202c] mb-6">Frequently Asked Questions</h2>
                         {faq && faq.length > 0 ? faq.map((item, i) => (
-                            <div key={i} className={`border-b border-gray-100 ${i === 0 ? "" : "mt-4"}`}>
+                            <div key={i} className="border-b border-gray-100">
                                 <button
                                     onClick={() => setOpenFaq(openFaq === i ? null : i)}
                                     className="w-full flex items-center justify-between py-4 text-left"
@@ -628,7 +625,7 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
 
                     {/* INSTRUCTORS */}
                     {te.instructors !== false && instructors.length > 0 && (
-                        <section id="instructors" className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
+                        <section id="instructors" className="border-b border-gray-100 pb-8">
                             <h2 className="text-2xl font-black text-[#1a202c] mb-2">Meet Your Instructors</h2>
                             <p className="text-gray-500 text-sm mb-6">Learn from industry experts with real-world experience</p>
                             <InstructorCarousel instructors={instructors} />
@@ -637,7 +634,7 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
 
                     {/* VIDEOS */}
                     {te.videos !== false && videos && videos.length > 0 && (
-                        <section id="videos" className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
+                        <section id="videos" className="pb-8">
                             <div className="flex items-center gap-3 mb-2">
                                 <Youtube size={22} className="text-red-500" />
                                 <h2 className="text-2xl font-black text-[#1a202c]">Course Videos</h2>
@@ -775,9 +772,6 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
 
             {/* Sentinel — enquiry form stops floating when this enters the viewport */}
             <div ref={sentinelRef} className="h-px" aria-hidden="true" />
-
-            {/* Sticky bottom CTA bar */}
-            <CourseCtaBar courseTitle={title} visible={stickyNavVisible} />
 
         </div>
     );

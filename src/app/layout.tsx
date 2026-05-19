@@ -4,7 +4,7 @@ import "./globals.css";
 import ConditionalLayout from "@/components/layout/ConditionalLayout";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import FloatingContact from "@/components/ui/FloatingContact";
+import GlobalCtaBar from "@/components/ui/GlobalCtaBar";
 import GlobalSettingsProvider from "@/components/layout/GlobalSettingsProvider";
 import { EnquiryProvider } from "@/components/EnquiryModal";
 import { JsonLd } from "@/components/JsonLd";
@@ -158,7 +158,7 @@ export default async function RootLayout({
                 <JsonLd data={websiteJsonLd} />
                 <GlobalSettingsProvider>
                     <EnquiryProvider>
-                        <ConditionalLayout header={<Header />} footer={<Footer />} floatingContact={<FloatingContact />}>
+                        <ConditionalLayout header={<Header />} footer={<Footer />} floatingContact={<GlobalCtaBar />}>
                             {children}
                         </ConditionalLayout>
                     </EnquiryProvider>
