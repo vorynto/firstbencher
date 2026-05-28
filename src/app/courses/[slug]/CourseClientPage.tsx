@@ -483,10 +483,11 @@ export default function CourseClientPage({ course, instructors = [], sidebarCont
 
                                     return (
                                         <div key={i} className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden flex flex-col md:flex-row">
-                                            <div className="bg-[#ffb0b0] shrink-0 w-full md:w-36 flex flex-col items-center justify-center p-6 border-b md:border-b-0 md:border-r border-[#ffa1a1]">
-                                                <span className="text-xs font-black uppercase text-[#1a202c]">START DATE</span>
-                                                <span className="text-5xl font-black text-[#1a202c] mt-2 mb-1 leading-none">{day}</span>
-                                                <span className="text-[13px] font-bold text-[#1a202c]">{month},{year}</span>
+                                            <div className="bg-[var(--primary-tint)] shrink-0 w-full md:w-36 flex flex-col items-center justify-center p-6 gap-1 border-b md:border-b-0 md:border-r border-[var(--primary)]/20">
+                                                <Calendar size={22} className="text-[var(--primary)] mb-1" />
+                                                <span className="text-[10px] font-black uppercase text-[#1a202c] tracking-wider">Start Date</span>
+                                                <span className="text-5xl font-black text-[#1a202c] leading-none">{day}</span>
+                                                <span className="text-[13px] font-bold text-[#1a202c]">{month}, {year}</span>
                                             </div>
                                             <div className="p-6 md:p-8 flex-1 flex flex-col gap-4">
                                                 <h3 className="text-xl md:text-2xl font-black text-[var(--primary)] uppercase tracking-wide">
@@ -517,14 +518,14 @@ export default function CourseClientPage({ course, instructors = [], sidebarCont
                                                 )}
 
                                                 {batch.locations && batch.locations.length > 0 && (
-                                                    <div className="bg-transparent border border-[#faeaea] rounded-xl p-5 mt-2 shadow-sm">
+                                                    <div className="bg-transparent border border-[var(--primary)]/15 rounded-xl p-5 mt-2 shadow-sm">
                                                         <div className="flex items-center gap-2 mb-3">
                                                             <MapPin size={20} className="text-[var(--primary)]" />
                                                             <span className="font-bold text-[15px] text-[#1a202c]">Locations</span>
                                                         </div>
-                                                        <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 w-full border-t border-l border-[#faeaea] rounded-lg overflow-hidden">
+                                                        <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 w-full border-t border-l border-[var(--primary)]/15 rounded-lg overflow-hidden">
                                                             {batch.locations.map((loc: string, lIdx: number) => (
-                                                                <div key={lIdx} className="bg-white text-[var(--primary)] font-bold text-[14px] px-3 py-3 text-center flex items-center justify-center border-b border-r border-[#faeaea]">
+                                                                <div key={lIdx} className="bg-white text-[var(--primary)] font-bold text-[14px] px-3 py-3 text-center flex items-center justify-center border-b border-r border-[var(--primary)]/15">
                                                                     {loc}
                                                                 </div>
                                                             ))}
