@@ -118,7 +118,7 @@ export default async function SuccessStoriesPage() {
                 )}
 
                 {/* CTA */}
-                <div className="mt-20 bg-red-50 rounded-3xl p-10 lg:p-14 text-center border border-red-100">
+                <div className="mt-20 bg-primary-tint rounded-3xl p-10 lg:p-14 text-center border border-red-100">
                     <h2 className="text-3xl font-black text-gray-900 mb-4">Have your own success story?</h2>
                     <p className="text-gray-600 mb-8 max-w-2xl mx-auto text-lg">
                         Did our courses help you clear a certification or land a new job? We&apos;d love to hear from you and feature you on our wall of fame!

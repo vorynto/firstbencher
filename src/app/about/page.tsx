@@ -124,7 +124,7 @@ export default async function AboutPage() {
 
                                     {/* Experience Badge — lg only */}
                                     <div className="hidden lg:flex absolute -top-10 -right-10 bg-white p-6 rounded-2xl shadow-xl border border-gray-50 items-center gap-4 animate-bounce-slow z-20">
-                                        <div className="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center">
+                                        <div className="w-12 h-12 bg-primary-tint rounded-xl flex items-center justify-center">
                                             <Award className="text-[var(--primary)]" size={24} />
                                         </div>
                                         <div>
@@ -175,11 +175,11 @@ export default async function AboutPage() {
             </section>
 
             {/* ── Mission & Vision Section (New) ── */}
-            <section className="py-24 bg-red-50/50 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-96 h-96 bg-red-50 rounded-full blur-3xl opacity-30 -translate-y-1/2 translate-x-1/2" />
+            <section className="py-24 bg-primary-tint/50 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-96 h-96 bg-primary-tint rounded-full blur-3xl opacity-30 -translate-y-1/2 translate-x-1/2" />
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
                     <div className="text-center max-w-3xl mx-auto mb-16">
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-50 text-[var(--primary)] text-[10px] font-black uppercase tracking-widest mb-4 border border-red-100/50">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-tint text-[var(--primary)] text-[10px] font-black uppercase tracking-widest mb-4 border border-red-100/50">
                             <Award size={14} /> Our Core Purpose
                         </div>
                         <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-6">
@@ -244,12 +244,12 @@ export default async function AboutPage() {
             {team.members?.length > 0 && (
                 <section className="py-32 bg-white relative overflow-hidden">
                     {/* Decorative Background Elements */}
-                    <div className="absolute top-0 left-1/4 w-96 h-96 bg-red-50/50 rounded-full blur-[100px] -z-10" />
+                    <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary-tint/50 rounded-full blur-[100px] -z-10" />
                     <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-50/30 rounded-full blur-[120px] -z-10" />
                     
                     <div className="max-w-7xl mx-auto px-4 sm:px-6">
                         <div className="text-center max-w-3xl mx-auto mb-20">
-                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-50 text-[var(--primary)] text-[10px] font-black uppercase tracking-widest mb-6 border border-red-100/50">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-tint text-[var(--primary)] text-[10px] font-black uppercase tracking-widest mb-6 border border-red-100/50">
                                 <Users size={14} /> Our Visionaries
                             </div>
                             <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-6">
@@ -278,7 +278,7 @@ export default async function AboutPage() {
                                                         className="object-cover transition-all duration-700 group-hover:scale-110 filter group-hover:brightness-110" 
                                                     />
                                                 ) : (
-                                                    <div className="w-full h-full flex items-center justify-center text-4xl bg-red-50 text-[var(--primary)]">👤</div>
+                                                    <div className="w-full h-full flex items-center justify-center text-4xl bg-primary-tint text-[var(--primary)]">👤</div>
                                                 )}
                                             </div>
                                         </div>
@@ -288,7 +288,7 @@ export default async function AboutPage() {
                                             <h3 className="text-2xl font-black text-gray-900 mb-1 group-hover:text-[var(--primary)] transition-colors duration-500">
                                                 {member.name}
                                             </h3>
-                                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--primary)] bg-red-50 px-3 py-1 rounded-full border border-red-100">
+                                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--primary)] bg-primary-tint px-3 py-1 rounded-full border border-red-100">
                                                 {member.role}
                                             </span>
                                         </div>

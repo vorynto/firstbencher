@@ -26,7 +26,7 @@ const defaults: StatsCTAContent = {
     stat3_label: "Satisfaction Rate",
     image_url: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2070&auto=format&fit=crop",
     video_url: "#",
-    bg_color: "#FFF1F1",
+    bg_color: "var(--primary-tint)",
     padding_y: "40",
     image_height: "260",
     stat_label_color: "#1f2937",

@@ -36,7 +36,7 @@ export default function FooterClient({ content }: { content: FooterContent }) {
                                 alt="First Bencher"
                                 width={180}
                                 height={60}
-                                className="brightness-0 invert object-contain h-[45px] w-auto"
+                                className="brightness-0 invert object-contain h-[60px] w-auto"
                             />
                         </Link>
                         <p className="text-gray-200 text-sm leading-relaxed">

@@ -450,7 +450,7 @@ export default function JobApplyModal({ job, onClose }: Props) {
                                                 </>
                                             ) : (
                                                 <>
-                                                    <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center group-hover:bg-red-100 transition-colors">
+                                                    <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center group-hover:bg-primary-tint transition-colors">
                                                         <Upload size={22} className="text-gray-400 group-hover:text-[var(--primary)] transition-colors" />
                                                     </div>
                                                     <div className="text-center">

@@ -147,7 +147,7 @@ export default async function WorkshopDetailPage({ params }: Props) {
                                         <span>{workshop.location}</span>
                                     </div>
                                     {!workshop.active && (
-                                        <div className="flex items-center gap-2 bg-red-500/80 backdrop-blur-md px-4 py-3 rounded-xl border border-red-500/50 font-bold ml-auto">
+                                        <div className="flex items-center gap-2 bg-primary-tint0/80 backdrop-blur-md px-4 py-3 rounded-xl border border-red-500/50 font-bold ml-auto">
                                             Draft Mode
                                         </div>
                                     )}

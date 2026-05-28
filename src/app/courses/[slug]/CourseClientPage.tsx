@@ -654,7 +654,7 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
                             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
                                 <h3 className="font-black text-lg text-[#1a202c]">Have Questions?</h3>
                                 <p className="text-gray-500 text-sm">Our advisors are ready to help you choose the right training path.</p>
-                                <a href="tel:+1234567890" className="flex items-center gap-3 p-3 rounded-xl bg-accent border border-[var(--primary)]/20 hover:bg-red-200 transition-colors">
+                                <a href="tel:+1234567890" className="flex items-center gap-3 p-3 rounded-xl bg-accent border border-[var(--primary)]/20 hover:bg-[var(--primary-tint)] transition-colors">
                                     <div className="w-10 h-10 bg-[var(--primary)] rounded-lg flex items-center justify-center shrink-0">
                                         <Phone size={18} className="text-white" />
                                     </div>
@@ -663,7 +663,7 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
                                         <p className="font-black text-[#1a202c] text-sm">+1 (234) 567-8900</p>
                                     </div>
                                 </a>
-                                <a href="mailto:info@firstbencher.com" className="flex items-center gap-3 p-3 rounded-xl bg-accent border border-[var(--primary)]/20 hover:bg-red-200 transition-colors">
+                                <a href="mailto:info@firstbencher.com" className="flex items-center gap-3 p-3 rounded-xl bg-accent border border-[var(--primary)]/20 hover:bg-[var(--primary-tint)] transition-colors">
                                     <div className="w-10 h-10 bg-[var(--primary-dark)] rounded-lg flex items-center justify-center shrink-0">
                                         <Mail size={18} className="text-white" />
                                     </div>

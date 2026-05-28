@@ -26,7 +26,7 @@ export default function BlogSection({ blogs }: BlogSectionProps) {
     return (
         <section className="py-20 bg-white relative overflow-hidden">
             {/* Background Decorations */}
-            <div className="absolute top-0 right-0 w-96 h-96 bg-red-50/50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+            <div className="absolute top-0 right-0 w-96 h-96 bg-[var(--primary-tint)] opacity-50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-50/30 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">

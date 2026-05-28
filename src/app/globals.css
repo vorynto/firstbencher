@@ -7,9 +7,11 @@
   --primary: #a60303;
   --primary-dark: #800202;
   --primary-foreground: #ffffff;
+  /* Very light tint — always auto-derived from --primary, used for hero/section bgs */
+  --primary-tint: color-mix(in srgb, var(--primary) 8%, white);
   --secondary: #F07C5A;
   --secondary-foreground: #ffffff;
-  --accent: #fff5f5;
+  --accent: color-mix(in srgb, var(--primary) 6%, white);
   --muted: #f1f5f9;
   --muted-foreground: #64748b;
   --border: #e2e8f0;
@@ -28,6 +30,7 @@
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
   --color-primary-dark: var(--primary-dark);
+  --color-primary-tint: var(--primary-tint);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);

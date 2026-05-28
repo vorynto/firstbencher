@@ -268,9 +268,9 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
                                     suppressHydrationWarning
                                     src={topBar.logo_header}
                                     alt="First Bencher Logo"
-                                    width={180}
-                                    height={45}
-                                    className="object-contain h-[45px] w-auto"
+                                    width={220}
+                                    height={60}
+                                    className="object-contain h-[60px] w-auto"
                                 />
                             ) : (
                                 <span className="text-[28px] font-bold tracking-tight text-gray-800 flex items-center">
