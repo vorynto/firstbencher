@@ -303,10 +303,11 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
                 </div>
             </div>
 
-            {/* ── RED TRUST BAR ────────────────────────────────────────── */}
-            <div className="bg-[#1d4ed8]">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-6">
-                    {/* Review count + stars */}
+            {/* ── TRUST BAR ────────────────────────────────────────────── */}
+            <div className="bg-white border-b border-gray-100 shadow-[0_2px_12px_rgba(0,0,0,0.06)]">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5 grid grid-cols-1 sm:grid-cols-3 gap-6 items-center">
+
+                    {/* Col 1 — Reviews */}
                     <div className="flex items-center gap-4">
                         <div className="flex -space-x-2.5">
                             {[1, 2, 3, 4, 5].map(i => (
@@ -314,25 +315,25 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
                                     key={i}
                                     src={`https://i.pravatar.cc/40?u=course-review-${i}`}
                                     alt=""
-                                    className="w-9 h-9 rounded-full border-2 border-[#1d4ed8] object-cover"
+                                    className="w-9 h-9 rounded-full border-2 border-white object-cover"
                                 />
                             ))}
                         </div>
                         <div>
-                            <div className="flex items-center gap-1.5 mb-0.5">
+                            <div className="flex items-center gap-1 mb-0.5">
                                 {[1, 2, 3, 4, 5].map(i => (
                                     <Star
                                         key={i}
                                         size={14}
-                                        className={i <= Math.round(rating ?? 5) ? "text-yellow-300 fill-yellow-300" : "text-white/30 fill-white/10"}
+                                        className={i <= Math.round(rating ?? 5) ? "text-yellow-400 fill-yellow-400" : "text-gray-200 fill-gray-200"}
                                     />
                                 ))}
                                 {rating && (
-                                    <span className="text-white font-black text-sm ml-1">{rating.toFixed(1)}</span>
+                                    <span className="text-gray-800 font-black text-sm ml-1">{rating.toFixed(1)}</span>
                                 )}
                             </div>
-                            <p className="text-white/80 text-sm">
-                                <strong className="text-white font-black">
+                            <p className="text-gray-500 text-sm">
+                                <strong className="text-gray-900 font-black">
                                     {review_count ? review_count.toLocaleString() : "10,000"}+
                                 </strong>{" "}
                                 Students Enrolled &amp; Rated
@@ -340,18 +341,28 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
                         </div>
                     </div>
 
-                    {/* Authorized Training Partner */}
-                    <div className="flex items-center gap-4 border-t sm:border-t-0 sm:border-l border-white/20 sm:pl-6 pt-4 sm:pt-0 w-full sm:w-auto justify-center sm:justify-start">
-                        <div>
-                            <div className="bg-white rounded-lg px-3 py-1.5 inline-flex items-center">
-                                <img
-                                    src="/pmi-atp-logo.png"
-                                    alt="PMI Authorized Training Partner"
-                                    className="h-14 object-contain"
-                                />
-                            </div>
+                    {/* Col 2 — Authorized Training Partner */}
+                    <div className="flex justify-center">
+                        <div className="border border-gray-200 rounded-xl px-4 py-2 inline-flex items-center shadow-sm">
+                            <img
+                                src="/pmi-atp-logo.png"
+                                alt="PMI Authorized Training Partner"
+                                className="h-14 object-contain"
+                            />
                         </div>
                     </div>
+
+                    {/* Col 3 — Book Demo Class */}
+                    <div className="flex justify-center sm:justify-end">
+                        <button
+                            onClick={() => openEnquiry(`Book Demo Class — ${title}`)}
+                            className="inline-flex items-center gap-2 bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white font-black text-sm px-7 py-3 rounded-xl transition-colors shadow-sm shadow-[var(--primary)]/20"
+                        >
+                            <Calendar size={16} />
+                            Book Demo Class
+                        </button>
+                    </div>
+
                 </div>
             </div>
 
