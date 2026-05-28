@@ -95,18 +95,30 @@ export default async function CourseDetailPage({
 
     let instructors: Instructor[] = [];
     const instructorIds: string[] = course.instructor_ids || [];
-    if (instructorIds.length > 0) {
-        const { data } = await supabase
-            .from("instructors")
-            .select("id,name,title,description,qualifications,rating,review_count,profile_image_url")
-            .in("id", instructorIds)
-            .eq("active", true);
-        if (data) {
-            instructors = instructorIds
-                .map(id => data.find((i: { id: string }) => i.id === id))
-                .filter(Boolean) as Instructor[];
-        }
+
+    // Fetch instructors + sidebar content in parallel
+    const [instructorResult, sidebarResult] = await Promise.all([
+        instructorIds.length > 0
+            ? supabase
+                .from("instructors")
+                .select("id,name,title,description,qualifications,rating,review_count,profile_image_url")
+                .in("id", instructorIds)
+                .eq("active", true)
+            : Promise.resolve({ data: [] }),
+        supabase
+            .from("pages_content")
+            .select("content")
+            .eq("page_name", "course_sidebar")
+            .single(),
+    ]);
+
+    if (instructorResult.data) {
+        instructors = instructorIds
+            .map(id => instructorResult.data!.find((i: { id: string }) => i.id === id))
+            .filter(Boolean) as Instructor[];
     }
+
+    const sidebarContent = (sidebarResult.data?.content ?? {}) as Record<string, unknown>;
 
     const courseUrl = `${SITE_URL}/courses/${slug}`;
     const courseJsonLd: Record<string, unknown> = {
@@ -149,7 +161,7 @@ export default async function CourseDetailPage({
     return (
         <>
             <JsonLd data={courseJsonLd} />
-            <CourseClientPage course={course} instructors={instructors} />
+            <CourseClientPage course={course} instructors={instructors} sidebarContent={sidebarContent} />
         </>
     );
 }

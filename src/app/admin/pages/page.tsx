@@ -6,7 +6,7 @@ import {
     CheckCircle, AlertCircle, Plus, Trash2,
     Home, Info, Phone, Globe, Settings, GripVertical,
     ArrowLeft, Search, ExternalLink, X, Target, TrendingUp,
-    PanelTop, PanelBottom,
+    PanelTop, PanelBottom, GraduationCap,
 } from "lucide-react";
 import { Reorder } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -45,6 +45,12 @@ const BASE_PAGES = [
         sections: [
             { id: "contact_header", name: "Header Info" },
             { id: "contact_details", name: "Contact Details" },
+        ],
+    },
+    {
+        id: "courses", name: "Course Detail Pages", slug: "/courses", icon: GraduationCap,
+        sections: [
+            { id: "course_sidebar", name: "Right Sidebar (Contact & Highlights)" },
         ],
     },
 ];
@@ -635,6 +641,75 @@ function ContactDetailsEditor({ content, onChange }: { content: ContentMap; onCh
     );
 }
 
+// ── Course Sidebar Editor ──────────────────────────────────────
+function CourseSidebarEditor({ content, onChange }: { content: ContentMap; onChange: (c: ContentMap) => void }) {
+    const s = (k: string) => (content[k] as string) ?? "";
+    const u = (k: string, v: string) => onChange({ ...content, [k]: v });
+    const highlights: string[] = (content.highlights as string[]) ?? [
+        "Industry-recognized certification",
+        "Expert-led live sessions",
+        "Hands-on projects & real cases",
+        "Dedicated career support",
+    ];
+
+    const updateHighlight = (i: number, v: string) => {
+        const next = [...highlights];
+        next[i] = v;
+        onChange({ ...content, highlights: next });
+    };
+    const addHighlight = () => onChange({ ...content, highlights: [...highlights, ""] });
+    const removeHighlight = (i: number) => onChange({ ...content, highlights: highlights.filter((_, idx) => idx !== i) });
+
+    return (
+        <div className="space-y-8">
+            {/* Contact Card */}
+            <div>
+                <p className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-4 border-b border-border pb-2">Contact Card</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <Field label="Card Title" value={s("contact_title")} onChange={v => u("contact_title", v)} placeholder="Have Questions?" />
+                    <div className="md:col-span-2">
+                        <Field label="Card Subtitle" value={s("contact_subtitle")} onChange={v => u("contact_subtitle", v)} placeholder="Our advisors are ready to help you choose the right training path." />
+                    </div>
+                    <Field label="Phone Number" value={s("phone")} onChange={v => u("phone", v)} placeholder="+1 (234) 567-8900" />
+                    <Field label="Email Address" value={s("email")} onChange={v => u("email", v)} placeholder="info@firstbencher.com" />
+                    <Field label="Callback Button Text" value={s("callback_button_text")} onChange={v => u("callback_button_text", v)} placeholder="Request a Callback" />
+                </div>
+            </div>
+
+            {/* Course Highlights */}
+            <div>
+                <p className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-4 border-b border-border pb-2">Course Highlights Card</p>
+                <div className="mb-4">
+                    <Field label="Highlights Card Title" value={s("highlights_title")} onChange={v => u("highlights_title", v)} placeholder="Course Highlights" />
+                </div>
+                <div className="space-y-3">
+                    {highlights.map((h, i) => (
+                        <div key={i} className="flex items-center gap-2">
+                            <span className="w-6 h-6 rounded-full bg-accent flex items-center justify-center text-xs font-black text-muted-foreground shrink-0">{i + 1}</span>
+                            <input
+                                type="text"
+                                value={h}
+                                onChange={e => updateHighlight(i, e.target.value)}
+                                placeholder={`Highlight ${i + 1}`}
+                                className="flex-1 p-3 rounded-xl border border-border bg-accent/20 focus:bg-background focus:ring-2 focus:ring-[var(--primary)]/20 outline-none text-sm transition-all"
+                            />
+                            <button onClick={() => removeHighlight(i)} className="p-2 text-red-400 hover:text-red-600 hover:bg-primary-tint rounded-lg transition-colors">
+                                <Trash2 size={16} />
+                            </button>
+                        </div>
+                    ))}
+                    <button
+                        onClick={addHighlight}
+                        className="w-full flex items-center justify-center gap-2 py-3 border-2 border-dashed border-border rounded-xl text-sm font-bold text-muted-foreground hover:border-[var(--primary)] hover:text-[var(--primary)] hover:bg-[var(--primary)]/5 transition-all"
+                    >
+                        <Plus size={16} /> Add Highlight
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 // ── Section editor router ──────────────────────────────────────
 function SectionEditor({ sectionId, content, onChange }: { sectionId: string; content: ContentMap; onChange: (c: ContentMap) => void }) {
     if (sectionId.startsWith("custom_page:")) {
@@ -654,6 +729,7 @@ function SectionEditor({ sectionId, content, onChange }: { sectionId: string; co
         case "about_team": return <TeamEditor content={content} onChange={onChange} />;
         case "contact_header": return <ContactHeaderEditor content={content} onChange={onChange} />;
         case "contact_details": return <ContactDetailsEditor content={content} onChange={onChange} />;
+        case "course_sidebar": return <CourseSidebarEditor content={content} onChange={onChange} />;
         default:
             return (
                 <div className="flex flex-col items-center justify-center h-64 text-center gap-3">

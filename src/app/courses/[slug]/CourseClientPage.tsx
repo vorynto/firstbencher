@@ -67,7 +67,34 @@ const ALL_TABS = [
 
 const defaultForm = { name: "", email: "", phone: "", message: "" };
 
-export default function CourseClientPage({ course, instructors = [] }: { course: Course; instructors?: Instructor[] }) {
+type SidebarContent = {
+    contact_title?: string;
+    contact_subtitle?: string;
+    phone?: string;
+    email?: string;
+    callback_button_text?: string;
+    highlights_title?: string;
+    highlights?: string[];
+};
+
+const SIDEBAR_DEFAULTS: SidebarContent = {
+    contact_title: "Have Questions?",
+    contact_subtitle: "Our advisors are ready to help you choose the right training path.",
+    phone: "+1 (234) 567-8900",
+    email: "info@firstbencher.com",
+    callback_button_text: "Request a Callback",
+    highlights_title: "Course Highlights",
+    highlights: [
+        "Industry-recognized certification",
+        "Expert-led live sessions",
+        "Hands-on projects & real cases",
+        "Dedicated career support",
+    ],
+};
+
+export default function CourseClientPage({ course, instructors = [], sidebarContent = {} }: { course: Course; instructors?: Instructor[]; sidebarContent?: Record<string, unknown> }) {
+    // Merge DB content with defaults so missing keys always fall back
+    const sb: SidebarContent = { ...SIDEBAR_DEFAULTS, ...(sidebarContent as SidebarContent) };
     const supabase = createClient();
     const { openEnquiry } = useEnquiry();
 
@@ -663,43 +690,45 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
                         {/* "Have Questions?" — shown only before hero is scrolled past */}
                         {!isFormFixed && (
                             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
-                                <h3 className="font-black text-lg text-[#1a202c]">Have Questions?</h3>
-                                <p className="text-gray-500 text-sm">Our advisors are ready to help you choose the right training path.</p>
-                                <a href="tel:+1234567890" className="flex items-center gap-3 p-3 rounded-xl bg-accent border border-[var(--primary)]/20 hover:bg-[var(--primary-tint)] transition-colors">
+                                <h3 className="font-black text-lg text-[#1a202c]">{sb.contact_title}</h3>
+                                <p className="text-gray-500 text-sm">{sb.contact_subtitle}</p>
+                                <a href={`tel:${sb.phone}`} className="flex items-center gap-3 p-3 rounded-xl bg-accent border border-[var(--primary)]/20 hover:bg-[var(--primary-tint)] transition-colors">
                                     <div className="w-10 h-10 bg-[var(--primary)] rounded-lg flex items-center justify-center shrink-0">
                                         <Phone size={18} className="text-white" />
                                     </div>
                                     <div>
                                         <p className="text-xs text-gray-400 font-medium">Call Us</p>
-                                        <p className="font-black text-[#1a202c] text-sm">+1 (234) 567-8900</p>
+                                        <p className="font-black text-[#1a202c] text-sm">{sb.phone}</p>
                                     </div>
                                 </a>
-                                <a href="mailto:info@firstbencher.com" className="flex items-center gap-3 p-3 rounded-xl bg-accent border border-[var(--primary)]/20 hover:bg-[var(--primary-tint)] transition-colors">
+                                <a href={`mailto:${sb.email}`} className="flex items-center gap-3 p-3 rounded-xl bg-accent border border-[var(--primary)]/20 hover:bg-[var(--primary-tint)] transition-colors">
                                     <div className="w-10 h-10 bg-[var(--primary-dark)] rounded-lg flex items-center justify-center shrink-0">
                                         <Mail size={18} className="text-white" />
                                     </div>
                                     <div>
                                         <p className="text-xs text-gray-400 font-medium">Email Us</p>
-                                        <p className="font-black text-[#1a202c] text-sm">info@firstbencher.com</p>
+                                        <p className="font-black text-[#1a202c] text-sm">{sb.email}</p>
                                     </div>
                                 </a>
                                 <button
-                                    onClick={() => openEnquiry(`Request Callback — ${title}`)}
+                                    onClick={() => openEnquiry(`${sb.callback_button_text} — ${title}`)}
                                     className="w-full bg-[var(--primary)] text-white py-3 rounded-xl font-bold text-sm hover:bg-[var(--primary-dark)] transition-colors"
                                 >
-                                    Request a Callback
+                                    {sb.callback_button_text}
                                 </button>
                             </div>
                         )}
 
                         {/* Course Highlights — always shown */}
                         <div className="bg-[#111111] rounded-2xl p-6 text-white">
-                            <p className="text-red-200 text-xs font-bold uppercase tracking-wider mb-3">Course Highlights</p>
+                            <p className="text-[var(--primary-tint)] text-xs font-bold uppercase tracking-wider mb-3">{sb.highlights_title}</p>
                             <ul className="space-y-3 text-sm">
-                                <li className="flex items-center gap-2 text-red-50"><Star size={14} className="text-yellow-400" fill="currentColor" /> Industry-recognized certification</li>
-                                <li className="flex items-center gap-2 text-red-50"><Users size={14} className="text-[var(--primary)]" /> Expert-led live sessions</li>
-                                <li className="flex items-center gap-2 text-red-50"><CheckCircle2 size={14} className="text-green-400" /> Hands-on projects &amp; real cases</li>
-                                <li className="flex items-center gap-2 text-red-50"><Award size={14} className="text-yellow-400" /> Dedicated career support</li>
+                                {(sb.highlights ?? []).map((item, i) => (
+                                    <li key={i} className="flex items-center gap-2 text-white/80">
+                                        <CheckCircle2 size={14} className="text-[var(--primary)] shrink-0" />
+                                        {item}
+                                    </li>
+                                ))}
                             </ul>
                         </div>
 
