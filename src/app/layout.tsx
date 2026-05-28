@@ -31,6 +31,34 @@ const getCustomCode = unstable_cache(
     { revalidate: 60 }
 );
 
+// Cached fetch of global settings — injected as inline <style> so CSS variables
+// are correct on the very first paint, eliminating the red flash before JS loads.
+const getGlobalSettings = unstable_cache(
+    async () => {
+        const { data } = await supabaseAdmin
+            .from("pages_content")
+            .select("content")
+            .eq("page_name", "global_settings")
+            .single();
+        return (data?.content ?? {}) as Record<string, string>;
+    },
+    ["global_settings_layout"],
+    { revalidate: 60 }
+);
+
+function buildCssVars(s: Record<string, string>): string {
+    const pairs: string[] = [];
+    if (s.primary_color)    pairs.push(`--primary:${s.primary_color}`);
+    if (s.button_hover_bg)  pairs.push(`--primary-dark:${s.button_hover_bg}`);
+    if (s.secondary_color)  pairs.push(`--secondary:${s.secondary_color}`);
+    if (s.accent_color)     pairs.push(`--accent:${s.accent_color}`);
+    if (s.button_bg)        pairs.push(`--button-bg:${s.button_bg}`);
+    if (s.button_text)      pairs.push(`--button-text:${s.button_text}`);
+    if (s.button_hover_bg)  pairs.push(`--button-hover-bg:${s.button_hover_bg}`);
+    if (s.button_hover_text) pairs.push(`--button-hover-text:${s.button_hover_text}`);
+    return pairs.length ? `:root{${pairs.join(';')}}` : "";
+}
+
 const inter = Inter({
     variable: "--font-inter",
     subsets: ["latin"],
@@ -142,10 +170,16 @@ const websiteJsonLd = {
 export default async function RootLayout({
     children,
 }: Readonly<{ children: React.ReactNode }>) {
-    const { header_code, body_code } = await getCustomCode();
+    const [{ header_code, body_code }, globalSettings] = await Promise.all([
+        getCustomCode(),
+        getGlobalSettings(),
+    ]);
+    const cssVars = buildCssVars(globalSettings);
 
     return (
         <html lang="en" className="scroll-pt-30" style={{ colorScheme: "light" }}>
+            {/* Inject correct CSS variables before first paint — prevents color flash */}
+            {cssVars && <style dangerouslySetInnerHTML={{ __html: cssVars }} />}
             <body
                 suppressHydrationWarning
                 className={`${inter.variable} font-sans antialiased bg-background text-foreground overflow-x-hidden`}
