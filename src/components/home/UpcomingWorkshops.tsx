@@ -1,8 +1,8 @@
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
-import { Calendar, MapPin, ArrowRight, Image as ImageIcon } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import WorkshopCard from "@/components/workshops/WorkshopCard";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
@@ -47,56 +47,7 @@ export default async function UpcomingWorkshops() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {workshops.map((workshop) => (
-                        <div key={workshop.id} className="group bg-background rounded-[32px] border border-border/50 hover:border-primary/50 overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col hover:-translate-y-1">
-                            <div className="relative h-60 w-full overflow-hidden bg-accent/20">
-                                {workshop.image_url ? (
-                                    <Image 
-                                        src={workshop.image_url} 
-                                        alt={workshop.title} 
-                                        fill 
-                                        className="object-cover group-hover:scale-110 transition-transform duration-700" 
-                                    />
-                                ) : (
-                                    <div className="flex items-center justify-center w-full h-full text-muted-foreground/30">
-                                        <ImageIcon size={48} />
-                                    </div>
-                                )}
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60" />
-                                
-                                <div className="absolute bottom-4 left-4 right-4 flex justify-between items-end">
-                                    {workshop.category && (
-                                        <span className="bg-primary/90 backdrop-blur-sm text-white text-xs font-black uppercase px-3 py-1.5 rounded-lg">
-                                            {workshop.category}
-                                        </span>
-                                    )}
-                                </div>
-                            </div>
-
-                            <div className="p-8 flex-1 flex flex-col">
-                                <div className="flex items-center gap-3 text-sm font-semibold text-primary mb-4">
-                                    <Calendar size={18} />
-                                    <span>{new Date(workshop.event_date).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}</span>
-                                </div>
-                                
-                                <h3 className="text-2xl font-bold text-foreground mb-4 leading-tight group-hover:text-primary transition-colors">
-                                    {workshop.title}
-                                </h3>
-                                
-                                <div className="flex items-center gap-2 text-muted-foreground text-sm font-medium mb-8">
-                                    <MapPin size={16} className="shrink-0" />
-                                    <span className="truncate">{workshop.location}</span>
-                                </div>
-
-                                <div className="mt-auto pt-6 border-t border-border">
-                                    <Link href={`/contact?subject=Register%20for%20workshop:%20${encodeURIComponent(workshop.title)}`} className="text-foreground font-bold hover:text-primary transition-colors flex items-center justify-between w-full group/link">
-                                        <span>Register Interest</span>
-                                        <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center group-hover/link:bg-primary group-hover/link:text-white transition-colors">
-                                            <ArrowRight size={18} className="group-hover/link:-rotate-45 transition-transform" />
-                                        </div>
-                                    </Link>
-                                </div>
-                            </div>
-                        </div>
+                        <WorkshopCard key={workshop.id} workshop={workshop} />
                     ))}
                 </div>
 
