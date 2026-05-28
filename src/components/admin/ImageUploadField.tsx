@@ -39,7 +39,7 @@ export default function ImageUploadField({ value, onChange, label = "Image Uploa
                             <button 
                                 type="button"
                                 onClick={() => onChange("")}
-                                className="w-12 h-12 bg-red-500 text-white rounded-2xl flex items-center justify-center shadow-2xl transform translate-y-4 group-hover:translate-y-0 transition-all delay-[100ms]"
+                                className="w-12 h-12 bg-primary-tint0 text-white rounded-2xl flex items-center justify-center shadow-2xl transform translate-y-4 group-hover:translate-y-0 transition-all delay-[100ms]"
                                 title="Remove image"
                             >
                                 <X size={20} />

@@ -223,7 +223,7 @@ export default function BlogManagementPage() {
             {toast && (
                 <div className={cn(
                     "fixed top-6 right-6 z-50 px-5 py-3.5 rounded-2xl shadow-xl text-white text-sm font-bold flex items-center gap-2 animate-in fade-in slide-in-from-top-4",
-                    toast.type === "success" ? "bg-green-500" : "bg-red-500"
+                    toast.type === "success" ? "bg-green-500" : "bg-primary-tint0"
                 )}>
                     <CheckCircle2 size={18} />
                     {toast.msg}
@@ -244,7 +244,7 @@ export default function BlogManagementPage() {
                 {view === "list" ? (
                     <button
                         onClick={() => { setEditorData(defaultBlog); setSeoData(defaultBlogSeo); setView("form"); }}
-                        className="bg-[#a60303] text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-[#800202] transition-colors shadow-lg shadow-red-900/10"
+                        className="bg-[var(--primary)] text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-[var(--primary-dark)] transition-colors shadow-lg shadow-red-900/10"
                     >
                         <Plus size={18} /> Add New Post
                     </button>
@@ -265,7 +265,7 @@ export default function BlogManagementPage() {
                         <input 
                             type="text" 
                             placeholder="Search by title or slug..." 
-                            className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-red-100 focus:border-[#a60303] outline-none text-sm transition-all" 
+                            className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[var(--primary)]/20 focus:border-[var(--primary)] outline-none text-sm transition-all" 
                             value={searchTerm} 
                             onChange={e => setSearchTerm(e.target.value)} 
                         />
@@ -297,15 +297,15 @@ export default function BlogManagementPage() {
                                     </div>
                                 </div>
                                 <div className="p-6 flex flex-col flex-1">
-                                    <h3 className="text-lg font-black text-gray-900 mb-4 line-clamp-2 leading-tight group-hover:text-[#a60303] transition-colors">{blog.title}</h3>
+                                    <h3 className="text-lg font-black text-gray-900 mb-4 line-clamp-2 leading-tight group-hover:text-[var(--primary)] transition-colors">{blog.title}</h3>
                                     <div className="mt-auto flex justify-between items-center pt-4 border-t border-gray-50">
                                         <div className="flex items-center gap-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                                            <User size={12} className="text-[#a60303]" />
+                                            <User size={12} className="text-[var(--primary)]" />
                                             {blog.author || "First Bencher"}
                                         </div>
                                         <div className="flex gap-1">
-                                            <button onClick={() => handleEdit(blog)} className="p-2 text-gray-400 hover:text-[#a60303] hover:bg-red-50 rounded-lg transition-all"><Edit2 size={16} /></button>
-                                            <button onClick={() => handleDelete(blog.id)} className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"><Trash2 size={16} /></button>
+                                            <button onClick={() => handleEdit(blog)} className="p-2 text-gray-400 hover:text-[var(--primary)] hover:bg-primary-tint rounded-lg transition-all"><Edit2 size={16} /></button>
+                                            <button onClick={() => handleDelete(blog.id)} className="p-2 text-gray-400 hover:text-red-500 hover:bg-primary-tint rounded-lg transition-all"><Trash2 size={16} /></button>
                                         </div>
                                     </div>
                                 </div>
@@ -320,7 +320,7 @@ export default function BlogManagementPage() {
                     {/* Main Content Column */}
                     <div className="lg:col-span-2 flex flex-col gap-6">
                         <section className="bg-white p-8 rounded-[32px] border border-gray-100 flex flex-col gap-6 shadow-sm">
-                            <h2 className="text-sm font-black uppercase tracking-widest text-[#a60303] border-b border-gray-50 pb-4 mb-2">Editor</h2>
+                            <h2 className="text-sm font-black uppercase tracking-widest text-[var(--primary)] border-b border-gray-50 pb-4 mb-2">Editor</h2>
                             
                             <div className="flex flex-col gap-6">
                                 <Field 
@@ -357,12 +357,12 @@ export default function BlogManagementPage() {
                     {/* Sidebar Column */}
                     <div className="flex flex-col gap-6">
                         <section className="bg-white p-8 rounded-[32px] border border-gray-100 flex flex-col gap-6 shadow-sm">
-                            <h2 className="text-sm font-black uppercase tracking-widest text-[#a60303] border-b border-gray-50 pb-4 mb-2">Publishing</h2>
+                            <h2 className="text-sm font-black uppercase tracking-widest text-[var(--primary)] border-b border-gray-50 pb-4 mb-2">Publishing</h2>
                             
                             <button 
                                 onClick={saveBlog} 
                                 disabled={saving} 
-                                className="w-full bg-[#a60303] hover:bg-[#800202] text-white py-4 rounded-2xl font-black text-sm uppercase tracking-widest flex justify-center items-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-red-900/20 disabled:opacity-50"
+                                className="w-full bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white py-4 rounded-2xl font-black text-sm uppercase tracking-widest flex justify-center items-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-red-900/20 disabled:opacity-50"
                             >
                                 {saving ? <Loader2 className="animate-spin" size={20} /> : "Publish Article"}
                             </button>
@@ -380,13 +380,13 @@ export default function BlogManagementPage() {
                                     type="date" 
                                     value={editorData.published_at?.split('T')[0] || ""} 
                                     onChange={e => setEditorData({ ...editorData, published_at: new Date(e.target.value).toISOString() })}
-                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm font-bold text-gray-700 outline-none focus:border-[#a60303]"
+                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm font-bold text-gray-700 outline-none focus:border-[var(--primary)]"
                                 />
                             </div>
                         </section>
 
                         <section className="bg-white p-8 rounded-[32px] border border-gray-100 flex flex-col gap-6 shadow-sm">
-                            <h2 className="text-sm font-black uppercase tracking-widest text-[#a60303] border-b border-gray-50 pb-4 mb-2">Media</h2>
+                            <h2 className="text-sm font-black uppercase tracking-widest text-[var(--primary)] border-b border-gray-50 pb-4 mb-2">Media</h2>
                             <ImageUploadField
                                 label="Feature Image"
                                 value={editorData.image_url || ""}
@@ -444,14 +444,14 @@ function BlogSeoPanel({
         setNewKw("");
     };
 
-    const inputCls = "w-full px-3 py-2 text-sm rounded-lg border border-gray-200 focus:ring-2 focus:ring-red-100 focus:border-[#a60303] outline-none bg-white";
+    const inputCls = "w-full px-3 py-2 text-sm rounded-lg border border-gray-200 focus:ring-2 focus:ring-[var(--primary)]/20 focus:border-[var(--primary)] outline-none bg-white";
 
     return (
         <div className="flex flex-col gap-4">
             {/* Score card */}
             <div className="bg-white p-6 rounded-[28px] border border-gray-100 shadow-sm">
                 <div className="flex items-center gap-2 mb-4">
-                    <Target size={16} className="text-[#a60303]" />
+                    <Target size={16} className="text-[var(--primary)]" />
                     <h3 className="font-black text-gray-900 text-sm">SEO Score</h3>
                 </div>
                 <div className="flex items-center gap-4 mb-4">
@@ -479,7 +479,7 @@ function BlogSeoPanel({
                 </div>
                 <div className="flex flex-col gap-1.5 max-h-52 overflow-y-auto pr-1">
                     {checks.map((chk, i) => (
-                        <div key={i} className={cn("flex items-start gap-2 p-2 rounded-lg text-xs", chk.pass ? "bg-green-50" : "bg-red-50")}>
+                        <div key={i} className={cn("flex items-start gap-2 p-2 rounded-lg text-xs", chk.pass ? "bg-green-50" : "bg-primary-tint")}>
                             <div className={cn("w-4 h-4 rounded-full flex items-center justify-center shrink-0 mt-0.5", chk.pass ? "bg-green-500" : "bg-red-400")}>
                                 {chk.pass ? <CheckCircle size={10} className="text-white" /> : <AlertCircle size={10} className="text-white" />}
                             </div>
@@ -498,7 +498,7 @@ function BlogSeoPanel({
             {/* SEO fields */}
             <div className="bg-white p-6 rounded-[28px] border border-gray-100 shadow-sm flex flex-col gap-4">
                 <div className="flex items-center gap-2 border-b border-gray-50 pb-3">
-                    <TrendingUp size={16} className="text-[#a60303]" />
+                    <TrendingUp size={16} className="text-[var(--primary)]" />
                     <h3 className="font-black text-gray-900 text-sm">SEO Settings</h3>
                 </div>
 
@@ -568,7 +568,7 @@ function BlogSeoPanel({
                     {seoData.supportingKeywords.length > 0 && (
                         <div className="flex flex-wrap gap-1.5 mb-2">
                             {seoData.supportingKeywords.map(kw => (
-                                <span key={kw} className="flex items-center gap-1 px-2 py-1 bg-red-50 text-[#a60303] rounded-lg text-xs font-semibold">
+                                <span key={kw} className="flex items-center gap-1 px-2 py-1 bg-primary-tint text-[var(--primary)] rounded-lg text-xs font-semibold">
                                     {kw}
                                     <button onClick={() => setSeoData(s => ({ ...s, supportingKeywords: s.supportingKeywords.filter(k => k !== kw) }))} className="hover:text-red-700 transition-colors">
                                         <X size={10} />
@@ -604,7 +604,7 @@ type FieldProps = {
 };
 
 function Field({ label, value, onChange, type = "text", placeholder = "", rows = 3 }: FieldProps) {
-    const base = "w-full px-4 py-3.5 rounded-2xl border border-gray-200 bg-white focus:ring-4 focus:ring-red-50 focus:border-[#a60303] outline-none text-sm font-bold text-gray-700 transition-all placeholder:text-gray-300";
+    const base = "w-full px-4 py-3.5 rounded-2xl border border-gray-200 bg-white focus:ring-4 focus:ring-red-50 focus:border-[var(--primary)] outline-none text-sm font-bold text-gray-700 transition-all placeholder:text-gray-300";
     return (
         <div className="space-y-2">
             {label && <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest">{label}</label>}

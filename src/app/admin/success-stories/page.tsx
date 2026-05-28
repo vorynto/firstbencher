@@ -127,7 +127,7 @@ export default function AdminSuccessStoriesPage() {
                             copied ? "bg-green-500 text-white border-green-600" : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
                         )}
                     >
-                        {copied ? <CheckCircle2 size={18} /> : <Copy size={18} className="text-[#a60303]" />}
+                        {copied ? <CheckCircle2 size={18} /> : <Copy size={18} className="text-[var(--primary)]" />}
                         {copied ? "Link Copied!" : "Copy Feedback Link"}
                     </button>
                     <button
@@ -163,7 +163,7 @@ export default function AdminSuccessStoriesPage() {
                                             max={type === "number" ? 5 : undefined}
                                             value={(currentStory as Record<string, string | number>)[key] ?? ""}
                                             onChange={e => setCurrentStory({ ...currentStory, [key]: type === "number" ? parseInt(e.target.value) : e.target.value })}
-                                            className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-[#a60303] focus:ring-4 focus:ring-red-100 transition-all outline-none"
+                                            className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-[var(--primary)] focus:ring-4 focus:ring-[var(--primary)]/20 transition-all outline-none"
                                         />
                                     </div>
                                 ))}
@@ -179,7 +179,7 @@ export default function AdminSuccessStoriesPage() {
                                             type="text"
                                             value={(currentStory as Record<string, string>)[key] ?? ""}
                                             onChange={e => setCurrentStory({ ...currentStory, [key]: e.target.value })}
-                                            className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-[#a60303] focus:ring-4 focus:ring-red-100 transition-all outline-none"
+                                            className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-[var(--primary)] focus:ring-4 focus:ring-[var(--primary)]/20 transition-all outline-none"
                                         />
                                     </div>
                                 ))}
@@ -190,7 +190,7 @@ export default function AdminSuccessStoriesPage() {
                                     rows={5}
                                     value={currentStory.message ?? ""}
                                     onChange={e => setCurrentStory({ ...currentStory, message: e.target.value })}
-                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-[#a60303] focus:ring-4 focus:ring-red-100 transition-all outline-none resize-none leading-relaxed"
+                                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-[var(--primary)] focus:ring-4 focus:ring-[var(--primary)]/20 transition-all outline-none resize-none leading-relaxed"
                                 />
                             </div>
                             <div className="flex items-center justify-between pt-4 border-t border-gray-100">
@@ -199,13 +199,13 @@ export default function AdminSuccessStoriesPage() {
                                         type="checkbox"
                                         checked={currentStory.is_approved ?? true}
                                         onChange={e => setCurrentStory({ ...currentStory, is_approved: e.target.checked })}
-                                        className="w-5 h-5 rounded text-[#a60303] focus:ring-[#a60303] border-gray-300"
+                                        className="w-5 h-5 rounded text-[var(--primary)] focus:ring-[var(--primary)] border-gray-300"
                                     />
                                     <span className="text-sm font-bold text-gray-700">Approved (visible on website)</span>
                                 </label>
                                 <div className="flex gap-3">
                                     <button onClick={() => setIsEditing(false)} className="px-6 py-2.5 font-bold text-gray-500 hover:text-gray-700 transition-colors">Cancel</button>
-                                    <button onClick={handleSave} disabled={saving} className="bg-[#a60303] hover:bg-[#800202] text-white px-8 py-2.5 rounded-xl font-bold transition-all shadow-lg shadow-[#a60303]/30 disabled:opacity-50 flex items-center gap-2">
+                                    <button onClick={handleSave} disabled={saving} className="bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white px-8 py-2.5 rounded-xl font-bold transition-all shadow-lg shadow-[var(--primary)]/30 disabled:opacity-50 flex items-center gap-2">
                                         {saving ? <Loader2 size={18} className="animate-spin" /> : "Save Story"}
                                     </button>
                                 </div>
@@ -273,7 +273,7 @@ export default function AdminSuccessStoriesPage() {
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                 {loading ? (
                     <div className="py-20 flex flex-col items-center justify-center text-gray-400 gap-3">
-                        <Loader2 size={32} className="animate-spin text-[#a60303]" />
+                        <Loader2 size={32} className="animate-spin text-[var(--primary)]" />
                         <p className="font-medium">Loading stories...</p>
                     </div>
                 ) : displayedStories.length === 0 ? (
@@ -302,13 +302,13 @@ export default function AdminSuccessStoriesPage() {
                                         {story.image_url ? (
                                             <img src={story.image_url} alt="" className="w-14 h-14 rounded-full object-cover border-2 border-gray-100 shadow-sm flex-shrink-0" />
                                         ) : (
-                                            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#a60303] to-[#c60404] flex items-center justify-center text-white font-black text-xl shadow-sm flex-shrink-0">
+                                            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[var(--primary)] to-[#c60404] flex items-center justify-center text-white font-black text-xl shadow-sm flex-shrink-0">
                                                 {story.student_name.charAt(0).toUpperCase()}
                                             </div>
                                         )}
                                         <div className="min-w-[160px]">
                                             <p className="font-black text-gray-900 text-base">{story.student_name}</p>
-                                            {story.course_name && <p className="text-xs text-[#a60303] font-bold mt-0.5">{story.course_name}</p>}
+                                            {story.course_name && <p className="text-xs text-[var(--primary)] font-bold mt-0.5">{story.course_name}</p>}
                                             {story.company_name && <p className="text-xs text-gray-500 mt-0.5">{story.company_name}</p>}
                                             <div className="flex mt-2">
                                                 {[...Array(5)].map((_, i) => (
@@ -327,7 +327,7 @@ export default function AdminSuccessStoriesPage() {
 
                                         {/* Certificate thumbnail */}
                                         {story.certificate_url && (
-                                            <a href={story.certificate_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 mt-3 text-xs font-bold text-[#a60303] hover:text-[#800202] transition-colors bg-red-50 px-3 py-1.5 rounded-lg">
+                                            <a href={story.certificate_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 mt-3 text-xs font-bold text-[var(--primary)] hover:text-[var(--primary-dark)] transition-colors bg-primary-tint px-3 py-1.5 rounded-lg">
                                                 <Award size={14} /> View Certificate
                                             </a>
                                         )}
@@ -348,7 +348,7 @@ export default function AdminSuccessStoriesPage() {
                                                 <button
                                                     onClick={() => handleReject(story.id)}
                                                     disabled={approvingId === story.id}
-                                                    className="flex items-center gap-2 px-4 py-2.5 bg-red-50 hover:bg-red-100 text-red-600 text-sm font-bold rounded-xl transition-colors disabled:opacity-50 border border-red-100 min-w-[130px] justify-center"
+                                                    className="flex items-center gap-2 px-4 py-2.5 bg-primary-tint hover:bg-red-100 text-red-600 text-sm font-bold rounded-xl transition-colors disabled:opacity-50 border border-[var(--primary)]/20 min-w-[130px] justify-center"
                                                 >
                                                     <ThumbsDown size={15} /> Reject
                                                 </button>
@@ -369,7 +369,7 @@ export default function AdminSuccessStoriesPage() {
                                                 </button>
                                                 <button
                                                     onClick={() => handleReject(story.id)}
-                                                    className="flex items-center gap-2 px-4 py-2.5 bg-red-50 hover:bg-red-100 text-red-600 text-sm font-bold rounded-xl transition-colors border border-red-100 min-w-[130px] justify-center"
+                                                    className="flex items-center gap-2 px-4 py-2.5 bg-primary-tint hover:bg-red-100 text-red-600 text-sm font-bold rounded-xl transition-colors border border-[var(--primary)]/20 min-w-[130px] justify-center"
                                                 >
                                                     <Trash2 size={15} /> Delete
                                                 </button>

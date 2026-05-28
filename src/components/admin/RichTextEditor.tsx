@@ -83,7 +83,7 @@ export default function RichTextEditor({ value, onChange, label, placeholder, wi
                     <button
                         type="button"
                         onClick={() => setPickerOpen(v => !v)}
-                        className="flex items-center gap-2 px-3 py-1.5 text-xs font-bold text-gray-600 bg-white border border-gray-200 rounded-lg hover:border-[#a60303] hover:text-[#a60303] transition-colors"
+                        className="flex items-center gap-2 px-3 py-1.5 text-xs font-bold text-gray-600 bg-white border border-gray-200 rounded-lg hover:border-[var(--primary)] hover:text-[var(--primary)] transition-colors"
                     >
                         <Table size={13} />
                         Insert Table
@@ -114,7 +114,7 @@ export default function RichTextEditor({ value, onChange, label, placeholder, wi
                                                 onClick={() => insertTable(ri + 1, ci + 1)}
                                                 className={`w-7 h-7 rounded border cursor-pointer transition-colors ${
                                                     active
-                                                        ? "bg-[#a60303]/15 border-[#a60303]"
+                                                        ? "bg-[var(--primary)]/15 border-[var(--primary)]"
                                                         : "bg-gray-50 border-gray-200 hover:bg-gray-100"
                                                 }`}
                                             />

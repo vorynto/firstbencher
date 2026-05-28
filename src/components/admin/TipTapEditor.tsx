@@ -153,7 +153,7 @@ export default function TipTapEditor({ value, onChange, placeholder }: Props) {
                                                 onMouseDown={(e) => { e.preventDefault(); insertTable(ri + 1, ci + 1); }}
                                                 className={`w-7 h-7 rounded border cursor-pointer transition-colors ${
                                                     active
-                                                        ? "bg-[#a60303]/15 border-[#a60303]"
+                                                        ? "bg-[var(--primary)]/15 border-[var(--primary)]"
                                                         : "bg-gray-50 border-gray-200 hover:bg-gray-100"
                                                 }`}
                                             />
@@ -175,7 +175,7 @@ export default function TipTapEditor({ value, onChange, placeholder }: Props) {
                             +Col
                         </button>
                         <button type="button" onMouseDown={(e) => { e.preventDefault(); editor.chain().focus().deleteColumn().run(); }}
-                            className="px-2 py-1 rounded text-[10px] font-black text-gray-600 hover:bg-red-50 hover:text-red-600 transition-colors" title="Delete column">
+                            className="px-2 py-1 rounded text-[10px] font-black text-gray-600 hover:bg-primary-tint hover:text-red-600 transition-colors" title="Delete column">
                             −Col
                         </button>
                         <button type="button" onMouseDown={(e) => { e.preventDefault(); editor.chain().focus().addRowAfter().run(); }}
@@ -183,11 +183,11 @@ export default function TipTapEditor({ value, onChange, placeholder }: Props) {
                             +Row
                         </button>
                         <button type="button" onMouseDown={(e) => { e.preventDefault(); editor.chain().focus().deleteRow().run(); }}
-                            className="px-2 py-1 rounded text-[10px] font-black text-gray-600 hover:bg-red-50 hover:text-red-600 transition-colors" title="Delete row">
+                            className="px-2 py-1 rounded text-[10px] font-black text-gray-600 hover:bg-primary-tint hover:text-red-600 transition-colors" title="Delete row">
                             −Row
                         </button>
                         <button type="button" onMouseDown={(e) => { e.preventDefault(); editor.chain().focus().deleteTable().run(); }}
-                            className="p-1.5 rounded text-red-400 hover:bg-red-50 hover:text-red-600 transition-colors" title="Delete table">
+                            className="p-1.5 rounded text-red-400 hover:bg-primary-tint hover:text-red-600 transition-colors" title="Delete table">
                             <Trash2 size={13} />
                         </button>
                     </>

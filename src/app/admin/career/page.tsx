@@ -234,8 +234,8 @@ export default function CareerAdminPage() {
                         </div>
                         <div className="flex flex-col gap-1.5">
                             <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Salary Range</label>
-                            <div className="flex items-center border rounded-xl overflow-hidden focus-within:border-[#a60303] transition-colors">
-                                <span className="px-3 py-3 bg-gray-50 text-[#a60303] font-black text-base border-r border-gray-200 shrink-0">{jobForm.salary_icon || "₹"}</span>
+                            <div className="flex items-center border rounded-xl overflow-hidden focus-within:border-[var(--primary)] transition-colors">
+                                <span className="px-3 py-3 bg-gray-50 text-[var(--primary)] font-black text-base border-r border-gray-200 shrink-0">{jobForm.salary_icon || "₹"}</span>
                                 <input className="flex-1 p-3 text-sm outline-none" value={jobForm.salary_range} onChange={e => setJobForm({ ...jobForm, salary_range: e.target.value })} placeholder="e.g. 6–8 LPA or 60k–80k" />
                             </div>
                         </div>
@@ -252,13 +252,13 @@ export default function CareerAdminPage() {
                     </div>
 
                     <label className="flex items-center gap-3 cursor-pointer">
-                        <input type="checkbox" checked={jobForm.active} onChange={e => setJobForm({ ...jobForm, active: e.target.checked })} className="w-5 h-5 accent-[#a60303]" />
+                        <input type="checkbox" checked={jobForm.active} onChange={e => setJobForm({ ...jobForm, active: e.target.checked })} className="w-5 h-5 accent-[var(--primary)]" />
                         <span className="font-bold text-sm">Published (visible to public)</span>
                     </label>
 
                     <div className="flex justify-end gap-3 pt-2">
                         <button type="button" onClick={() => setJobFormOpen(false)} className="px-6 py-3 rounded-xl font-bold text-sm hover:bg-gray-100">Cancel</button>
-                        <button type="submit" disabled={savingJob} className="bg-[#a60303] text-white px-6 py-3 rounded-xl font-bold text-sm disabled:opacity-50 flex items-center gap-2">
+                        <button type="submit" disabled={savingJob} className="bg-[var(--primary)] text-white px-6 py-3 rounded-xl font-bold text-sm disabled:opacity-50 flex items-center gap-2">
                             {savingJob ? <><Loader2 size={16} className="animate-spin" /> Saving…</> : editingJob ? "Update Job" : "Post Job"}
                         </button>
                     </div>
@@ -283,14 +283,14 @@ export default function CareerAdminPage() {
                             <button
                                 key={t}
                                 onClick={() => setTab(t)}
-                                className={cn("px-5 py-2 rounded-lg text-sm font-bold transition-all capitalize", tab === t ? "bg-white text-[#a60303] shadow-sm" : "text-gray-500 hover:text-gray-700")}
+                                className={cn("px-5 py-2 rounded-lg text-sm font-bold transition-all capitalize", tab === t ? "bg-white text-[var(--primary)] shadow-sm" : "text-gray-500 hover:text-gray-700")}
                             >
                                 {t === "candidates" ? `Candidates (${applications.length})` : "Job Openings"}
                             </button>
                         ))}
                     </div>
                     {tab === "jobs" && (
-                        <button onClick={openNewJob} className="bg-[#a60303] text-white px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 hover:bg-[#800202] transition-colors">
+                        <button onClick={openNewJob} className="bg-[var(--primary)] text-white px-5 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 hover:bg-[var(--primary-dark)] transition-colors">
                             <Plus size={18} /> Post Job
                         </button>
                     )}
@@ -300,12 +300,12 @@ export default function CareerAdminPage() {
             {/* ── Jobs Tab ── */}
             {tab === "jobs" && (
                 loadingJobs ? (
-                    <div className="flex h-48 items-center justify-center"><Loader2 className="animate-spin text-[#a60303]" /></div>
+                    <div className="flex h-48 items-center justify-center"><Loader2 className="animate-spin text-[var(--primary)]" /></div>
                 ) : jobs.length === 0 ? (
                     <div className="text-center py-16 bg-gray-50 rounded-3xl border border-dashed border-gray-200">
                         <Briefcase size={40} className="text-gray-300 mx-auto mb-3" />
                         <p className="font-bold text-gray-500">No jobs posted yet.</p>
-                        <button onClick={openNewJob} className="mt-4 text-sm text-[#a60303] font-bold hover:underline">Post your first job →</button>
+                        <button onClick={openNewJob} className="mt-4 text-sm text-[var(--primary)] font-bold hover:underline">Post your first job →</button>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
@@ -316,7 +316,7 @@ export default function CareerAdminPage() {
                                     <div className="flex items-start justify-between gap-3">
                                         <div className="flex-1">
                                             <h3 className="font-black text-gray-900 text-lg leading-tight">{job.title}</h3>
-                                            {job.department && <p className="text-xs font-bold text-[#a60303] uppercase tracking-wider mt-0.5">{job.department}</p>}
+                                            {job.department && <p className="text-xs font-bold text-[var(--primary)] uppercase tracking-wider mt-0.5">{job.department}</p>}
                                         </div>
                                         <button
                                             onClick={() => toggleJobActive(job)}
@@ -328,10 +328,10 @@ export default function CareerAdminPage() {
                                     </div>
 
                                     <div className="flex flex-wrap gap-3 text-xs font-semibold text-gray-500">
-                                        {job.location && <span className="flex items-center gap-1"><MapPin size={12} className="text-[#a60303]" />{job.location}</span>}
-                                        {job.type && <span className="flex items-center gap-1"><Briefcase size={12} className="text-[#a60303]" />{job.type}</span>}
-                                        {job.salary_range && <span className="flex items-center gap-1"><Star size={12} className="text-[#a60303]" />{job.salary_range}</span>}
-                                        <span className="flex items-center gap-1"><Users size={12} className="text-[#a60303]" />{appCount} applicant{appCount !== 1 ? "s" : ""}</span>
+                                        {job.location && <span className="flex items-center gap-1"><MapPin size={12} className="text-[var(--primary)]" />{job.location}</span>}
+                                        {job.type && <span className="flex items-center gap-1"><Briefcase size={12} className="text-[var(--primary)]" />{job.type}</span>}
+                                        {job.salary_range && <span className="flex items-center gap-1"><Star size={12} className="text-[var(--primary)]" />{job.salary_range}</span>}
+                                        <span className="flex items-center gap-1"><Users size={12} className="text-[var(--primary)]" />{appCount} applicant{appCount !== 1 ? "s" : ""}</span>
                                     </div>
 
                                     <div className="flex items-center gap-2 pt-2 border-t border-gray-50">
@@ -340,8 +340,8 @@ export default function CareerAdminPage() {
                                         </span>
                                         <div className="flex-1" />
                                         <button onClick={() => openEditJob(job)} className="p-2 rounded-lg hover:bg-gray-100 text-gray-500 transition-colors"><Edit2 size={16} /></button>
-                                        <button onClick={() => deleteJob(job.id)} className="p-2 rounded-lg hover:bg-red-50 text-red-400 transition-colors"><Trash2 size={16} /></button>
-                                        <button onClick={() => { setAppJobFilter(job.id); setTab("candidates"); }} className="p-2 rounded-lg hover:bg-[#a60303]/5 text-[#a60303] transition-colors"><Eye size={16} /></button>
+                                        <button onClick={() => deleteJob(job.id)} className="p-2 rounded-lg hover:bg-primary-tint text-red-400 transition-colors"><Trash2 size={16} /></button>
+                                        <button onClick={() => { setAppJobFilter(job.id); setTab("candidates"); }} className="p-2 rounded-lg hover:bg-[var(--primary)]/5 text-[var(--primary)] transition-colors"><Eye size={16} /></button>
                                     </div>
                                 </div>
                             );
@@ -357,7 +357,7 @@ export default function CareerAdminPage() {
                     <div className="flex flex-col sm:flex-row gap-3">
                         <div className="relative flex-1 max-w-xs">
                             <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                            <input value={appSearch} onChange={e => setAppSearch(e.target.value)} placeholder="Search candidates…" className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-gray-200 text-sm outline-none focus:border-[#a60303] transition-all" />
+                            <input value={appSearch} onChange={e => setAppSearch(e.target.value)} placeholder="Search candidates…" className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-gray-200 text-sm outline-none focus:border-[var(--primary)] transition-all" />
                         </div>
                         <select value={appJobFilter} onChange={e => setAppJobFilter(e.target.value)} className="border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-white">
                             <option value="all">All Jobs</option>
@@ -369,7 +369,7 @@ export default function CareerAdminPage() {
                     </div>
 
                     {loadingApps ? (
-                        <div className="flex h-48 items-center justify-center"><Loader2 className="animate-spin text-[#a60303]" /></div>
+                        <div className="flex h-48 items-center justify-center"><Loader2 className="animate-spin text-[var(--primary)]" /></div>
                     ) : filteredApps.length === 0 ? (
                         <div className="text-center py-16 bg-gray-50 rounded-3xl border border-dashed border-gray-200">
                             <Users size={40} className="text-gray-300 mx-auto mb-3" />
@@ -383,9 +383,9 @@ export default function CareerAdminPage() {
                                     <button
                                         key={app.id}
                                         onClick={() => setSelectedApp(selectedApp?.id === app.id ? null : app)}
-                                        className={cn("text-left w-full bg-white border rounded-2xl px-5 py-4 hover:shadow-md transition-all flex items-center gap-4", selectedApp?.id === app.id ? "border-[#a60303] shadow-md" : "border-gray-100")}
+                                        className={cn("text-left w-full bg-white border rounded-2xl px-5 py-4 hover:shadow-md transition-all flex items-center gap-4", selectedApp?.id === app.id ? "border-[var(--primary)] shadow-md" : "border-gray-100")}
                                     >
-                                        <div className="w-10 h-10 rounded-full bg-[#a60303]/10 flex items-center justify-center text-[#a60303] font-black text-base shrink-0">
+                                        <div className="w-10 h-10 rounded-full bg-[var(--primary)]/10 flex items-center justify-center text-[var(--primary)] font-black text-base shrink-0">
                                             {app.candidate_name.charAt(0).toUpperCase()}
                                         </div>
                                         <div className="flex-1 min-w-0">
@@ -441,7 +441,7 @@ export default function CareerAdminPage() {
                                             {selectedApp.address && <Row icon={<MapPin size={13} />} label="Location" value={selectedApp.address} />}
                                             {selectedApp.linkedin_url && (
                                                 <Row icon={<ExternalLink size={13} />} label="LinkedIn" value={
-                                                    <a href={selectedApp.linkedin_url} target="_blank" rel="noreferrer" className="text-[#a60303] hover:underline text-xs font-semibold">View Profile</a>
+                                                    <a href={selectedApp.linkedin_url} target="_blank" rel="noreferrer" className="text-[var(--primary)] hover:underline text-xs font-semibold">View Profile</a>
                                                 } />
                                             )}
                                         </Section>
@@ -453,8 +453,8 @@ export default function CareerAdminPage() {
                                                     const list = selectedApp.education_list ? (() => { try { return JSON.parse(selectedApp.education_list); } catch { return null; } })() : null;
                                                     const entries = list?.length ? list : [{ degree: selectedApp.degree, field_of_study: selectedApp.field_of_study, institution: selectedApp.institution, graduation_year: selectedApp.graduation_year }];
                                                     return entries.map((e: { degree?: string; field_of_study?: string; institution?: string; graduation_year?: string }, i: number) => (
-                                                        <div key={i} className={entries.length > 1 ? "pl-2 border-l-2 border-[#a60303]/20 space-y-1" : "space-y-1"}>
-                                                            {entries.length > 1 && <p className="text-[10px] font-black text-[#a60303] uppercase tracking-wider mb-1">{i === 0 ? "Primary" : `Qualification ${i + 1}`}</p>}
+                                                        <div key={i} className={entries.length > 1 ? "pl-2 border-l-2 border-[var(--primary)]/20 space-y-1" : "space-y-1"}>
+                                                            {entries.length > 1 && <p className="text-[10px] font-black text-[var(--primary)] uppercase tracking-wider mb-1">{i === 0 ? "Primary" : `Qualification ${i + 1}`}</p>}
                                                             {e.degree && <Row icon={<GraduationCap size={13} />} label="Degree" value={e.degree} />}
                                                             {e.field_of_study && <Row label="Field" value={e.field_of_study} />}
                                                             {e.institution && <Row label="Institution" value={e.institution} />}
@@ -472,8 +472,8 @@ export default function CareerAdminPage() {
                                                     const list = selectedApp.experience_list ? (() => { try { return JSON.parse(selectedApp.experience_list); } catch { return null; } })() : null;
                                                     const entries = list?.length ? list : [{ years: selectedApp.work_experience_years, company: selectedApp.current_company, role: selectedApp.current_role }];
                                                     return entries.map((e: { years?: string; company?: string; role?: string }, i: number) => (
-                                                        <div key={i} className={entries.length > 1 ? "pl-2 border-l-2 border-[#a60303]/20 space-y-1" : "space-y-1"}>
-                                                            {entries.length > 1 && <p className="text-[10px] font-black text-[#a60303] uppercase tracking-wider mb-1">{i === 0 ? "Most Recent" : `Experience ${i + 1}`}</p>}
+                                                        <div key={i} className={entries.length > 1 ? "pl-2 border-l-2 border-[var(--primary)]/20 space-y-1" : "space-y-1"}>
+                                                            {entries.length > 1 && <p className="text-[10px] font-black text-[var(--primary)] uppercase tracking-wider mb-1">{i === 0 ? "Most Recent" : `Experience ${i + 1}`}</p>}
                                                             {e.years && <Row icon={<Briefcase size={13} />} label="Experience" value={e.years} />}
                                                             {e.company && <Row label="Company" value={e.company} />}
                                                             {e.role && <Row label="Role" value={e.role} />}
@@ -488,7 +488,7 @@ export default function CareerAdminPage() {
                                             <Section title="Skills">
                                                 <div className="flex flex-wrap gap-1.5 mt-1">
                                                     {selectedApp.skills.map(s => (
-                                                        <span key={s} className="bg-red-50 text-[#a60303] text-xs font-bold px-2.5 py-1 rounded-full border border-red-100">{s}</span>
+                                                        <span key={s} className="bg-primary-tint text-[var(--primary)] text-xs font-bold px-2.5 py-1 rounded-full border border-[var(--primary)]/20">{s}</span>
                                                     ))}
                                                 </div>
                                             </Section>
@@ -510,11 +510,11 @@ export default function CareerAdminPage() {
 
                                         {/* Links */}
                                         <Section title="Documents & Links">
-                                            <a href={selectedApp.resume_url} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-[#a60303] font-bold text-sm hover:underline">
+                                            <a href={selectedApp.resume_url} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-[var(--primary)] font-bold text-sm hover:underline">
                                                 <FileText size={15} /> View Resume
                                             </a>
                                             {selectedApp.portfolio_url && (
-                                                <a href={selectedApp.portfolio_url} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-[#a60303] font-bold text-sm hover:underline">
+                                                <a href={selectedApp.portfolio_url} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-[var(--primary)] font-bold text-sm hover:underline">
                                                     <ExternalLink size={15} /> Portfolio / GitHub
                                                 </a>
                                             )}
@@ -544,7 +544,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 function Row({ icon, label, value }: { icon?: React.ReactNode; label?: string; value: React.ReactNode }) {
     return (
         <div className="flex gap-2 items-start">
-            {icon && <span className="text-[#a60303] mt-0.5 shrink-0">{icon}</span>}
+            {icon && <span className="text-[var(--primary)] mt-0.5 shrink-0">{icon}</span>}
             {label && <span className="text-xs text-gray-400 font-semibold w-20 shrink-0">{label}</span>}
             <span className="text-xs text-gray-700 font-medium">{value}</span>
         </div>

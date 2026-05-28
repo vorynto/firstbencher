@@ -51,7 +51,7 @@ export default function AdminLoginPage() {
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
                 {/* Large Background Blobs */}
                 <div
-                    className="absolute -top-[10%] -left-[10%] w-[60%] h-[60%] bg-[#a60303]/10 rounded-full blur-[120px] transition-transform duration-700 ease-out"
+                    className="absolute -top-[10%] -left-[10%] w-[60%] h-[60%] bg-[var(--primary)]/10 rounded-full blur-[120px] transition-transform duration-700 ease-out"
                     style={{ transform: `translate(${mousePos.x * 1.5}px, ${mousePos.y * 1.5}px)` }}
                 />
                 <div
@@ -103,7 +103,7 @@ export default function AdminLoginPage() {
 
                     {/* Error Display */}
                     {error && (
-                        <div className="flex items-center gap-3 bg-red-50 text-red-600 rounded-2xl px-5 py-4 mb-8 text-sm font-semibold border border-red-100 animate-in fade-in slide-in-from-top-2">
+                        <div className="flex items-center gap-3 bg-primary-tint text-red-600 rounded-2xl px-5 py-4 mb-8 text-sm font-semibold border border-[var(--primary)]/20 animate-in fade-in slide-in-from-top-2">
                             <AlertCircle size={18} className="shrink-0" />
                             {error}
                         </div>
@@ -160,7 +160,7 @@ export default function AdminLoginPage() {
                             disabled={loading}
                             className="group/btn relative w-full bg-[#1E1E2F] text-white font-black h-16 rounded-2xl flex items-center justify-center gap-3 overflow-hidden shadow-xl shadow-black/10 hover:-translate-y-1 hover:shadow-2xl hover:shadow-black/20 active:scale-[0.98] transition-all disabled:opacity-70 disabled:cursor-not-allowed"
                         >
-                            <div className="absolute inset-0 bg-gradient-to-r from-[#a60303] to-[#800202] opacity-0 group-hover/btn:opacity-100 transition-opacity duration-500" />
+                            <div className="absolute inset-0 bg-gradient-to-r from-[var(--primary)] to-[var(--primary-dark)] opacity-0 group-hover/btn:opacity-100 transition-opacity duration-500" />
                             {loading ? (
                                 <Loader2 size={24} className="animate-spin relative z-10" />
                             ) : (

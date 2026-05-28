@@ -123,14 +123,14 @@ export default function InstructorsPage() {
         (i.title || "").toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    const base = "w-full px-3 py-2 rounded-lg border border-gray-200 bg-white focus:ring-2 focus:ring-red-100 focus:border-[#a60303] outline-none text-sm";
+    const base = "w-full px-3 py-2 rounded-lg border border-gray-200 bg-white focus:ring-2 focus:ring-[var(--primary)]/20 focus:border-[var(--primary)] outline-none text-sm";
 
     const formatReviews = (n: number) => n >= 1000 ? `${(n / 1000).toFixed(2)}k` : String(n);
 
     return (
         <div className="flex flex-col gap-8 pb-20">
             {toast && (
-                <div className={cn("fixed top-6 right-6 z-50 px-5 py-3.5 rounded-2xl shadow-xl text-white text-sm font-bold", toast.type === "success" ? "bg-green-500" : "bg-red-500")}>
+                <div className={cn("fixed top-6 right-6 z-50 px-5 py-3.5 rounded-2xl shadow-xl text-white text-sm font-bold", toast.type === "success" ? "bg-green-500" : "bg-primary-tint0")}>
                     {toast.msg}
                 </div>
             )}
@@ -147,7 +147,7 @@ export default function InstructorsPage() {
                 {view === "list" ? (
                     <button
                         onClick={() => { setEditorData(defaultInstructor); setNewQual(""); setView("form"); }}
-                        className="bg-[#a60303] text-white px-5 py-2.5 rounded-xl font-bold flex items-center gap-2 hover:bg-[#800202] transition-colors shadow-sm text-sm"
+                        className="bg-[var(--primary)] text-white px-5 py-2.5 rounded-xl font-bold flex items-center gap-2 hover:bg-[var(--primary-dark)] transition-colors shadow-sm text-sm"
                     >
                         <Plus size={18} /> Add Instructor
                     </button>
@@ -169,7 +169,7 @@ export default function InstructorsPage() {
                         <input
                             type="text"
                             placeholder="Search by name or title..."
-                            className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-red-100 focus:border-[#a60303] outline-none text-sm"
+                            className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[var(--primary)]/20 focus:border-[var(--primary)] outline-none text-sm"
                             value={searchTerm}
                             onChange={e => setSearchTerm(e.target.value)}
                         />
@@ -221,7 +221,7 @@ export default function InstructorsPage() {
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 text-right">
-                                            <button onClick={() => handleEdit(inst)} className="p-2 text-gray-400 hover:text-[#a60303] transition-colors"><Edit2 size={18} /></button>
+                                            <button onClick={() => handleEdit(inst)} className="p-2 text-gray-400 hover:text-[var(--primary)] transition-colors"><Edit2 size={18} /></button>
                                             <button onClick={() => handleDelete(inst.id)} className="p-2 text-gray-400 hover:text-red-500 transition-colors"><Trash2 size={18} /></button>
                                         </td>
                                     </tr>
@@ -319,11 +319,11 @@ export default function InstructorsPage() {
                             <div className="flex justify-between items-center">
                                 <h2 className="text-base font-bold">Status</h2>
                                 <label className="flex items-center gap-2 cursor-pointer">
-                                    <input type="checkbox" checked={editorData.active ?? true} onChange={e => setEditorData({ ...editorData, active: e.target.checked })} className="w-4 h-4 rounded text-[#a60303]" />
+                                    <input type="checkbox" checked={editorData.active ?? true} onChange={e => setEditorData({ ...editorData, active: e.target.checked })} className="w-4 h-4 rounded text-[var(--primary)]" />
                                     <span className="text-sm font-bold text-gray-700">Active</span>
                                 </label>
                             </div>
-                            <button onClick={handleSave} disabled={saving} className="w-full bg-[#a60303] hover:bg-[#800202] text-white py-3 rounded-xl font-bold flex justify-center items-center gap-2 disabled:opacity-50">
+                            <button onClick={handleSave} disabled={saving} className="w-full bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white py-3 rounded-xl font-bold flex justify-center items-center gap-2 disabled:opacity-50">
                                 {saving ? <Loader2 className="animate-spin" size={18} /> : "Save Instructor"}
                             </button>
                         </section>

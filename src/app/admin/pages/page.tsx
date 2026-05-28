@@ -65,10 +65,10 @@ function Field({
                     placeholder={placeholder} className={`${base} resize-none`} />
             ) : type === "color" ? (
                 <div className="flex items-center gap-3">
-                    <input type="color" value={value || "#a60303"} onChange={e => onChange(e.target.value)}
+                    <input type="color" value={value || "var(--primary)"} onChange={e => onChange(e.target.value)}
                         className="w-12 h-10 rounded-lg border border-border cursor-pointer" />
                     <input type="text" value={value} onChange={e => onChange(e.target.value)}
-                        placeholder="#a60303" className={`${base} flex-1`} />
+                        placeholder="var(--primary)" className={`${base} flex-1`} />
                 </div>
             ) : (
                 <input type={type} value={value} onChange={e => onChange(e.target.value)}
@@ -138,7 +138,7 @@ function HomeHeroEditor({ content, onChange }: { content: ContentMap; onChange: 
                                     const next = ((content.corporate_clients as Array<any>) || []).filter((_, i) => i !== idx);
                                     onChange({ ...content, corporate_clients: next });
                                 }}
-                                className="p-2 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                className="p-2 text-red-400 hover:text-red-600 hover:bg-primary-tint rounded-lg transition-colors"
                             >
                                 <Trash2 size={18} />
                             </button>
@@ -269,7 +269,7 @@ function CategoryGridEditor({ content, onChange }: { content: ContentMap; onChan
                 <div key={idx} className="p-4 bg-accent/20 rounded-2xl border border-border">
                     <div className="flex items-center justify-between mb-3">
                         <p className="text-xs font-black uppercase tracking-widest text-muted-foreground">Category {idx + 1}</p>
-                        <button onClick={() => remove(idx)} className="text-red-400 hover:text-red-600 p-1 rounded-lg hover:bg-red-50 transition-colors">
+                        <button onClick={() => remove(idx)} className="text-red-400 hover:text-red-600 p-1 rounded-lg hover:bg-primary-tint transition-colors">
                             <Trash2 size={14} />
                         </button>
                     </div>
@@ -308,7 +308,7 @@ function WhyUsEditor({ content, onChange }: { content: ContentMap; onChange: (c:
                 <div key={idx} className="p-4 bg-accent/20 rounded-2xl border border-border">
                     <div className="flex justify-between items-center mb-3">
                         <p className="text-xs font-bold text-muted-foreground">Feature {idx + 1}</p>
-                        <button onClick={() => removeFeat(idx)} className="text-red-400 hover:text-red-600 p-1 rounded-lg hover:bg-red-50 transition-colors">
+                        <button onClick={() => removeFeat(idx)} className="text-red-400 hover:text-red-600 p-1 rounded-lg hover:bg-primary-tint transition-colors">
                             <Trash2 size={14} />
                         </button>
                     </div>
@@ -391,8 +391,8 @@ function CustomPageEditor({ content, onChange }: { content: ContentMap; onChange
 
             {/* Hero Part */}
             <div className="space-y-6">
-                <div className="flex items-center justify-between border-b border-[#a60303]/10 pb-2">
-                    <h3 className="text-sm font-black uppercase tracking-widest text-[#a60303]">Hero Header Settings</h3>
+                <div className="flex items-center justify-between border-b border-[var(--primary)]/10 pb-2">
+                    <h3 className="text-sm font-black uppercase tracking-widest text-[var(--primary)]">Hero Header Settings</h3>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <Field label="Hero Title (Main)" value={hero.title || ""} onChange={v => updateHero("title", v)} placeholder="Pioneering Excellence" />
@@ -409,7 +409,7 @@ function CustomPageEditor({ content, onChange }: { content: ContentMap; onChange
                 <div className="flex items-center justify-between border-b border-border pb-2">
                     <h3 className="text-sm font-black uppercase tracking-widest text-muted-foreground">Body Sections</h3>
                     <div className="flex gap-2">
-                        <button onClick={addSection} className="flex items-center gap-1.5 text-xs font-bold text-[#a60303] hover:underline bg-[#a60303]/5 px-3 py-1.5 rounded-lg border border-[#a60303]/10">
+                        <button onClick={addSection} className="flex items-center gap-1.5 text-xs font-bold text-[var(--primary)] hover:underline bg-[var(--primary)]/5 px-3 py-1.5 rounded-lg border border-[var(--primary)]/10">
                             <Plus size={14} /> Add Section
                         </button>
                     </div>
@@ -434,7 +434,7 @@ function CustomPageEditor({ content, onChange }: { content: ContentMap; onChange
                                 </div>
                                 <button 
                                     onClick={() => removeSection(sIdx)}
-                                    className="text-red-400 hover:text-red-600 p-2 hover:bg-red-50 rounded-xl transition-all"
+                                    className="text-red-400 hover:text-red-600 p-2 hover:bg-primary-tint rounded-xl transition-all"
                                 >
                                     <Trash2 size={18} />
                                 </button>
@@ -558,7 +558,7 @@ function ValuesEditor({ content, onChange }: { content: ContentMap; onChange: (c
                 <div key={idx} className="p-4 bg-accent/20 rounded-2xl border border-border">
                     <div className="flex justify-between items-center mb-3">
                         <p className="text-xs font-bold text-muted-foreground">Value {idx + 1}</p>
-                        <button onClick={() => remove(idx)} className="text-red-400 hover:text-red-600 p-1 rounded-lg hover:bg-red-50 transition-colors"><Trash2 size={14} /></button>
+                        <button onClick={() => remove(idx)} className="text-red-400 hover:text-red-600 p-1 rounded-lg hover:bg-primary-tint transition-colors"><Trash2 size={14} /></button>
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                         <Field label="Emoji" value={val.emoji} onChange={v => update(idx, "emoji", v)} placeholder="🎯" />
@@ -591,7 +591,7 @@ function TeamEditor({ content, onChange }: { content: ContentMap; onChange: (c: 
                 <div key={idx} className="p-4 bg-accent/20 rounded-2xl border border-border">
                     <div className="flex justify-between items-center mb-3">
                         <p className="text-xs font-bold text-muted-foreground">Member {idx + 1}</p>
-                        <button onClick={() => remove(idx)} className="text-red-400 hover:text-red-600 p-1 rounded-lg hover:bg-red-50 transition-colors"><Trash2 size={14} /></button>
+                        <button onClick={() => remove(idx)} className="text-red-400 hover:text-red-600 p-1 rounded-lg hover:bg-primary-tint transition-colors"><Trash2 size={14} /></button>
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                         <Field label="Name" value={m.name} onChange={v => update(idx, "name", v)} />
@@ -938,7 +938,7 @@ export default function WebPagesEditor() {
     // ── Toast (shared) ────────────────────────────────────────────
     const ToastEl = toast && (
         <div className={cn("fixed top-6 right-6 z-50 flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-2xl text-white text-sm font-bold",
-            toast.type === "success" ? "bg-green-500" : "bg-red-500")}>
+            toast.type === "success" ? "bg-green-500" : "bg-primary-tint0")}>
             {toast.type === "success" ? <CheckCircle size={18} /> : <AlertCircle size={18} />}
             {toast.msg}
         </div>
@@ -1090,7 +1090,7 @@ export default function WebPagesEditor() {
                 </div>
                 <div className="flex items-center gap-3">
                     {editingPage?.isCustom && (
-                        <button onClick={handleDeletePage} className="px-4 py-2 rounded-xl border border-red-200 text-red-500 text-sm font-bold hover:bg-red-50 transition-colors flex items-center gap-2">
+                        <button onClick={handleDeletePage} className="px-4 py-2 rounded-xl border border-red-200 text-red-500 text-sm font-bold hover:bg-primary-tint transition-colors flex items-center gap-2">
                             <Trash2 size={14} /> Delete
                         </button>
                     )}
@@ -1226,7 +1226,7 @@ export default function WebPagesEditor() {
                         {/* Checklist */}
                         <div className="flex flex-col gap-1.5 max-h-48 overflow-y-auto pr-1">
                             {seoChecks.map((chk, i) => (
-                                <div key={i} className={cn("flex items-start gap-2 p-2 rounded-lg text-xs", chk.pass ? "bg-green-50" : "bg-red-50")}>
+                                <div key={i} className={cn("flex items-start gap-2 p-2 rounded-lg text-xs", chk.pass ? "bg-green-50" : "bg-primary-tint")}>
                                     <div className={cn("w-4 h-4 rounded-full flex items-center justify-center shrink-0 mt-0.5", chk.pass ? "bg-green-500" : "bg-red-400")}>
                                         {chk.pass ? <CheckCircle size={10} className="text-white" /> : <AlertCircle size={10} className="text-white" />}
                                     </div>

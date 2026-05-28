@@ -327,7 +327,7 @@ export default function AdminFootersPage() {
             {/* Toast */}
             {toast && (
                 <div className={cn("fixed top-6 right-6 z-50 flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-2xl text-white text-sm font-bold",
-                    toast.type === "success" ? "bg-green-500" : "bg-red-500")}>
+                    toast.type === "success" ? "bg-green-500" : "bg-primary-tint0")}>
                     {toast.type === "success" ? <CheckCircle2 size={18} /> : <AlertCircle size={18} />}
                     {toast.msg}
                 </div>
@@ -441,7 +441,7 @@ export default function AdminFootersPage() {
                                             </button>
                                             <button
                                                 onClick={() => handleDelete(selected)}
-                                                className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-red-200 text-red-500 bg-red-50 text-xs font-bold hover:bg-red-100 transition-colors"
+                                                className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-red-200 text-red-500 bg-primary-tint text-xs font-bold hover:bg-red-100 transition-colors"
                                             >
                                                 <Trash2 size={13} /> Delete
                                             </button>

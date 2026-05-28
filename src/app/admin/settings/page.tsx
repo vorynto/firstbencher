@@ -28,14 +28,14 @@ type GlobalSettings = {
 const defaultSettings: GlobalSettings = {
     logo_header: "",
     logo_footer: "",
-    primary_color: "#a60303",
+    primary_color: "var(--primary)",
     secondary_color: "#F07C5A",
     accent_color: "#f4f6ff",
     font_family: "Inter",
     header_font_family: "Inter",
-    button_bg: "#a60303",
+    button_bg: "var(--primary)",
     button_text: "#ffffff",
-    button_hover_bg: "#800202",
+    button_hover_bg: "var(--primary-dark)",
     button_hover_text: "#ffffff",
 };
 
@@ -175,7 +175,7 @@ export default function SettingsPage() {
                 <button
                     onClick={handleSave}
                     disabled={saving}
-                    className="flex items-center justify-center gap-2 bg-[#a60303] hover:bg-[#800202] text-white px-6 py-2.5 rounded-xl font-bold transition-all shadow-sm shadow-[#a60303]/20 disabled:opacity-50 min-w-[140px]"
+                    className="flex items-center justify-center gap-2 bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white px-6 py-2.5 rounded-xl font-bold transition-all shadow-sm shadow-[var(--primary)]/20 disabled:opacity-50 min-w-[140px]"
                 >
                     {saving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
                     {saving ? "Saving..." : "Save Settings"}
@@ -186,7 +186,7 @@ export default function SettingsPage() {
             {statusMenu && (
                 <div className={cn(
                     "mb-6 p-4 rounded-xl flex items-center gap-3 font-medium",
-                    statusMenu.type === "success" ? "bg-green-50 text-green-800 border border-green-200" : "bg-red-50 text-red-800 border border-red-200"
+                    statusMenu.type === "success" ? "bg-green-50 text-green-800 border border-green-200" : "bg-primary-tint text-red-800 border border-red-200"
                 )}>
                     {statusMenu.type === "success" ? <CheckCircle2 size={20} className="text-green-600" /> : <AlertCircle size={20} className="text-red-600" />}
                     {statusMenu.msg}
@@ -208,11 +208,11 @@ export default function SettingsPage() {
                                 className={cn(
                                     "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all text-left",
                                     isActive 
-                                        ? "bg-white text-[#a60303] shadow-sm border border-gray-200" 
+                                        ? "bg-white text-[var(--primary)] shadow-sm border border-gray-200" 
                                         : "text-gray-600 hover:bg-gray-200/50 hover:text-gray-900"
                                 )}
                             >
-                                <Icon size={18} className={isActive ? "text-[#a60303]" : "text-gray-400"} />
+                                <Icon size={18} className={isActive ? "text-[var(--primary)]" : "text-gray-400"} />
                                 {tab.label}
                             </button>
                         );
@@ -280,7 +280,7 @@ export default function SettingsPage() {
                                         <select
                                             value={settings.font_family}
                                             onChange={(e) => handleGlobalChange("font_family", e.target.value)}
-                                            className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm font-medium focus:ring-2 focus:ring-red-100 focus:border-[#a60303] outline-none"
+                                            className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm font-medium focus:ring-2 focus:ring-[var(--primary)]/20 focus:border-[var(--primary)] outline-none"
                                         >
                                             <option value="Inter">Inter (Default)</option>
                                             <option value="Roboto">Roboto</option>
@@ -296,7 +296,7 @@ export default function SettingsPage() {
                                         <select
                                             value={settings.header_font_family}
                                             onChange={(e) => handleGlobalChange("header_font_family", e.target.value)}
-                                            className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm font-medium focus:ring-2 focus:ring-red-100 focus:border-[#a60303] outline-none"
+                                            className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-sm font-medium focus:ring-2 focus:ring-[var(--primary)]/20 focus:border-[var(--primary)] outline-none"
                                         >
                                             <option value="Inter">Inherit Base Font</option>
                                             <option value="Playfair Display">Playfair Display (Serif)</option>
@@ -359,7 +359,7 @@ export default function SettingsPage() {
                                 {(header.nav_links as Array<any> || []).map((lnk, idx) => {
                                     return (
                                     <Reorder.Item key={lnk._id || `header-nav-${idx}`} value={lnk} className="flex flex-col gap-3 p-4 bg-white rounded-xl border border-gray-200 shadow-sm relative group pr-4 pl-10">
-                                        <div className="absolute left-2 top-1/2 -translate-y-1/2 p-1 cursor-grab active:cursor-grabbing text-gray-300 hover:text-[#a60303] transition-colors rounded">
+                                        <div className="absolute left-2 top-1/2 -translate-y-1/2 p-1 cursor-grab active:cursor-grabbing text-gray-300 hover:text-[var(--primary)] transition-colors rounded">
                                             <GripVertical size={20} />
                                         </div>
                                         <div className="flex flex-col md:flex-row gap-3 items-end">
@@ -372,7 +372,7 @@ export default function SettingsPage() {
                                             <label className="flex items-center gap-2 text-sm font-semibold text-gray-600 pb-3">
                                                 <input type="checkbox" checked={lnk.hasDropdown} onChange={e => {
                                                     const next = [...(header.nav_links || [])]; next[idx].hasDropdown = e.target.checked; handleHeaderChange("nav_links", next);
-                                                }} className="w-4 h-4 rounded text-[#a60303]" />
+                                                }} className="w-4 h-4 rounded text-[var(--primary)]" />
                                                 Has Dropdown
                                             </label>
                                             <button onClick={() => {
@@ -390,7 +390,7 @@ export default function SettingsPage() {
                                                 {(lnk.subLinks || []).map((subLnk: any, subIdx: number) => {
                                                     return (
                                                     <Reorder.Item key={subLnk._id || `sub-${idx}-${subIdx}`} value={subLnk} className="flex gap-2 items-center relative">
-                                                        <div className="cursor-grab active:cursor-grabbing text-gray-300 hover:text-[#a60303] transition-colors p-1"><GripVertical size={16} /></div>
+                                                        <div className="cursor-grab active:cursor-grabbing text-gray-300 hover:text-[var(--primary)] transition-colors p-1"><GripVertical size={16} /></div>
                                                         <div className="flex-1 flex gap-2 items-end">
                                                             <Field value={subLnk.name} onChange={v => {
                                                                 const next = [...(header.nav_links || [])];
@@ -417,7 +417,7 @@ export default function SettingsPage() {
                                                     if (!next[idx].subLinks) next[idx].subLinks = [];
                                                     next[idx].subLinks.push({ name: "", href: "", _id: Math.random().toString(36).slice(2) });
                                                     handleHeaderChange("nav_links", next);
-                                                }} className="text-xs font-bold text-[#a60303] hover:underline self-start">
+                                                }} className="text-xs font-bold text-[var(--primary)] hover:underline self-start">
                                                     + Add Dropdown Link
                                                 </button>
                                             </div>
@@ -426,7 +426,7 @@ export default function SettingsPage() {
                                     );
                                 })}
                                 </Reorder.Group>
-                                <button onClick={() => handleHeaderChange("nav_links", [...(header.nav_links || []), { name: "", href: "", hasDropdown: false, _id: Math.random().toString(36).slice(2) }])} className="flex items-center justify-center gap-2 py-2 border-2 border-dashed border-gray-300 rounded-xl text-sm font-bold text-gray-500 hover:border-[#a60303] hover:text-[#a60303]">
+                                <button onClick={() => handleHeaderChange("nav_links", [...(header.nav_links || []), { name: "", href: "", hasDropdown: false, _id: Math.random().toString(36).slice(2) }])} className="flex items-center justify-center gap-2 py-2 border-2 border-dashed border-gray-300 rounded-xl text-sm font-bold text-gray-500 hover:border-[var(--primary)] hover:text-[var(--primary)]">
                                     <Plus size={16} /> Add Link
                                 </button>
                             </div>
@@ -435,13 +435,13 @@ export default function SettingsPage() {
                                 <h4 className="text-sm font-bold border-b border-gray-200 pb-2">Header Actions & Buttons</h4>
                                 <div className="flex flex-wrap gap-6 pt-2">
                                     <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                                        <input type="checkbox" checked={header.show_search ?? true} onChange={e => handleHeaderChange("show_search", e.target.checked)} className="w-4 h-4 rounded text-[#a60303]" /> Show Search
+                                        <input type="checkbox" checked={header.show_search ?? true} onChange={e => handleHeaderChange("show_search", e.target.checked)} className="w-4 h-4 rounded text-[var(--primary)]" /> Show Search
                                     </label>
                                     <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                                        <input type="checkbox" checked={header.show_cart ?? true} onChange={e => handleHeaderChange("show_cart", e.target.checked)} className="w-4 h-4 rounded text-[#a60303]" /> Show Cart
+                                        <input type="checkbox" checked={header.show_cart ?? true} onChange={e => handleHeaderChange("show_cart", e.target.checked)} className="w-4 h-4 rounded text-[var(--primary)]" /> Show Cart
                                     </label>
                                     <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                                        <input type="checkbox" checked={header.auth_buttons_active ?? true} onChange={e => handleHeaderChange("auth_buttons_active", e.target.checked)} className="w-4 h-4 rounded text-[#a60303]" /> Show Login/Register
+                                        <input type="checkbox" checked={header.auth_buttons_active ?? true} onChange={e => handleHeaderChange("auth_buttons_active", e.target.checked)} className="w-4 h-4 rounded text-[var(--primary)]" /> Show Login/Register
                                     </label>
                                 </div>
                                 {header.auth_buttons_active !== false && (
@@ -494,7 +494,7 @@ export default function SettingsPage() {
                                 <div className="flex items-center justify-between border-b border-gray-200 pb-2">
                                     <h4 className="text-sm font-bold">Social Media Profiles</h4>
                                     <label className="flex items-center gap-2 text-sm font-semibold text-gray-700">
-                                        <input type="checkbox" checked={footer.show_socials ?? true} onChange={e => handleFooterChange("show_socials", e.target.checked)} className="w-4 h-4 rounded text-[#a60303]" /> Show Icons
+                                        <input type="checkbox" checked={footer.show_socials ?? true} onChange={e => handleFooterChange("show_socials", e.target.checked)} className="w-4 h-4 rounded text-[var(--primary)]" /> Show Icons
                                     </label>
                                 </div>
                                 {footer.show_socials !== false && (
@@ -583,7 +583,7 @@ type FieldProps = {
 };
 
 function Field({ label, value, onChange, type = "text", placeholder = "", rows = 3 }: FieldProps) {
-    const base = "w-full px-3 py-2 rounded-lg border border-gray-200 bg-white focus:ring-2 focus:ring-red-100 focus:border-[#a60303] outline-none text-sm";
+    const base = "w-full px-3 py-2 rounded-lg border border-gray-200 bg-white focus:ring-2 focus:ring-[var(--primary)]/20 focus:border-[var(--primary)] outline-none text-sm";
     return (
         <div className="space-y-1.5 flex-1">
             {label && <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">{label}</label>}
@@ -600,7 +600,7 @@ function ColorPicker({ configKey, label, value, onChange }: { configKey: keyof G
     return (
         <div className="flex flex-col gap-2">
             <label className="text-sm font-semibold text-gray-700">{label}</label>
-            <div className="flex items-center gap-3 bg-white border border-gray-200 rounded-lg p-1 pr-3 focus-within:ring-2 focus-within:ring-red-100 focus-within:border-[#a60303]">
+            <div className="flex items-center gap-3 bg-white border border-gray-200 rounded-lg p-1 pr-3 focus-within:ring-2 focus-within:ring-red-100 focus-within:border-[var(--primary)]">
                 <input type="color" value={value || "#000000"} onChange={(e) => onChange(configKey, e.target.value)} className="w-10 h-10 rounded cursor-pointer border-0 p-0" />
                 <input type="text" value={value} onChange={(e) => onChange(configKey, e.target.value)} className="flex-1 outline-none text-sm font-mono text-gray-600 uppercase" maxLength={7} />
             </div>
@@ -617,7 +617,7 @@ function LinkBuilder({ state, setState, stateKey, title }: { state: any, setStat
             {links.map((lnk, idx) => {
                 return (
                 <Reorder.Item key={lnk._id || `${stateKey}-${idx}`} value={lnk} className="flex gap-2 items-center bg-gray-50 p-2 pr-4 pl-3 rounded-lg border border-gray-100 shadow-sm relative group">
-                    <div className="cursor-grab active:cursor-grabbing text-gray-400 hover:text-[#a60303] transition-colors p-1 rounded-md">
+                    <div className="cursor-grab active:cursor-grabbing text-gray-400 hover:text-[var(--primary)] transition-colors p-1 rounded-md">
                         <GripVertical size={16} />
                     </div>
                     <div className="flex-1 flex gap-2 items-end">
@@ -629,7 +629,7 @@ function LinkBuilder({ state, setState, stateKey, title }: { state: any, setStat
                 );
             })}
             </Reorder.Group>
-            <button onClick={() => setState((p: any) => ({...p, [stateKey]: [...links, { name: "", href: "", _id: Math.random().toString(36).slice(2) }]}))} className="text-xs font-bold text-[#a60303] hover:underline self-start mt-1">
+            <button onClick={() => setState((p: any) => ({...p, [stateKey]: [...links, { name: "", href: "", _id: Math.random().toString(36).slice(2) }]}))} className="text-xs font-bold text-[var(--primary)] hover:underline self-start mt-1">
                 + Add Link
             </button>
         </div>

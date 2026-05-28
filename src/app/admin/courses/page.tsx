@@ -168,7 +168,7 @@ export default function CoursesPage() {
     return (
         <div className="flex flex-col gap-8 pb-20">
             {toast && (
-                <div className={cn("fixed top-6 right-6 z-50 px-5 py-3.5 rounded-2xl shadow-xl text-white text-sm font-bold", toast.type === "success" ? "bg-green-500" : "bg-red-500")}>
+                <div className={cn("fixed top-6 right-6 z-50 px-5 py-3.5 rounded-2xl shadow-xl text-white text-sm font-bold", toast.type === "success" ? "bg-green-500" : "bg-primary-tint0")}>
                     {toast.msg}
                 </div>
             )}
@@ -183,7 +183,7 @@ export default function CoursesPage() {
                         <button onClick={() => setView("tags")} className="bg-white border border-gray-200 text-gray-700 px-5 py-2.5 rounded-xl font-bold flex items-center gap-2 hover:bg-gray-50 transition-colors shadow-sm text-sm">
                             Manage Tags
                         </button>
-                        <button onClick={() => { setEditorData(defaultCourse); setView("form"); }} className="bg-[#a60303] text-white px-5 py-2.5 rounded-xl font-bold flex items-center gap-2 hover:bg-[#800202] transition-colors shadow-sm text-sm">
+                        <button onClick={() => { setEditorData(defaultCourse); setView("form"); }} className="bg-[var(--primary)] text-white px-5 py-2.5 rounded-xl font-bold flex items-center gap-2 hover:bg-[var(--primary-dark)] transition-colors shadow-sm text-sm">
                             <Plus size={18} /> Add Course
                         </button>
                     </div>
@@ -198,7 +198,7 @@ export default function CoursesPage() {
                 <div className="flex flex-col gap-6">
                     <div className="relative max-w-md">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                        <input type="text" placeholder="Search by title or slug..." className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-red-100 focus:border-[#a60303] outline-none text-sm" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
+                        <input type="text" placeholder="Search by title or slug..." className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[var(--primary)]/20 focus:border-[var(--primary)] outline-none text-sm" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
                     </div>
 
                     <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
@@ -229,7 +229,7 @@ export default function CoursesPage() {
                                                     <p className="font-bold text-gray-900 line-clamp-1">{course.title}</p>
                                                     <div className="flex gap-2 items-center mt-1">
                                                         <span className="text-xs text-gray-500 font-mono bg-gray-100 px-2 py-0.5 rounded">/{course.slug}</span>
-                                                        {course.tags?.map(t => <span key={t} className="text-[10px] font-bold text-[#a60303] bg-red-50 px-1.5 py-0.5 rounded uppercase tracking-wider">{t}</span>)}
+                                                        {course.tags?.map(t => <span key={t} className="text-[10px] font-bold text-[var(--primary)] bg-primary-tint px-1.5 py-0.5 rounded uppercase tracking-wider">{t}</span>)}
                                                     </div>
                                                 </div>
                                             </div>
@@ -243,7 +243,7 @@ export default function CoursesPage() {
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 text-right">
-                                            <button onClick={() => handleEdit(course)} className="p-2 text-gray-400 hover:text-[#a60303] transition-colors"><Edit2 size={18} /></button>
+                                            <button onClick={() => handleEdit(course)} className="p-2 text-gray-400 hover:text-[var(--primary)] transition-colors"><Edit2 size={18} /></button>
                                             <button onClick={() => handleDelete(course.id)} className="p-2 text-gray-400 hover:text-red-500 transition-colors"><Trash2 size={18} /></button>
                                         </td>
                                     </tr>
@@ -277,7 +277,7 @@ export default function CoursesPage() {
                         setSaving(false);
                         if (error) showToast("error", "Failed to save tags");
                         else showToast("success", "Tags saved successfully!");
-                    }} disabled={saving} className="bg-[#a60303] text-white px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#800202] mt-4">
+                    }} disabled={saving} className="bg-[var(--primary)] text-white px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[var(--primary-dark)] mt-4">
                         {saving ? <Loader2 className="animate-spin" size={18} /> : "Save Tags"}
                     </button>
                 </div>
@@ -301,7 +301,7 @@ type AccordionSectionProps = {
 
 function AccordionSection({ title, isOpen, onToggle, tabKey, tabEnabled, onTabToggle, badge, children }: AccordionSectionProps) {
     return (
-        <div className={cn("bg-white rounded-2xl border transition-all", isOpen ? "border-[#a60303]/30 shadow-sm" : "border-gray-200")}>
+        <div className={cn("bg-white rounded-2xl border transition-all", isOpen ? "border-[var(--primary)]/30 shadow-sm" : "border-gray-200")}>
             <div
                 className="flex items-center justify-between px-6 py-4 cursor-pointer select-none"
                 onClick={onToggle}
@@ -454,7 +454,7 @@ function FormView({
                     badge={(editorData.instructor_ids?.length || 0) > 0 ? `${editorData.instructor_ids!.length} selected` : undefined}
                 >
                     {allInstructors.length === 0 ? (
-                        <p className="text-sm text-gray-500 italic">No instructors found. <a href="/admin/instructors" className="text-[#a60303] font-bold underline">Add instructors first →</a></p>
+                        <p className="text-sm text-gray-500 italic">No instructors found. <a href="/admin/instructors" className="text-[var(--primary)] font-bold underline">Add instructors first →</a></p>
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             {allInstructors.map(inst => {
@@ -475,7 +475,7 @@ function FormView({
                                         className={cn(
                                             "flex items-center gap-3 p-3 rounded-xl border text-left transition-all",
                                             selected
-                                                ? "border-[#a60303] bg-red-50 shadow-sm"
+                                                ? "border-[var(--primary)] bg-primary-tint shadow-sm"
                                                 : "border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50"
                                         )}
                                     >
@@ -487,10 +487,10 @@ function FormView({
                                             </div>
                                         )}
                                         <div className="flex-1 min-w-0">
-                                            <p className={cn("font-bold text-sm truncate", selected ? "text-[#a60303]" : "text-gray-800")}>{inst.name}</p>
+                                            <p className={cn("font-bold text-sm truncate", selected ? "text-[var(--primary)]" : "text-gray-800")}>{inst.name}</p>
                                             <p className="text-xs text-gray-500 truncate">{inst.qualification || inst.experience || "—"}</p>
                                         </div>
-                                        {selected && <CheckCircle2 size={16} className="text-[#a60303] shrink-0" />}
+                                        {selected && <CheckCircle2 size={16} className="text-[var(--primary)] shrink-0" />}
                                     </button>
                                 );
                             })}
@@ -517,11 +517,11 @@ function FormView({
                     <div className="flex justify-between items-center">
                         <h2 className="text-base font-bold">Visibility</h2>
                         <label className="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" checked={editorData.active ?? true} onChange={e => setEditorData({ ...editorData, active: e.target.checked })} className="w-4 h-4 rounded text-[#a60303]" />
+                            <input type="checkbox" checked={editorData.active ?? true} onChange={e => setEditorData({ ...editorData, active: e.target.checked })} className="w-4 h-4 rounded text-[var(--primary)]" />
                             <span className="text-sm font-bold text-gray-700">Published</span>
                         </label>
                     </div>
-                    <button onClick={saveCourse} disabled={saving} className="w-full bg-[#a60303] hover:bg-[#800202] text-white py-3 rounded-xl font-bold flex justify-center items-center gap-2 disabled:opacity-50">
+                    <button onClick={saveCourse} disabled={saving} className="w-full bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white py-3 rounded-xl font-bold flex justify-center items-center gap-2 disabled:opacity-50">
                         {saving ? <Loader2 className="animate-spin" size={18} /> : "Save Course"}
                     </button>
                 </section>
@@ -584,7 +584,7 @@ function FormView({
                                             if (isSelected) setEditorData({ ...editorData, tags: current.filter(t => t !== tag) });
                                             else setEditorData({ ...editorData, tags: [...current, tag] });
                                         }}
-                                        className={cn("px-3 py-1.5 rounded-lg text-sm font-bold border transition-colors cursor-pointer", isSelected ? "bg-red-50 border-red-200 text-[#a60303]" : "bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100")}
+                                        className={cn("px-3 py-1.5 rounded-lg text-sm font-bold border transition-colors cursor-pointer", isSelected ? "bg-primary-tint border-red-200 text-[var(--primary)]" : "bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100")}
                                         type="button"
                                     >
                                         {tag}
@@ -618,7 +618,7 @@ type FieldProps = {
 };
 
 function Field({ label, value, onChange, type = "text", placeholder = "", rows = 3 }: FieldProps) {
-    const base = "w-full px-3 py-2 rounded-lg border border-gray-200 bg-white focus:ring-2 focus:ring-red-100 focus:border-[#a60303] outline-none text-sm";
+    const base = "w-full px-3 py-2 rounded-lg border border-gray-200 bg-white focus:ring-2 focus:ring-[var(--primary)]/20 focus:border-[var(--primary)] outline-none text-sm";
     return (
         <div className="space-y-1.5 flex-1 w-full">
             {label && <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">{label}</label>}
@@ -651,7 +651,7 @@ function ArrayBuilder({ label, data, onChange, placeholder }: { label: string, d
                 ))}
             </div>
             <div className="flex gap-2">
-                <input type="text" value={newItem} onChange={e => setNewItem(e.target.value)} onKeyDown={e => e.key === "Enter" && addItem()} placeholder={placeholder} className="flex-1 w-full px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-[#a60303]" />
+                <input type="text" value={newItem} onChange={e => setNewItem(e.target.value)} onKeyDown={e => e.key === "Enter" && addItem()} placeholder={placeholder} className="flex-1 w-full px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-[var(--primary)]" />
                 <button onClick={addItem} className="px-3 py-2 bg-gray-100 text-gray-700 text-sm font-bold rounded-lg border border-gray-200 hover:bg-gray-200">Add</button>
             </div>
         </div>
@@ -672,7 +672,7 @@ function LessonAdder({ onAdd }: { onAdd: (title: string) => void }) {
                 value={title}
                 onChange={e => setTitle(e.target.value)}
                 placeholder="Add lesson (e.g. Intro to React)..." 
-                className="flex-1 px-3 py-1.5 text-xs border border-gray-200 rounded-md outline-none focus:border-[#a60303]"
+                className="flex-1 px-3 py-1.5 text-xs border border-gray-200 rounded-md outline-none focus:border-[var(--primary)]"
                 onKeyDown={e => {
                     if (e.key === "Enter") {
                         e.preventDefault();
@@ -764,7 +764,7 @@ function CurriculumBuilder({ data, onChange }: { data: { title: string; lessons:
                         }
                     }} 
                     placeholder="New Section Title (e.g. Section 01)..." 
-                    className="flex-1 w-full px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-[#a60303]" 
+                    className="flex-1 w-full px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-[var(--primary)]" 
                 />
                 <button onClick={addSection} className="px-3 py-2 bg-gray-100 text-gray-700 text-sm font-bold rounded-lg border border-gray-200 hover:bg-gray-200 whitespace-nowrap">Add Section</button>
             </div>
@@ -804,8 +804,8 @@ function FAQBuilder({ data, onChange }: { data: { question: string; answer: stri
             </div>
 
             <div className="space-y-2 border border-gray-200 p-3 rounded-xl bg-white">
-                <input type="text" value={q} onChange={e => setQ(e.target.value)} placeholder="Question..." className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-[#a60303]" />
-                <textarea value={a} onChange={e => setA(e.target.value)} placeholder="Answer..." rows={2} className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-[#a60303] resize-none" />
+                <input type="text" value={q} onChange={e => setQ(e.target.value)} placeholder="Question..." className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-[var(--primary)]" />
+                <textarea value={a} onChange={e => setA(e.target.value)} placeholder="Answer..." rows={2} className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-[var(--primary)] resize-none" />
                 <button onClick={addFaq} className="w-full py-2 bg-gray-100 text-gray-700 text-sm font-bold rounded-lg border border-gray-200 hover:bg-gray-200">Add FAQ</button>
             </div>
         </div>
@@ -857,11 +857,11 @@ function BatchBuilder({ data, onChange }: { data: any[], onChange: (arr: any[]) 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-1.5 flex-1 w-full">
                             <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">Start Date (Hero display)</label>
-                            <input type="date" value={batch.start_date || ""} onChange={e => updateBatch(idx, "start_date", e.target.value)} className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-white focus:ring-2 focus:ring-red-100 focus:border-[#a60303] outline-none text-sm" />
+                            <input type="date" value={batch.start_date || ""} onChange={e => updateBatch(idx, "start_date", e.target.value)} className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-white focus:ring-2 focus:ring-[var(--primary)]/20 focus:border-[var(--primary)] outline-none text-sm" />
                         </div>
                         <div className="space-y-1.5 flex-1 w-full">
                             <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">Time Duration (hrs per day)</label>
-                            <input type="number" value={batch.duration_hours || ""} onChange={e => updateBatch(idx, "duration_hours", parseFloat(e.target.value))} className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-white focus:ring-2 focus:ring-red-100 focus:border-[#a60303] outline-none text-sm" placeholder="e.g. 8" />
+                            <input type="number" value={batch.duration_hours || ""} onChange={e => updateBatch(idx, "duration_hours", parseFloat(e.target.value))} className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-white focus:ring-2 focus:ring-[var(--primary)]/20 focus:border-[var(--primary)] outline-none text-sm" placeholder="e.g. 8" />
                         </div>
                     </div>
 
@@ -870,7 +870,7 @@ function BatchBuilder({ data, onChange }: { data: any[], onChange: (arr: any[]) 
                         <div className="flex flex-wrap gap-4">
                             {["Classroom", "Online", "Classroom & Online"].map(opt => (
                                 <label key={opt} className="flex items-center gap-2 cursor-pointer">
-                                    <input type="radio" checked={batch.mode === opt} onChange={() => updateBatch(idx, "mode", opt)} className="w-4 h-4 text-[#a60303]" />
+                                    <input type="radio" checked={batch.mode === opt} onChange={() => updateBatch(idx, "mode", opt)} className="w-4 h-4 text-[var(--primary)]" />
                                     <span className="text-sm text-gray-700">{opt}</span>
                                 </label>
                             ))}
@@ -882,7 +882,7 @@ function BatchBuilder({ data, onChange }: { data: any[], onChange: (arr: any[]) 
                         <div className="flex flex-wrap gap-4">
                             {["Weekdays (5 Days)", "Weekend Classes"].map(opt => (
                                 <label key={opt} className="flex items-center gap-2 cursor-pointer">
-                                    <input type="checkbox" checked={(batch.classes || []).includes(opt)} onChange={() => handleCheckbox(idx, opt)} className="w-4 h-4 text-[#a60303] rounded" />
+                                    <input type="checkbox" checked={(batch.classes || []).includes(opt)} onChange={() => handleCheckbox(idx, opt)} className="w-4 h-4 text-[var(--primary)] rounded" />
                                     <span className="text-sm text-gray-700">{opt}</span>
                                 </label>
                             ))}
@@ -922,7 +922,7 @@ function VideoBuilder({ data, onChange }: { data: { title: string; url: string }
     const [newTitle, setNewTitle] = useState("");
     const [newUrl, setNewUrl] = useState("");
 
-    const base = "px-3 py-2 rounded-lg border border-gray-200 bg-white focus:ring-2 focus:ring-red-100 focus:border-[#a60303] outline-none text-sm w-full";
+    const base = "px-3 py-2 rounded-lg border border-gray-200 bg-white focus:ring-2 focus:ring-[var(--primary)]/20 focus:border-[var(--primary)] outline-none text-sm w-full";
 
     const getYouTubeId = (url: string) => {
         const m = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
@@ -1014,7 +1014,7 @@ function VideoBuilder({ data, onChange }: { data: { title: string; url: string }
                     <button
                         type="button"
                         onClick={addVideo}
-                        className="px-4 py-2 bg-[#a60303] text-white text-sm font-bold rounded-lg hover:bg-[#800202] whitespace-nowrap shrink-0"
+                        className="px-4 py-2 bg-[var(--primary)] text-white text-sm font-bold rounded-lg hover:bg-[var(--primary-dark)] whitespace-nowrap shrink-0"
                     >
                         Add
                     </button>

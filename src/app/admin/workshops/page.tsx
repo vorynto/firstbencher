@@ -281,7 +281,7 @@ export default function WorkshopsAdminPage() {
                             <button onClick={() => handleEdit(w)} className="p-2 rounded-lg hover:bg-accent text-primary transition-all">
                                 <Edit2 size={18} />
                             </button>
-                            <button onClick={() => handleDelete(w.id)} className="p-2 rounded-lg hover:bg-red-50 text-red-500 transition-all">
+                            <button onClick={() => handleDelete(w.id)} className="p-2 rounded-lg hover:bg-primary-tint text-red-500 transition-all">
                                 <Trash2 size={18} />
                             </button>
                         </div>

@@ -246,7 +246,7 @@ export default function MediaLibraryModal({ isOpen, onClose, onSelect, aspect = 
                                                         {/* Delete Button */}
                                                         <button 
                                                             onClick={(e) => handleDelete(asset.id, e)}
-                                                            className="absolute bottom-3 right-3 p-2.5 bg-red-500 text-white rounded-xl shadow-xl transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all hover:bg-red-600 z-20"
+                                                            className="absolute bottom-3 right-3 p-2.5 bg-primary-tint0 text-white rounded-xl shadow-xl transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all hover:bg-red-600 z-20"
                                                         >
                                                             <Trash2 size={16} />
                                                         </button>

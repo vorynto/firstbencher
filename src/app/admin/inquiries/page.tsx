@@ -192,7 +192,7 @@ export default function InquiriesPage() {
 
                 {/* Error */}
                 {error && (
-                    <div className="p-6 flex items-center gap-3 text-red-600 bg-red-50 border-b border-border">
+                    <div className="p-6 flex items-center gap-3 text-red-600 bg-primary-tint border-b border-border">
                         <AlertCircle size={18} />
                         <p className="text-sm font-bold">{error}</p>
                     </div>

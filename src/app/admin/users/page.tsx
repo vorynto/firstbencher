@@ -89,7 +89,7 @@ export default function AdminUsersPage() {
                 {[
                     { label: "Total Users", value: users.length, color: "bg-blue-50 text-blue-600", icon: Users },
                     { label: "Active", value: activeCount, color: "bg-green-50 text-green-600", icon: UserCheck },
-                    { label: "Disabled", value: inactiveCount, color: "bg-red-50 text-red-600", icon: UserX },
+                    { label: "Disabled", value: inactiveCount, color: "bg-primary-tint text-red-600", icon: UserX },
                 ].map(({ label, value, color, icon: Icon }) => (
                     <div key={label} className={`${color} rounded-2xl p-5 flex items-center gap-4`}>
                         <Icon size={24} />
@@ -164,7 +164,7 @@ export default function AdminUsersPage() {
                                         <td className="px-6 py-4">
                                             <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${user.is_active
                                                 ? "bg-green-50 text-green-700"
-                                                : "bg-red-50 text-red-700"
+                                                : "bg-primary-tint text-red-700"
                                                 }`}>
                                                 {user.is_active ? (
                                                     <CheckCircle2 size={12} />
@@ -179,7 +179,7 @@ export default function AdminUsersPage() {
                                                 onClick={() => handleToggle(user)}
                                                 disabled={toggling === user.id}
                                                 className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${user.is_active
-                                                    ? "bg-red-50 text-red-600 hover:bg-red-100"
+                                                    ? "bg-primary-tint text-red-600 hover:bg-red-100"
                                                     : "bg-green-50 text-green-600 hover:bg-green-100"
                                                     } disabled:opacity-50 disabled:cursor-not-allowed`}
                                             >

@@ -43,7 +43,7 @@ function Label({ children }: { children: React.ReactNode }) {
     return <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5 block">{children}</label>;
 }
 
-const inp = "w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm outline-none focus:border-[#a60303] focus:ring-2 focus:ring-red-100 transition-all bg-white";
+const inp = "w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 transition-all bg-white";
 
 function PasswordInput({ value, onChange, placeholder }: { value: string; onChange: (v: string) => void; placeholder?: string }) {
     const [show, setShow] = useState(false);
@@ -112,7 +112,7 @@ export default function MailSettingsPage() {
 
     if (loading) return (
         <div className="flex h-64 items-center justify-center">
-            <Loader2 className="animate-spin text-[#a60303]" size={28} />
+            <Loader2 className="animate-spin text-[var(--primary)]" size={28} />
         </div>
     );
 
@@ -127,7 +127,7 @@ export default function MailSettingsPage() {
             <div className="flex bg-gray-100 rounded-xl p-1 gap-1 w-fit">
                 {TABS.map(t => (
                     <button key={t.id} onClick={() => setTab(t.id)}
-                        className={cn("flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all", tab === t.id ? "bg-white text-[#a60303] shadow-sm" : "text-gray-500 hover:text-gray-700")}>
+                        className={cn("flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all", tab === t.id ? "bg-white text-[var(--primary)] shadow-sm" : "text-gray-500 hover:text-gray-700")}>
                         <t.icon size={15} /> {t.label}
                     </button>
                 ))}
@@ -139,14 +139,14 @@ export default function MailSettingsPage() {
                 {tab === "general" && (
                     <>
                         <div>
-                            <h2 className="font-black text-gray-900 mb-1 flex items-center gap-2"><Mail size={18} className="text-[#a60303]" /> General Email Settings</h2>
+                            <h2 className="font-black text-gray-900 mb-1 flex items-center gap-2"><Mail size={18} className="text-[var(--primary)]" /> General Email Settings</h2>
                             <p className="text-sm text-gray-500">Set the recipient for all admin notifications and the sender details.</p>
                         </div>
 
                         <div className="flex flex-col gap-4">
-                            <div className="p-4 bg-red-50 border border-red-100 rounded-xl flex gap-3">
-                                <ShieldCheck size={18} className="text-[#a60303] shrink-0 mt-0.5" />
-                                <p className="text-xs text-[#a60303] font-semibold leading-relaxed">
+                            <div className="p-4 bg-primary-tint border border-[var(--primary)]/20 rounded-xl flex gap-3">
+                                <ShieldCheck size={18} className="text-[var(--primary)] shrink-0 mt-0.5" />
+                                <p className="text-xs text-[var(--primary)] font-semibold leading-relaxed">
                                     Admin email receives notifications for all enquiries, enrollments, contact submissions, and job applications.
                                 </p>
                             </div>
@@ -175,7 +175,7 @@ export default function MailSettingsPage() {
                 {tab === "smtp" && (
                     <>
                         <div>
-                            <h2 className="font-black text-gray-900 mb-1 flex items-center gap-2"><Send size={18} className="text-[#a60303]" /> SMTP Configuration</h2>
+                            <h2 className="font-black text-gray-900 mb-1 flex items-center gap-2"><Send size={18} className="text-[var(--primary)]" /> SMTP Configuration</h2>
                             <p className="text-sm text-gray-500">Outgoing mail server settings — used to send all emails.</p>
                         </div>
 
@@ -223,12 +223,12 @@ export default function MailSettingsPage() {
                             <p className="text-xs text-gray-500">Save settings first, then send a test email to verify the configuration.</p>
                             <div className="flex gap-2">
                                 <input className={inp} type="email" value={testEmail} onChange={e => setTestEmail(e.target.value)} placeholder="Enter email to receive test" />
-                                <button onClick={handleTest} disabled={testing} className="bg-[#a60303] text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-[#800202] transition-colors disabled:opacity-60 shrink-0 flex items-center gap-2">
+                                <button onClick={handleTest} disabled={testing} className="bg-[var(--primary)] text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-[var(--primary-dark)] transition-colors disabled:opacity-60 shrink-0 flex items-center gap-2">
                                     {testing ? <><Loader2 size={14} className="animate-spin" /> Sending…</> : <><Send size={14} /> Send Test</>}
                                 </button>
                             </div>
                             {testResult && (
-                                <div className={cn("flex items-center gap-2 text-sm font-semibold px-3 py-2 rounded-lg", testResult.ok ? "bg-green-50 text-green-700" : "bg-red-50 text-red-600")}>
+                                <div className={cn("flex items-center gap-2 text-sm font-semibold px-3 py-2 rounded-lg", testResult.ok ? "bg-green-50 text-green-700" : "bg-primary-tint text-red-600")}>
                                     {testResult.ok ? <CheckCircle2 size={15} /> : <AlertCircle size={15} />}
                                     {testResult.msg}
                                 </div>
@@ -246,7 +246,7 @@ export default function MailSettingsPage() {
                 {tab === "imap" && (
                     <>
                         <div>
-                            <h2 className="font-black text-gray-900 mb-1 flex items-center gap-2"><Inbox size={18} className="text-[#a60303]" /> IMAP / POP Configuration</h2>
+                            <h2 className="font-black text-gray-900 mb-1 flex items-center gap-2"><Inbox size={18} className="text-[var(--primary)]" /> IMAP / POP Configuration</h2>
                             <p className="text-sm text-gray-500">Incoming mail settings — used to receive reply emails in your mail client.</p>
                         </div>
 
@@ -306,7 +306,7 @@ export default function MailSettingsPage() {
 
             {/* Save button */}
             <div className="flex items-center gap-3">
-                <button onClick={handleSave} disabled={saving} className="bg-[#a60303] text-white px-7 py-3 rounded-xl font-bold text-sm hover:bg-[#800202] transition-colors disabled:opacity-60 flex items-center gap-2">
+                <button onClick={handleSave} disabled={saving} className="bg-[var(--primary)] text-white px-7 py-3 rounded-xl font-bold text-sm hover:bg-[var(--primary-dark)] transition-colors disabled:opacity-60 flex items-center gap-2">
                     {saving ? <><Loader2 size={16} className="animate-spin" /> Saving…</> : <><Save size={16} /> Save Settings</>}
                 </button>
                 {saved && (
@@ -318,7 +318,7 @@ export default function MailSettingsPage() {
 
             {/* What triggers emails */}
             <div className="bg-white rounded-2xl border border-gray-200 p-6">
-                <p className="font-black text-gray-900 mb-4 flex items-center gap-2"><Server size={16} className="text-[#a60303]" /> Email Triggers</p>
+                <p className="font-black text-gray-900 mb-4 flex items-center gap-2"><Server size={16} className="text-[var(--primary)]" /> Email Triggers</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {[
                         ["Course Enquiry", "When someone enquires about a course — admin notified + confirmation to user"],
