@@ -23,11 +23,13 @@ type StatsCTAContent = {
 export default function StatsCTAClient({ content }: { content: StatsCTAContent }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     
-    const bgColor = content.bg_color || "#FFF1F1";
+    // Always use the admin-configured primary color — keeps this section in sync
+    // with Settings → Colors without needing a separate page-content update.
+    const bgColor = "var(--primary)";
     const py = content.padding_y ? `${content.padding_y}px` : "40px";
     const imgH = content.image_height ? `${content.image_height}px` : "260px";
-    const labelColor = content.stat_label_color || "#1f2937";
-    const strokeColor = content.stat_stroke_color || "var(--primary)";
+    const labelColor = content.stat_label_color || "#ffffff";
+    const strokeColor = content.stat_stroke_color || "#ffffff";
 
     const getYoutubeId = (url: string) => {
         if (!url) return null;
@@ -44,7 +46,7 @@ export default function StatsCTAClient({ content }: { content: StatsCTAContent }
             <div 
                 className="absolute inset-0 opacity-[0.05] pointer-events-none"
                 style={{
-                    backgroundImage: `radial-gradient(circle, #a60303 1px, transparent 1px)`,
+                    backgroundImage: `radial-gradient(circle, var(--primary-dark) 1px, transparent 1px)`,
                     backgroundSize: '24px 24px'
                 }}
             />
