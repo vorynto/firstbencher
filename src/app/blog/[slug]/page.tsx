@@ -133,13 +133,13 @@ export default async function BlogDetailPage({ params }: PageProps) {
                     <div className="max-w-4xl text-center md:text-left">
                         <Link 
                             href="/blog" 
-                            className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-gray-400 hover:text-[#a60303] transition-colors mb-10 group"
+                            className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-gray-400 hover:text-[var(--primary)] transition-colors mb-10 group"
                         >
                             <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
                             Back to Knowledge Hub
                         </Link>
                         
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-50 text-[#a60303] text-[10px] font-black uppercase tracking-widest mb-6 border border-red-100/50 mx-auto md:mx-0">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-50 text-[var(--primary)] text-[10px] font-black uppercase tracking-widest mb-6 border border-red-100/50 mx-auto md:mx-0">
                             Professional Insights
                         </div>
                         
@@ -149,7 +149,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
 
                         <div className="flex flex-wrap items-center justify-center md:justify-start gap-6 text-xs font-black uppercase tracking-widest text-gray-500">
                             <div className="flex items-center gap-2">
-                                <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-[#a60303]">
+                                <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-[var(--primary)]">
                                     <User size={14} />
                                 </div>
                                 <span className="text-gray-900">{blog.author || "First Bencher Staff"}</span>

@@ -93,7 +93,7 @@ export default async function AboutPage() {
                             <div className="absolute -left-12 -top-12 w-48 h-48 opacity-10 pointer-events-none hidden lg:block">
                                 <div className="grid grid-cols-6 gap-4">
                                     {[...Array(36)].map((_, i) => (
-                                        <div key={i} className="w-1.5 h-1.5 rounded-full bg-[#a60303]" />
+                                        <div key={i} className="w-1.5 h-1.5 rounded-full bg-[var(--primary)]" />
                                     ))}
                                 </div>
                             </div>
@@ -125,7 +125,7 @@ export default async function AboutPage() {
                                     {/* Experience Badge — lg only */}
                                     <div className="hidden lg:flex absolute -top-10 -right-10 bg-white p-6 rounded-2xl shadow-xl border border-gray-50 items-center gap-4 animate-bounce-slow z-20">
                                         <div className="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center">
-                                            <Award className="text-[#a60303]" size={24} />
+                                            <Award className="text-[var(--primary)]" size={24} />
                                         </div>
                                         <div>
                                             <p className="text-2xl font-black text-gray-900 leading-none">{ha.exp_years || "10+"}</p>
@@ -135,7 +135,7 @@ export default async function AboutPage() {
 
                                     {/* Awards Badge — lg only */}
                                     <div className="hidden lg:flex absolute -bottom-8 -left-16 bg-white p-5 rounded-2xl shadow-xl border border-gray-50 flex-col items-center text-center min-w-[140px] z-20">
-                                        <p className="text-3xl font-black text-[#a60303] leading-none">{ha.awards_count || "25+"}</p>
+                                        <p className="text-3xl font-black text-[var(--primary)] leading-none">{ha.awards_count || "25+"}</p>
                                         <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">{ha.awards_label || "Awards"}</p>
                                         <div className="mt-2 flex -space-x-2">
                                             {[1,2,3,4].map(i => (
@@ -154,14 +154,14 @@ export default async function AboutPage() {
                                     ha.title.includes("Innovation") ? (
                                         <>
                                             {ha.title.split("Innovation")[0]}
-                                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#a60303] to-[#F07C5A] italic">
+                                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--primary)] to-[#F07C5A] italic">
                                                 Innovation
                                             </span>
                                             {ha.title.split("Innovation")[1]}
                                         </>
                                     ) : ha.title
                                 ) : (
-                                    <>Our Story: Built On Values, Driven By <span className="text-[#a60303] italic text-[#a60303]">Innovation</span></>
+                                    <>Our Story: Built On Values, Driven By <span className="text-[var(--primary)] italic text-[var(--primary)]">Innovation</span></>
                                 )}
                             </h2>
 
@@ -179,7 +179,7 @@ export default async function AboutPage() {
                 <div className="absolute top-0 right-0 w-96 h-96 bg-red-50 rounded-full blur-3xl opacity-30 -translate-y-1/2 translate-x-1/2" />
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
                     <div className="text-center max-w-3xl mx-auto mb-16">
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-50 text-[#a60303] text-[10px] font-black uppercase tracking-widest mb-4 border border-red-100/50">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-50 text-[var(--primary)] text-[10px] font-black uppercase tracking-widest mb-4 border border-red-100/50">
                             <Award size={14} /> Our Core Purpose
                         </div>
                         <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-6">
@@ -224,12 +224,12 @@ export default async function AboutPage() {
                 <section className="py-14 bg-gray-50/50">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6">
                         <div className="text-center mb-14">
-                            <span className="inline-block bg-[#a60303]/10 text-[#a60303] text-xs font-black uppercase tracking-widest px-4 py-2 rounded-full mb-4">Our Values</span>
+                            <span className="inline-block bg-[var(--primary)]/10 text-[var(--primary)] text-xs font-black uppercase tracking-widest px-4 py-2 rounded-full mb-4">Our Values</span>
                             <h2 className="text-4xl font-black text-gray-900">What Drives Us</h2>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                             {valuesData.values.map((val, i) => (
-                                <div key={i} className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-lg transition-all border border-gray-100 hover:border-[#a60303]/20 group">
+                                <div key={i} className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-lg transition-all border border-gray-100 hover:border-[var(--primary)]/20 group">
                                     <div className="text-4xl mb-4 group-hover:scale-110 transition-transform inline-block">{val.emoji}</div>
                                     <h3 className="text-lg font-black text-gray-900 mb-2">{val.title}</h3>
                                     <div className="text-gray-500 text-sm leading-relaxed prose prose-sm prose-gray" dangerouslySetInnerHTML={{ __html: sanitize(val.body) }} />
@@ -249,7 +249,7 @@ export default async function AboutPage() {
                     
                     <div className="max-w-7xl mx-auto px-4 sm:px-6">
                         <div className="text-center max-w-3xl mx-auto mb-20">
-                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-50 text-[#a60303] text-[10px] font-black uppercase tracking-widest mb-6 border border-red-100/50">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-50 text-[var(--primary)] text-[10px] font-black uppercase tracking-widest mb-6 border border-red-100/50">
                                 <Users size={14} /> Our Visionaries
                             </div>
                             <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-6">
@@ -278,17 +278,17 @@ export default async function AboutPage() {
                                                         className="object-cover transition-all duration-700 group-hover:scale-110 filter group-hover:brightness-110" 
                                                     />
                                                 ) : (
-                                                    <div className="w-full h-full flex items-center justify-center text-4xl bg-red-50 text-[#a60303]">👤</div>
+                                                    <div className="w-full h-full flex items-center justify-center text-4xl bg-red-50 text-[var(--primary)]">👤</div>
                                                 )}
                                             </div>
                                         </div>
 
                                         {/* Name & Role */}
                                         <div className="mb-4">
-                                            <h3 className="text-2xl font-black text-gray-900 mb-1 group-hover:text-[#a60303] transition-colors duration-500">
+                                            <h3 className="text-2xl font-black text-gray-900 mb-1 group-hover:text-[var(--primary)] transition-colors duration-500">
                                                 {member.name}
                                             </h3>
-                                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#a60303] bg-red-50 px-3 py-1 rounded-full border border-red-100">
+                                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--primary)] bg-red-50 px-3 py-1 rounded-full border border-red-100">
                                                 {member.role}
                                             </span>
                                         </div>
@@ -301,7 +301,7 @@ export default async function AboutPage() {
 
                                         {/* Social Link (Placeholder for now as DB doesn't have it, but adds to the look) */}
                                         <div className="mt-auto flex gap-3">
-                                            <button className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 border border-gray-100 hover:bg-[#a60303] hover:text-white hover:border-[#a60303] transition-all duration-300">
+                                            <button className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 border border-gray-100 hover:bg-[var(--primary)] hover:text-white hover:border-[var(--primary)] transition-all duration-300">
                                                 <Linkedin size={18} />
                                             </button>
                                             <button className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 border border-gray-100 hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all duration-300">

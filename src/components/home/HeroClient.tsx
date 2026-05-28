@@ -154,10 +154,10 @@ export default function HeroClient({ content }: { content: HeroContent }) {
                             {h.title_line1 && <>{h.title_line1} <br /></>}
                             {h.title_line2}
                             <br />
-                            <span className="text-[#a60303] relative inline-block mt-2 font-black">
+                            <span className="text-[var(--primary)] relative inline-block mt-2 font-black">
                                 {h.title_highlight}
                                 <svg className="absolute -bottom-4 left-0 w-full rotate-2 opacity-80" height="15" viewBox="0 0 300 15" preserveAspectRatio="none">
-                                    <path d="M0 10 Q150 -5 300 12" stroke="#a60303" strokeWidth="4" fill="none" strokeLinecap="round" />
+                                    <path d="M0 10 Q150 -5 300 12" stroke="var(--primary)" strokeWidth="4" fill="none" strokeLinecap="round" />
                                 </svg>
                             </span>
                         </h1>
@@ -230,8 +230,8 @@ export default function HeroClient({ content }: { content: HeroContent }) {
                     <div className="lg:flex-[1] relative flex justify-center lg:justify-end items-end min-h-[260px] sm:min-h-[380px] lg:min-h-[500px] lg:mt-0 mt-6 w-full max-w-[500px] mx-auto lg:ml-auto pb-4">
 
                         {/* Decorative plus signs */}
-                        <div className="absolute top-24 right-16 w-3 h-3 text-[#a60303] font-bold text-xl z-0">+</div>
-                        <div className="absolute bottom-32 left-8 w-3 h-3 text-[#a60303] font-bold text-xl z-0">+</div>
+                        <div className="absolute top-24 right-16 w-3 h-3 text-[var(--primary)] font-bold text-xl z-0">+</div>
+                        <div className="absolute bottom-32 left-8 w-3 h-3 text-[var(--primary)] font-bold text-xl z-0">+</div>
 
                         {/* Hero image */}
                         <div className="relative z-10 w-full flex justify-center h-full items-end pb-8">
@@ -259,10 +259,10 @@ export default function HeroClient({ content }: { content: HeroContent }) {
                             <div className="flex -space-x-1.5 w-full justify-center relative">
                                 <Image src={h.student_avatar_1 || "https://i.pravatar.cc/32?u=fc1"} alt="" width={30} height={30} className="rounded-full border-2 border-white relative z-10 aspect-square object-cover" />
                                 <Image src={h.student_avatar_2 || "https://i.pravatar.cc/32?u=fc2"} alt="" width={30} height={30} className="rounded-full border-2 border-white relative z-20 aspect-square object-cover" />
-                                <div className="absolute -top-1 -right-2 w-4 h-4 text-[#a60303]">✺</div>
+                                <div className="absolute -top-1 -right-2 w-4 h-4 text-[var(--primary)]">✺</div>
                             </div>
                             <div className="text-center w-full mt-1">
-                                <p className="text-[#a60303] font-black text-lg">{h.stat1_value}</p>
+                                <p className="text-[var(--primary)] font-black text-lg">{h.stat1_value}</p>
                                 <p className="text-[11px] font-bold text-gray-800">{h.stat1_label}</p>
                             </div>
                         </div>
@@ -277,7 +277,7 @@ export default function HeroClient({ content }: { content: HeroContent }) {
                         {/* Category */}
                         <button
                             onClick={() => setCatOpen(!catOpen)}
-                            className="flex items-center justify-between sm:w-[220px] px-5 py-4 sm:py-0 text-[13px] font-semibold text-[#64748B] hover:text-[#a60303] transition-colors whitespace-nowrap border-b sm:border-b-0 sm:border-r border-gray-200 rounded-t-2xl sm:rounded-none"
+                            className="flex items-center justify-between sm:w-[220px] px-5 py-4 sm:py-0 text-[13px] font-semibold text-[#64748B] hover:text-[var(--primary)] transition-colors whitespace-nowrap border-b sm:border-b-0 sm:border-r border-gray-200 rounded-t-2xl sm:rounded-none"
                         >
                             {category === "All Categories" ? "All Categories" : category}
                             <ChevronDown size={14} className={`transition-transform opacity-50 ${catOpen ? "rotate-180" : ""}`} />
@@ -342,13 +342,13 @@ export default function HeroClient({ content }: { content: HeroContent }) {
                                                     )}
                                                 </div>
                                                 <div>
-                                                    <h4 className="text-[14px] font-bold text-gray-800 group-hover:text-[#a60303] line-clamp-1">{course.title}</h4>
+                                                    <h4 className="text-[14px] font-bold text-gray-800 group-hover:text-[var(--primary)] line-clamp-1">{course.title}</h4>
                                                     <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">{course.short_description || "Explore this course"}</p>
                                                 </div>
                                             </Link>
                                         ))}
                                         <div className="px-5 pt-2 mt-1 border-t border-gray-50">
-                                            <button onClick={handleSearch} className="text-sm font-bold text-[#a60303] hover:text-[#800202] w-full text-center py-2">
+                                            <button onClick={handleSearch} className="text-sm font-bold text-[var(--primary)] hover:text-[var(--primary-dark)] w-full text-center py-2">
                                                 View all results →
                                             </button>
                                         </div>
@@ -373,7 +373,7 @@ export default function HeroClient({ content }: { content: HeroContent }) {
                                     <Link
                                         key={index}
                                         href={`/courses?cat=${slugify(trimmed)}`}
-                                        className="bg-white hover:bg-[#a60303] hover:text-white text-[#64748B] px-5 py-2 rounded-full text-[13px] font-semibold transition-colors border border-gray-200 shadow-sm"
+                                        className="bg-white hover:bg-[var(--primary)] hover:text-white text-[#64748B] px-5 py-2 rounded-full text-[13px] font-semibold transition-colors border border-gray-200 shadow-sm"
                                     >
                                         {trimmed}
                                     </Link>

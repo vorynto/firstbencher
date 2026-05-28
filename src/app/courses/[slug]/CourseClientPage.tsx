@@ -189,7 +189,7 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
                     {/* Left: Text */}
                     <div className="text-white space-y-7">
                         {/* Breadcrumbs */}
-                        <nav className="flex items-center gap-1.5 text-xs text-red-300 font-medium flex-wrap">
+                        <nav className="flex items-center gap-1.5 text-xs text-[var(--primary-foreground)]/60 font-medium flex-wrap">
                             <Link href="/" className="hover:text-white transition-colors">Home</Link>
                             <span className="opacity-50">›</span>
                             <Link href="/courses" className="hover:text-white transition-colors">Courses</Link>
@@ -233,7 +233,7 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
                     {/* Right: Inline Enquiry Form */}
                     <div className="relative">
                         <div className="bg-white shadow-2xl shadow-black/30 overflow-hidden">
-                            <div className="bg-[#a60303] px-5 py-3.5">
+                            <div className="bg-[var(--primary)] px-5 py-3.5">
                                 <h3 className="text-white font-black text-lg">Enquiry Form</h3>
                             </div>
 
@@ -248,7 +248,7 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
                                     </div>
                                     <button
                                         onClick={() => setSubmitted(false)}
-                                        className="text-sm text-[#a60303] font-bold hover:underline mt-2"
+                                        className="text-sm text-[var(--primary)] font-bold hover:underline mt-2"
                                     >
                                         Submit another enquiry
                                     </button>
@@ -268,7 +268,7 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
                                                 value={formData[key as keyof typeof formData]}
                                                 onChange={e => setFormData(p => ({ ...p, [key]: e.target.value }))}
                                                 placeholder={placeholder}
-                                                className="w-full px-3 py-2 rounded border border-gray-200 text-sm outline-none focus:border-[#a60303] focus:ring-2 focus:ring-red-100 transition-all"
+                                                className="w-full px-3 py-2 rounded border border-gray-200 text-sm outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 transition-all"
                                             />
                                         </div>
                                     ))}
@@ -281,14 +281,14 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
                                             value={formData.message}
                                             onChange={e => setFormData(p => ({ ...p, message: e.target.value }))}
                                             placeholder="Any specific questions or requirements..."
-                                            className="w-full px-3 py-2 rounded border border-gray-200 text-sm outline-none focus:border-[#a60303] focus:ring-2 focus:ring-red-100 resize-none transition-all"
+                                            className="w-full px-3 py-2 rounded border border-gray-200 text-sm outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 resize-none transition-all"
                                         />
                                     </div>
                                     {formError && <p className="text-red-500 text-xs font-medium">{formError}</p>}
                                     <button
                                         type="submit"
                                         disabled={submitting}
-                                        className="w-full bg-[#a60303] hover:bg-[#800202] text-white py-2.5 font-bold text-sm transition-colors shadow-lg shadow-red-900/20 flex items-center justify-center gap-2 disabled:opacity-60"
+                                        className="w-full bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white py-2.5 font-bold text-sm transition-colors shadow-lg shadow-red-900/20 flex items-center justify-center gap-2 disabled:opacity-60"
                                     >
                                         {submitting
                                             ? <><Loader2 size={16} className="animate-spin" /> Submitting...</>
@@ -365,12 +365,12 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
                                 id={`tab-btn-${tab.id}`}
                                 onClick={() => scrollToSection(tab.id)}
                                 className={`relative px-5 py-4 text-sm font-bold whitespace-nowrap transition-colors shrink-0 ${
-                                    activeTab === tab.id ? "text-[#a60303]" : "text-gray-500 hover:text-[#1a202c]"
+                                    activeTab === tab.id ? "text-[var(--primary)]" : "text-gray-500 hover:text-[#1a202c]"
                                 }`}
                             >
                                 {tab.label}
                                 {activeTab === tab.id && (
-                                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#a60303] rounded-full" />
+                                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--primary)] rounded-full" />
                                 )}
                             </button>
                         ))}
@@ -378,13 +378,13 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
                     <div className="flex items-center gap-3 pl-4 border-l border-gray-200 shrink-0">
                         <button
                             onClick={() => openEnquiry(`Request Info — ${title}`)}
-                            className="hidden sm:block border border-[#a60303] text-[#a60303] px-5 py-2 rounded-lg text-sm font-bold hover:bg-red-50 transition-colors whitespace-nowrap"
+                            className="hidden sm:block border border-[var(--primary)] text-[var(--primary)] px-5 py-2 rounded-lg text-sm font-bold hover:bg-accent transition-colors whitespace-nowrap"
                         >
                             Request Info
                         </button>
                         <button
                             onClick={() => openEnquiry(`Enroll Now — ${title}`)}
-                            className="hidden md:block bg-[#a60303] text-white px-5 py-2 rounded-lg text-sm font-bold hover:bg-[#800202] transition-colors whitespace-nowrap"
+                            className="hidden md:block bg-[var(--primary)] text-white px-5 py-2 rounded-lg text-sm font-bold hover:bg-[var(--primary-dark)] transition-colors whitespace-nowrap"
                         >
                             Enroll Now
                         </button>
@@ -408,7 +408,7 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
                                 [&_ol]:list-decimal [&_ol]:ml-6 [&_ol]:mb-4 [&_ol_ol]:mb-0
                                 [&_li]:mb-1.5
                                 [&_p]:mb-4 [&_p:empty]:min-h-6 last:[&_p]:mb-0
-                                [&_a]:text-[#a60303] [&_a]:underline
+                                [&_a]:text-[var(--primary)] [&_a]:underline
                                 [&_h1]:text-2xl [&_h1]:font-black [&_h1]:mt-8 [&_h1]:mb-4 [&_h1]:text-[#1a202c]
                                 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mt-8 [&_h2]:mb-4 [&_h2]:text-[#1a202c]
                                 [&_h3]:text-lg [&_h3]:font-bold [&_h3]:mt-6 [&_h3]:mb-3 [&_h3]:text-[#1a202c]
@@ -451,7 +451,7 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
                                                 <span className="text-[13px] font-bold text-[#1a202c]">{month},{year}</span>
                                             </div>
                                             <div className="p-6 md:p-8 flex-1 flex flex-col gap-4">
-                                                <h3 className="text-xl md:text-2xl font-black text-[#a60303] uppercase tracking-wide">
+                                                <h3 className="text-xl md:text-2xl font-black text-[var(--primary)] uppercase tracking-wide">
                                                     {title} TRAINING
                                                 </h3>
                                                 <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-[15px] text-[#1a202c]">
@@ -481,12 +481,12 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
                                                 {batch.locations && batch.locations.length > 0 && (
                                                     <div className="bg-transparent border border-[#faeaea] rounded-xl p-5 mt-2 shadow-sm">
                                                         <div className="flex items-center gap-2 mb-3">
-                                                            <MapPin size={20} className="text-[#a60303]" />
+                                                            <MapPin size={20} className="text-[var(--primary)]" />
                                                             <span className="font-bold text-[15px] text-[#1a202c]">Locations</span>
                                                         </div>
                                                         <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 w-full border-t border-l border-[#faeaea] rounded-lg overflow-hidden">
                                                             {batch.locations.map((loc: string, lIdx: number) => (
-                                                                <div key={lIdx} className="bg-white text-[#a60303] font-bold text-[14px] px-3 py-3 text-center flex items-center justify-center border-b border-r border-[#faeaea]">
+                                                                <div key={lIdx} className="bg-white text-[var(--primary)] font-bold text-[14px] px-3 py-3 text-center flex items-center justify-center border-b border-r border-[#faeaea]">
                                                                     {loc}
                                                                 </div>
                                                             ))}
@@ -497,13 +497,13 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
                                                 <div className="flex flex-wrap gap-4 mt-3">
                                                     <button
                                                         onClick={() => openEnquiry(`Enroll Now — ${batchLabel}`)}
-                                                        className="bg-[#a60303] hover:bg-[#800202] text-white font-bold px-8 py-3 rounded-lg transition-colors min-w-36 shadow-sm"
+                                                        className="bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white font-bold px-8 py-3 rounded-lg transition-colors min-w-36 shadow-sm"
                                                     >
                                                         Enroll Now
                                                     </button>
                                                     <button
                                                         onClick={() => openEnquiry(`Enquiry — ${batchLabel}`)}
-                                                        className="bg-white hover:bg-red-50 text-[#a60303] border border-[#a60303] font-bold px-8 py-3 rounded-lg transition-colors min-w-36"
+                                                        className="bg-white hover:bg-accent text-[var(--primary)] border border-[var(--primary)] font-bold px-8 py-3 rounded-lg transition-colors min-w-36"
                                                     >
                                                         Enquiry Now
                                                     </button>
@@ -547,7 +547,7 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
                                             className="w-full flex items-center justify-between p-4 text-left bg-gray-50 hover:bg-gray-100 transition-colors"
                                         >
                                             <div className="flex items-center gap-3">
-                                                <span className="w-6 h-6 rounded-full bg-red-50 text-[#a60303] text-xs font-black flex items-center justify-center shrink-0">{idx + 1}</span>
+                                                <span className="w-6 h-6 rounded-full bg-accent text-[var(--primary)] text-xs font-black flex items-center justify-center shrink-0">{idx + 1}</span>
                                                 <span className="font-bold text-[#1a202c] text-sm">{module.title}</span>
                                             </div>
                                             {openCurriculum === idx
@@ -559,7 +559,7 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
                                             <ul className="px-4 py-3 space-y-2 border-t border-gray-100">
                                                 {module.lessons && module.lessons.map((lesson: string, li: number) => (
                                                     <li key={li} className="flex items-start gap-2.5 text-sm text-gray-600">
-                                                        <CheckCircle2 size={15} className="text-[#a60303] shrink-0 mt-0.5" />
+                                                        <CheckCircle2 size={15} className="text-[var(--primary)] shrink-0 mt-0.5" />
                                                         {lesson}
                                                     </li>
                                                 ))}
@@ -584,7 +584,7 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
                                 [&_ol]:list-decimal [&_ol]:ml-6 [&_ol]:mb-4
                                 [&_li]:mb-1.5
                                 [&_p]:mb-4 last:[&_p]:mb-0
-                                [&_a]:text-[#a60303] [&_a]:underline
+                                [&_a]:text-[var(--primary)] [&_a]:underline
                                 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mt-6 [&_h2]:mb-3
                                 [&_h3]:text-lg [&_h3]:font-bold [&_h3]:mt-4 [&_h3]:mb-2
                                 [&_strong]:font-bold
@@ -654,8 +654,8 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
                             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
                                 <h3 className="font-black text-lg text-[#1a202c]">Have Questions?</h3>
                                 <p className="text-gray-500 text-sm">Our advisors are ready to help you choose the right training path.</p>
-                                <a href="tel:+1234567890" className="flex items-center gap-3 p-3 rounded-xl bg-red-50 border border-red-100 hover:bg-red-200 transition-colors">
-                                    <div className="w-10 h-10 bg-[#a60303] rounded-lg flex items-center justify-center shrink-0">
+                                <a href="tel:+1234567890" className="flex items-center gap-3 p-3 rounded-xl bg-accent border border-[var(--primary)]/20 hover:bg-red-200 transition-colors">
+                                    <div className="w-10 h-10 bg-[var(--primary)] rounded-lg flex items-center justify-center shrink-0">
                                         <Phone size={18} className="text-white" />
                                     </div>
                                     <div>
@@ -663,8 +663,8 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
                                         <p className="font-black text-[#1a202c] text-sm">+1 (234) 567-8900</p>
                                     </div>
                                 </a>
-                                <a href="mailto:info@firstbencher.com" className="flex items-center gap-3 p-3 rounded-xl bg-red-50 border border-red-100 hover:bg-red-200 transition-colors">
-                                    <div className="w-10 h-10 bg-[#800202] rounded-lg flex items-center justify-center shrink-0">
+                                <a href="mailto:info@firstbencher.com" className="flex items-center gap-3 p-3 rounded-xl bg-accent border border-[var(--primary)]/20 hover:bg-red-200 transition-colors">
+                                    <div className="w-10 h-10 bg-[var(--primary-dark)] rounded-lg flex items-center justify-center shrink-0">
                                         <Mail size={18} className="text-white" />
                                     </div>
                                     <div>
@@ -674,7 +674,7 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
                                 </a>
                                 <button
                                     onClick={() => openEnquiry(`Request Callback — ${title}`)}
-                                    className="w-full bg-[#a60303] text-white py-3 rounded-xl font-bold text-sm hover:bg-[#800202] transition-colors"
+                                    className="w-full bg-[var(--primary)] text-white py-3 rounded-xl font-bold text-sm hover:bg-[var(--primary-dark)] transition-colors"
                                 >
                                     Request a Callback
                                 </button>
@@ -686,7 +686,7 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
                             <p className="text-red-200 text-xs font-bold uppercase tracking-wider mb-3">Course Highlights</p>
                             <ul className="space-y-3 text-sm">
                                 <li className="flex items-center gap-2 text-red-50"><Star size={14} className="text-yellow-400" fill="currentColor" /> Industry-recognized certification</li>
-                                <li className="flex items-center gap-2 text-red-50"><Users size={14} className="text-[#a60303]" /> Expert-led live sessions</li>
+                                <li className="flex items-center gap-2 text-red-50"><Users size={14} className="text-[var(--primary)]" /> Expert-led live sessions</li>
                                 <li className="flex items-center gap-2 text-red-50"><CheckCircle2 size={14} className="text-green-400" /> Hands-on projects &amp; real cases</li>
                                 <li className="flex items-center gap-2 text-red-50"><Award size={14} className="text-yellow-400" /> Dedicated career support</li>
                             </ul>
@@ -698,7 +698,7 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
                                 key="sidebar-enquiry"
                                 className="animate-in fade-in slide-in-from-top-8 duration-500 bg-white overflow-hidden border border-gray-200 shadow-lg"
                             >
-                                <div className="bg-[#a60303] px-5 py-3.5">
+                                <div className="bg-[var(--primary)] px-5 py-3.5">
                                     <h3 className="text-white font-black text-lg">Enquiry Form</h3>
                                 </div>
 
@@ -713,7 +713,7 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
                                         </div>
                                         <button
                                             onClick={() => setSubmitted(false)}
-                                            className="text-sm text-[#a60303] font-bold hover:underline mt-2"
+                                            className="text-sm text-[var(--primary)] font-bold hover:underline mt-2"
                                         >
                                             Submit another enquiry
                                         </button>
@@ -733,7 +733,7 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
                                                     value={formData[key as keyof typeof formData]}
                                                     onChange={e => setFormData(p => ({ ...p, [key]: e.target.value }))}
                                                     placeholder={placeholder}
-                                                    className="w-full px-3 py-2 rounded border border-gray-200 text-sm outline-none focus:border-[#a60303] focus:ring-2 focus:ring-red-100 transition-all"
+                                                    className="w-full px-3 py-2 rounded border border-gray-200 text-sm outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 transition-all"
                                                 />
                                             </div>
                                         ))}
@@ -746,14 +746,14 @@ export default function CourseClientPage({ course, instructors = [] }: { course:
                                                 value={formData.message}
                                                 onChange={e => setFormData(p => ({ ...p, message: e.target.value }))}
                                                 placeholder="Any specific questions or requirements..."
-                                                className="w-full px-3 py-2 rounded border border-gray-200 text-sm outline-none focus:border-[#a60303] focus:ring-2 focus:ring-red-100 resize-none transition-all"
+                                                className="w-full px-3 py-2 rounded border border-gray-200 text-sm outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 resize-none transition-all"
                                             />
                                         </div>
                                         {formError && <p className="text-red-500 text-xs font-medium">{formError}</p>}
                                         <button
                                             type="submit"
                                             disabled={submitting}
-                                            className="w-full bg-[#a60303] hover:bg-[#800202] text-white py-2.5 font-bold text-sm transition-colors shadow-lg shadow-red-900/20 flex items-center justify-center gap-2 disabled:opacity-60"
+                                            className="w-full bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white py-2.5 font-bold text-sm transition-colors shadow-lg shadow-red-900/20 flex items-center justify-center gap-2 disabled:opacity-60"
                                         >
                                             {submitting
                                                 ? <><Loader2 size={16} className="animate-spin" /> Submitting...</>
@@ -852,7 +852,7 @@ function InstructorCarousel({ instructors }: { instructors: Instructor[] }) {
                                 <button
                                     key={i}
                                     onClick={() => setCurrent(i)}
-                                    className={`w-2 h-2 rounded-full transition-all ${i === current ? "bg-[#a60303] w-4" : "bg-gray-300"}`}
+                                    className={`w-2 h-2 rounded-full transition-all ${i === current ? "bg-[var(--primary)] w-4" : "bg-gray-300"}`}
                                 />
                             ))}
                         </div>
@@ -974,7 +974,7 @@ function VideoSlider({ videos }: { videos: { title: string; url: string }[] }) {
                             <button
                                 key={i}
                                 onClick={() => setCurrent(i)}
-                                className={`shrink-0 rounded-xl overflow-hidden border-2 transition-all ${i === current ? "border-[#a60303] shadow-md" : "border-transparent opacity-60 hover:opacity-100"}`}
+                                className={`shrink-0 rounded-xl overflow-hidden border-2 transition-all ${i === current ? "border-[var(--primary)] shadow-md" : "border-transparent opacity-60 hover:opacity-100"}`}
                             >
                                 {tid ? (
                                     <img

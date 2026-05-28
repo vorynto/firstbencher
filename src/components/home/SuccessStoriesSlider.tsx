@@ -49,7 +49,7 @@ export default function SuccessStoriesSlider({ stories }: { stories: SuccessStor
             <div className="max-w-7xl mx-auto px-4 sm:px-6">
                 <div className="text-center mb-2">
                     <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-gray-900 mb-1 tracking-tight">
-                        Real People. <span className="text-[#a60303]">Real Success.</span>
+                        Real People. <span className="text-[var(--primary)]">Real Success.</span>
                     </h2>
                     <p className="text-gray-500 max-w-2xl mx-auto text-lg leading-relaxed font-medium">
                         Hear from our students who have transformed their careers and achieved their dreams through our professional training programs.
@@ -95,14 +95,14 @@ export default function SuccessStoriesSlider({ stories }: { stories: SuccessStor
                                                 {story.image_url ? (
                                                     <Image src={story.image_url} alt={story.student_name} width={64} height={64} className="w-full h-full object-cover" />
                                                 ) : (
-                                                    <div className="w-full h-full bg-gradient-to-br from-[#a60303] to-[#c60404] flex items-center justify-center text-white font-bold text-2xl uppercase">
+                                                    <div className="w-full h-full bg-gradient-to-br from-[var(--primary)] to-[#c60404] flex items-center justify-center text-white font-bold text-2xl uppercase">
                                                         {story.student_name.charAt(0)}
                                                     </div>
                                                 )}
                                             </div>
                                             <div className="min-w-0">
                                                 <h4 className="text-xl font-black text-gray-900 truncate leading-tight">{story.student_name}</h4>
-                                                <p className="text-[#a60303] font-bold text-sm tracking-wide uppercase mt-0.5 truncate">{story.course_name}</p>
+                                                <p className="text-[var(--primary)] font-bold text-sm tracking-wide uppercase mt-0.5 truncate">{story.course_name}</p>
                                                 {story.company_name && <p className="text-gray-400 text-xs font-semibold mt-1 truncate">{story.company_name}</p>}
                                             </div>
                                         </div>
@@ -130,13 +130,13 @@ export default function SuccessStoriesSlider({ stories }: { stories: SuccessStor
                     <div className="absolute inset-x-0 bottom-0 flex justify-center items-center gap-6 pb-4 sm:pb-0 sm:bottom-auto sm:justify-between sm:w-full sm:max-w-[1300px]">
                          <button 
                             onClick={handlePrev}
-                            className="w-14 h-14 rounded-full bg-white border border-gray-100 flex items-center justify-center text-gray-400 hover:text-[#a60303] hover:border-[#a60303]/30 hover:scale-110 transition-all shadow-xl hover:shadow-[#a60303]/10 z-20 group"
+                            className="w-14 h-14 rounded-full bg-white border border-gray-100 flex items-center justify-center text-gray-400 hover:text-[var(--primary)] hover:border-[var(--primary)]/30 hover:scale-110 transition-all shadow-xl hover:shadow-[var(--primary)]/10 z-20 group"
                         >
                             <ChevronLeft size={24} className="group-hover:-translate-x-0.5 transition-transform" />
                         </button>
                         <button 
                             onClick={handleNext}
-                            className="w-14 h-14 rounded-full bg-white border border-gray-100 flex items-center justify-center text-gray-400 hover:text-[#a60303] hover:border-[#a60303]/30 hover:scale-110 transition-all shadow-xl hover:shadow-[#a60303]/10 z-20 group"
+                            className="w-14 h-14 rounded-full bg-white border border-gray-100 flex items-center justify-center text-gray-400 hover:text-[var(--primary)] hover:border-[var(--primary)]/30 hover:scale-110 transition-all shadow-xl hover:shadow-[var(--primary)]/10 z-20 group"
                         >
                             <ChevronRight size={24} className="group-hover:translate-x-0.5 transition-transform" />
                         </button>

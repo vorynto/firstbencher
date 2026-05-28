@@ -54,7 +54,7 @@ export default function CareerClient({ jobs }: { jobs: Job[] }) {
                         value={search}
                         onChange={e => setSearch(e.target.value)}
                         placeholder="Search jobs by title or location…"
-                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm outline-none focus:border-[#a60303] focus:ring-2 focus:ring-red-100 transition-all"
+                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 transition-all"
                     />
                 </div>
             </div>
@@ -65,7 +65,7 @@ export default function CareerClient({ jobs }: { jobs: Job[] }) {
                     <button
                         key={t}
                         onClick={() => setFilterType(t)}
-                        className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${filterType === t ? "bg-[#a60303] text-white border-[#a60303]" : "bg-white text-gray-600 border-gray-200 hover:border-[#a60303] hover:text-[#a60303]"}`}
+                        className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${filterType === t ? "bg-[var(--primary)] text-white border-[var(--primary)]" : "bg-white text-gray-600 border-gray-200 hover:border-[var(--primary)] hover:text-[var(--primary)]"}`}
                     >
                         {t}
                     </button>
@@ -82,10 +82,10 @@ export default function CareerClient({ jobs }: { jobs: Job[] }) {
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {filtered.map(job => (
-                        <div key={job.id} className="group bg-white border border-gray-200 rounded-3xl p-7 shadow-sm hover:shadow-xl hover:border-[#a60303]/30 transition-all flex flex-col gap-5">
+                        <div key={job.id} className="group bg-white border border-gray-200 rounded-3xl p-7 shadow-sm hover:shadow-xl hover:border-[var(--primary)]/30 transition-all flex flex-col gap-5">
                             <div className="flex items-start justify-between gap-3">
-                                <div className="w-12 h-12 rounded-2xl bg-[#a60303]/8 flex items-center justify-center shrink-0">
-                                    <Briefcase size={22} className="text-[#a60303]" />
+                                <div className="w-12 h-12 rounded-2xl bg-[var(--primary)]/8 flex items-center justify-center shrink-0">
+                                    <Briefcase size={22} className="text-[var(--primary)]" />
                                 </div>
                                 {job.type && (
                                     <span className={`text-[10px] font-black uppercase tracking-wider px-3 py-1 rounded-full ${TYPE_COLORS[job.type] || "bg-gray-100 text-gray-600"}`}>
@@ -95,19 +95,19 @@ export default function CareerClient({ jobs }: { jobs: Job[] }) {
                             </div>
 
                             <div>
-                                <h3 className="text-lg font-black text-gray-900 leading-tight mb-1 group-hover:text-[#a60303] transition-colors">{job.title}</h3>
-                                {job.department && <p className="text-xs font-bold text-[#a60303] uppercase tracking-wider">{job.department}</p>}
+                                <h3 className="text-lg font-black text-gray-900 leading-tight mb-1 group-hover:text-[var(--primary)] transition-colors">{job.title}</h3>
+                                {job.department && <p className="text-xs font-bold text-[var(--primary)] uppercase tracking-wider">{job.department}</p>}
                             </div>
 
                             <div className="flex flex-wrap gap-4">
                                 {job.location && (
                                     <div className="flex items-center gap-1.5 text-gray-500 text-xs font-semibold">
-                                        <MapPin size={13} className="text-[#a60303]" /> {job.location}
+                                        <MapPin size={13} className="text-[var(--primary)]" /> {job.location}
                                     </div>
                                 )}
                                 {job.salary_range && (
                                     <div className="flex items-center gap-1 text-gray-500 text-xs font-semibold">
-                                        <span className="text-[#a60303] font-black text-sm leading-none">{job.salary_icon || "$"}</span>
+                                        <span className="text-[var(--primary)] font-black text-sm leading-none">{job.salary_icon || "$"}</span>
                                         <span>{job.salary_range}</span>
                                     </div>
                                 )}
@@ -122,13 +122,13 @@ export default function CareerClient({ jobs }: { jobs: Job[] }) {
                             <div className="flex gap-3 mt-auto pt-2">
                                 <button
                                     onClick={() => setApplyJob(job)}
-                                    className="flex-1 bg-[#a60303] text-white py-2.5 rounded-xl font-bold text-sm hover:bg-[#800202] transition-colors"
+                                    className="flex-1 bg-[var(--primary)] text-white py-2.5 rounded-xl font-bold text-sm hover:bg-[var(--primary-dark)] transition-colors"
                                 >
                                     Apply Now
                                 </button>
                                 <a
                                     href={`/career/${generateSlug(job.title)}`}
-                                    className="flex items-center gap-1 px-4 py-2.5 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:border-[#a60303] hover:text-[#a60303] transition-colors"
+                                    className="flex items-center gap-1 px-4 py-2.5 rounded-xl border border-gray-200 text-gray-600 font-bold text-sm hover:border-[var(--primary)] hover:text-[var(--primary)] transition-colors"
                                 >
                                     Details <ChevronRight size={14} />
                                 </a>

@@ -155,28 +155,28 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-20 overflow-y-auto h-full">
                         <div className="max-w-4xl mx-auto">
                             <div className="flex justify-between items-center mb-12">
-                                <h2 className="text-3xl font-black text-gray-900 italic">Search Our <span className="text-[#a60303]">Expertise</span></h2>
+                                <h2 className="text-3xl font-black text-gray-900 italic">Search Our <span className="text-[var(--primary)]">Expertise</span></h2>
                                 <button 
                                     onClick={() => { setIsSearchOpen(false); setSearchQuery(""); }}
-                                    className="w-12 h-12 rounded-full border border-gray-100 flex items-center justify-center text-gray-400 hover:text-[#a60303] hover:border-[#a60303]/20 transition-all bg-white"
+                                    className="w-12 h-12 rounded-full border border-gray-100 flex items-center justify-center text-gray-400 hover:text-[var(--primary)] hover:border-[var(--primary)]/20 transition-all bg-white"
                                 >
                                     <X size={24} />
                                 </button>
                             </div>
 
                             <form onSubmit={handleSearchSubmit} className="relative mb-12 group">
-                                <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#a60303] transition-colors" size={24} />
+                                <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[var(--primary)] transition-colors" size={24} />
                                 <input 
                                     autoFocus
                                     type="text" 
                                     placeholder="Looking for a specific course or skill? (e.g. PMP, Agile, Cloud)" 
-                                    className="w-full pl-16 pr-16 py-6 rounded-2xl border-2 border-gray-100 focus:border-[#a60303] outline-none text-xl font-bold text-gray-800 transition-all shadow-xl shadow-red-900/5"
+                                    className="w-full pl-16 pr-16 py-6 rounded-2xl border-2 border-gray-100 focus:border-[var(--primary)] outline-none text-xl font-bold text-gray-800 transition-all shadow-xl shadow-red-900/5"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                 />
                                 {isSearching && (
                                     <div className="absolute right-6 top-1/2 -translate-y-1/2">
-                                        <div className="w-6 h-6 border-3 border-gray-200 border-t-[#a60303] rounded-full animate-spin"></div>
+                                        <div className="w-6 h-6 border-3 border-gray-200 border-t-[var(--primary)] rounded-full animate-spin"></div>
                                     </div>
                                 )}
                             </form>
@@ -189,7 +189,7 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
                                             <Link 
                                                 key={course.id}
                                                 href={`/courses/${course.slug}`}
-                                                className="flex items-center gap-5 p-4 rounded-2xl bg-white border border-gray-50 hover:border-[#a60303]/20 hover:shadow-xl hover:shadow-red-900/5 transition-all group"
+                                                className="flex items-center gap-5 p-4 rounded-2xl bg-white border border-gray-50 hover:border-[var(--primary)]/20 hover:shadow-xl hover:shadow-red-900/5 transition-all group"
                                                 onClick={() => setIsSearchOpen(false)}
                                             >
                                                 <div className="w-20 h-20 rounded-xl overflow-hidden bg-gray-100 shrink-0 border border-gray-100">
@@ -200,8 +200,8 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
                                                     )}
                                                 </div>
                                                 <div className="min-w-0 flex-1">
-                                                    <span className="text-[10px] font-black text-[#a60303] uppercase tracking-widest bg-red-50 px-2 py-0.5 rounded-full border border-red-100/50 inline-block">{course.category}</span>
-                                                    <h4 className="text-lg font-bold text-gray-900 group-hover:text-[#a60303] transition-colors leading-tight mt-1 line-clamp-1">{course.title}</h4>
+                                                    <span className="text-[10px] font-black text-[var(--primary)] uppercase tracking-widest bg-accent px-2 py-0.5 rounded-full border border-[var(--primary)]/20/50 inline-block">{course.category}</span>
+                                                    <h4 className="text-lg font-bold text-gray-900 group-hover:text-[var(--primary)] transition-colors leading-tight mt-1 line-clamp-1">{course.title}</h4>
                                                     <p className="text-sm text-gray-400 mt-1 line-clamp-1 font-medium">{course.short_description || "Certified training program"}</p>
                                                 </div>
                                             </Link>
@@ -218,7 +218,7 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
                                 <div className="mt-12 pt-8 border-t border-gray-100 text-center">
                                     <Link 
                                         href={`/courses?search=${encodeURIComponent(searchQuery)}`}
-                                        className="inline-flex items-center gap-2 text-[#a60303] font-black uppercase tracking-widest text-sm hover:underline"
+                                        className="inline-flex items-center gap-2 text-[var(--primary)] font-black uppercase tracking-widest text-sm hover:underline"
                                         onClick={() => setIsSearchOpen(false)}
                                     >
                                         View All Search Results <span className="text-lg leading-none">→</span>
@@ -274,9 +274,9 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
                                 />
                             ) : (
                                 <span className="text-[28px] font-bold tracking-tight text-gray-800 flex items-center">
-                                    <span className="text-[#a60303]">Fi</span>
+                                    <span className="text-[var(--primary)]">Fi</span>
                                     <span>Study</span>
-                                    <span className="w-2 h-2 rounded-full bg-[#a60303] ml-0.5 mt-2"></span>
+                                    <span className="w-2 h-2 rounded-full bg-[var(--primary)] ml-0.5 mt-2"></span>
                                 </span>
                             )}
                         </Link>
@@ -288,10 +288,10 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
                             onMouseEnter={() => setCatOpen(true)}
                             onMouseLeave={() => setCatOpen(false)}
                         >
-                            <button className="flex items-center gap-2 px-4 py-2 rounded-lg border border-red-100 bg-red-50/30 text-[13px] font-semibold text-gray-700 hover:border-red-200 transition-all">
-                                <LayoutGrid size={15} className="text-[#a60303]" />
+                            <button className="flex items-center gap-2 px-4 py-2 rounded-lg border border-[var(--primary)]/20 bg-accent/30 text-[13px] font-semibold text-gray-700 hover:border-[var(--primary)]/30 transition-all">
+                                <LayoutGrid size={15} className="text-[var(--primary)]" />
                                 Category
-                                <ChevronDown size={14} className={cn("transition-transform duration-200 text-[#a60303]", catOpen ? "rotate-180" : "")} />
+                                <ChevronDown size={14} className={cn("transition-transform duration-200 text-[var(--primary)]", catOpen ? "rotate-180" : "")} />
                             </button>
 
                             {catOpen && (
@@ -330,7 +330,7 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
                                         href={link.href}
                                         className={cn(
                                             "flex items-center gap-1 text-[14px] font-semibold transition-colors group relative",
-                                            pathname === link.href ? "text-[#a60303]" : "text-[#1a202c] hover:text-[#a60303]"
+                                            pathname === link.href ? "text-[var(--primary)]" : "text-[#1a202c] hover:text-[var(--primary)]"
                                         )}
                                     >
                                         {link.name}
@@ -338,7 +338,7 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
                                             <ChevronDown size={13} className={cn("transition-transform duration-200 opacity-60", openDropdown === link.name ? "rotate-180" : "")} />
                                         )}
                                         {pathname === link.href && (
-                                            <span className="absolute -bottom-[27px] left-0 w-full h-[2px] bg-[#a60303] origin-left rounded-t" />
+                                            <span className="absolute -bottom-[27px] left-0 w-full h-[2px] bg-[var(--primary)] origin-left rounded-t" />
                                         )}
                                     </Link>
 
@@ -346,12 +346,12 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
                                         <div className="absolute top-full left-0 mt-1 bg-white rounded-xl shadow-xl border border-gray-100 py-2 min-w-[220px] z-50">
                                             {link.subLinks && link.subLinks.length > 0 ? (
                                                 link.subLinks.map((sub, i) => (
-                                                    <Link key={i} href={sub.href} className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-primary/5 hover:text-[#a60303] font-medium transition-colors">
+                                                    <Link key={i} href={sub.href} className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-primary/5 hover:text-[var(--primary)] font-medium transition-colors">
                                                         {sub.name}
                                                     </Link>
                                                 ))
                                             ) : (
-                                                <Link href={link.href === "/courses" ? "/courses" : link.href} className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-primary/5 hover:text-[#a60303] font-medium transition-colors">
+                                                <Link href={link.href === "/courses" ? "/courses" : link.href} className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-primary/5 hover:text-[var(--primary)] font-medium transition-colors">
                                                     {link.href === "/courses" ? "All Courses" : `${link.name} Overview`}
                                                 </Link>
                                             )}
@@ -367,7 +367,7 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
                             {topBar.show_search !== false && (
                                 <button 
                                     onClick={() => setIsSearchOpen(true)}
-                                    className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-[#a60303] hover:bg-[#a60303] hover:text-white transition-all shadow-sm"
+                                    className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white transition-all shadow-sm"
                                 >
                                     <Search size={18} />
                                 </button>
@@ -375,7 +375,7 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
                             
                             {/* Shopping Cart Icon */}
                             {topBar.show_cart !== false && (
-                                <button className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-[#a60303] hover:bg-[#a60303] hover:text-white transition-all shadow-sm relative">
+                                <button className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white transition-all shadow-sm relative">
                                     <ShoppingCart size={18} />
                                     <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#F07C5A] text-white text-[10px] font-bold rounded-full flex items-center justify-center">0</span>
                                 </button>
@@ -391,7 +391,7 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
                                     <Button 
                                         variant="ghost"
                                         href={topBar.login_href || "/login"} 
-                                        className="text-sm font-bold text-gray-700 hover:text-[#a60303] px-4 py-2"
+                                        className="text-sm font-bold text-gray-700 hover:text-[var(--primary)] px-4 py-2"
                                     >
                                         {topBar.login_text || "Login"}
                                     </Button>
@@ -410,13 +410,13 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
                             {topBar.show_search !== false && (
                                 <button
                                     onClick={() => setIsSearchOpen(true)}
-                                    className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-[#a60303] hover:bg-[#a60303] hover:text-white transition-all shadow-sm"
+                                    className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white transition-all shadow-sm"
                                 >
                                     <Search size={18} />
                                 </button>
                             )}
                             <button
-                                className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-700 hover:text-[#a60303] hover:border-red-200 transition-all"
+                                className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-700 hover:text-[var(--primary)] hover:border-[var(--primary)]/30 transition-all"
                                 onClick={() => setIsOpen(true)}
                                 aria-label="Open menu"
                             >
@@ -454,16 +454,16 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
                             />
                         ) : (
                             <span className="text-[22px] font-bold tracking-tight text-gray-800 flex items-center">
-                                <span className="text-[#a60303]">Fi</span>
+                                <span className="text-[var(--primary)]">Fi</span>
                                 <span>Study</span>
-                                <span className="w-1.5 h-1.5 rounded-full bg-[#a60303] ml-0.5 mt-1.5" />
+                                <span className="w-1.5 h-1.5 rounded-full bg-[var(--primary)] ml-0.5 mt-1.5" />
                             </span>
                         )}
                     </Link>
                     <button
                         onClick={() => setIsOpen(false)}
                         aria-label="Close menu"
-                        className="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:text-[#a60303] hover:border-red-200 transition-all"
+                        className="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:text-[var(--primary)] hover:border-[var(--primary)]/30 transition-all"
                     >
                         <X size={20} />
                     </button>
@@ -481,7 +481,7 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
                             <Link
                                 key={cat.href}
                                 href={cat.href}
-                                className="flex items-center gap-2 p-3 rounded-xl bg-gray-50 hover:bg-red-50 hover:text-[#a60303] transition-all"
+                                className="flex items-center gap-2 p-3 rounded-xl bg-gray-50 hover:bg-accent hover:text-[var(--primary)] transition-all"
                                 onClick={() => setIsOpen(false)}
                             >
                                 <span className="text-xl leading-none">{cat.emoji}</span>
@@ -506,7 +506,7 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
                                             className={cn(
                                                 "flex-1 text-sm font-semibold px-4 py-3 rounded-lg transition-colors",
                                                 pathname === link.href
-                                                    ? "bg-red-50 text-[#a60303]"
+                                                    ? "bg-accent text-[var(--primary)]"
                                                     : "text-gray-700 hover:bg-gray-50"
                                             )}
                                             onClick={() => setIsOpen(false)}
@@ -520,7 +520,7 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
                                                 className={cn(
                                                     "w-8 h-8 mr-2 rounded-full flex items-center justify-center border transition-all shrink-0",
                                                     isSubOpen
-                                                        ? "bg-red-50 border-red-200 text-[#a60303]"
+                                                        ? "bg-accent border-[var(--primary)]/30 text-[var(--primary)]"
                                                         : "border-gray-200 text-gray-400 hover:border-gray-300 hover:text-gray-600"
                                                 )}
                                             >
@@ -532,12 +532,12 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
                                         )}
                                     </div>
                                     {hasSubLinks && isSubOpen && (
-                                        <div className="pl-6 border-l-2 border-red-100 ml-6 pb-1 mt-0.5">
+                                        <div className="pl-6 border-l-2 border-[var(--primary)]/20 ml-6 pb-1 mt-0.5">
                                             {link.subLinks!.map((sub, i) => (
                                                 <Link
                                                     key={i}
                                                     href={sub.href}
-                                                    className="block text-[13px] font-medium px-2 py-2 text-gray-500 hover:text-[#a60303] transition-colors"
+                                                    className="block text-[13px] font-medium px-2 py-2 text-gray-500 hover:text-[var(--primary)] transition-colors"
                                                     onClick={() => setIsOpen(false)}
                                                 >
                                                     {sub.name}

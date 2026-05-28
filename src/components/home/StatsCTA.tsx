@@ -30,7 +30,7 @@ const defaults: StatsCTAContent = {
     padding_y: "40",
     image_height: "260",
     stat_label_color: "#1f2937",
-    stat_stroke_color: "#a60303"
+    stat_stroke_color: "var(--primary)"
 };
 
 export default async function StatsCTA() {

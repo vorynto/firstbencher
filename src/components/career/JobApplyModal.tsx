@@ -71,7 +71,7 @@ function Field({ label, required, children }: { label: string; required?: boolea
     );
 }
 
-const inputCls = "w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm outline-none focus:border-[#a60303] focus:ring-2 focus:ring-red-100 transition-all bg-white";
+const inputCls = "w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 transition-all bg-white";
 
 export default function JobApplyModal({ job, onClose }: Props) {
     const [step, setStep] = useState(1);
@@ -241,7 +241,7 @@ export default function JobApplyModal({ job, onClose }: Props) {
                                 const active = step === s.id;
                                 return (
                                     <React.Fragment key={s.id}>
-                                        <div className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all ${active ? "bg-[#a60303] text-white" : done ? "text-green-600" : "text-gray-400"}`}>
+                                        <div className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all ${active ? "bg-[var(--primary)] text-white" : done ? "text-green-600" : "text-gray-400"}`}>
                                             {done ? <CheckCircle2 size={13} /> : <Icon size={13} />}
                                             <span className="hidden sm:inline">{s.label}</span>
                                         </div>
@@ -266,7 +266,7 @@ export default function JobApplyModal({ job, onClose }: Props) {
                                     Thank you {form.candidate_name.split(" ")[0]}! We&apos;ll review your application and get back to you soon.
                                 </p>
                             </div>
-                            <button onClick={onClose} className="mt-4 bg-[#a60303] text-white px-8 py-3 rounded-xl font-bold hover:bg-[#800202] transition-colors">
+                            <button onClick={onClose} className="mt-4 bg-[var(--primary)] text-white px-8 py-3 rounded-xl font-bold hover:bg-[var(--primary-dark)] transition-colors">
                                 Close
                             </button>
                         </div>
@@ -309,7 +309,7 @@ export default function JobApplyModal({ job, onClose }: Props) {
                                                         {i === 0 ? "Primary Qualification" : `Qualification ${i + 1}`}
                                                     </p>
                                                     {form.education.length > 1 && (
-                                                        <button type="button" onClick={() => removeEdu(i)} className="p-1.5 rounded-lg text-red-400 hover:bg-red-50 hover:text-red-600 transition-colors">
+                                                        <button type="button" onClick={() => removeEdu(i)} className="p-1.5 rounded-lg text-red-400 hover:bg-accent hover:text-red-600 transition-colors">
                                                             <Trash2 size={14} />
                                                         </button>
                                                     )}
@@ -336,7 +336,7 @@ export default function JobApplyModal({ job, onClose }: Props) {
                                             </div>
                                         ))}
                                     </div>
-                                    <button type="button" onClick={addEdu} className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-dashed border-[#a60303] text-[#a60303] text-sm font-bold hover:bg-red-50 transition-colors self-start">
+                                    <button type="button" onClick={addEdu} className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-dashed border-[var(--primary)] text-[var(--primary)] text-sm font-bold hover:bg-accent transition-colors self-start">
                                         <Plus size={15} /> Add Another Qualification
                                     </button>
                                 </>
@@ -354,7 +354,7 @@ export default function JobApplyModal({ job, onClose }: Props) {
                                                         {i === 0 ? "Current / Most Recent" : `Experience ${i + 1}`}
                                                     </p>
                                                     {form.experience.length > 1 && (
-                                                        <button type="button" onClick={() => removeExp(i)} className="p-1.5 rounded-lg text-red-400 hover:bg-red-50 hover:text-red-600 transition-colors">
+                                                        <button type="button" onClick={() => removeExp(i)} className="p-1.5 rounded-lg text-red-400 hover:bg-accent hover:text-red-600 transition-colors">
                                                             <Trash2 size={14} />
                                                         </button>
                                                     )}
@@ -378,7 +378,7 @@ export default function JobApplyModal({ job, onClose }: Props) {
                                             </div>
                                         ))}
                                     </div>
-                                    <button type="button" onClick={addExp} className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-dashed border-[#a60303] text-[#a60303] text-sm font-bold hover:bg-red-50 transition-colors self-start">
+                                    <button type="button" onClick={addExp} className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-dashed border-[var(--primary)] text-[var(--primary)] text-sm font-bold hover:bg-accent transition-colors self-start">
                                         <Plus size={15} /> Add More Experience
                                     </button>
                                     <Field label="Cover Letter / Summary">
@@ -400,14 +400,14 @@ export default function JobApplyModal({ job, onClose }: Props) {
                                                 onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); addSkill(); } }}
                                                 placeholder="Type a skill and press Enter"
                                             />
-                                            <button type="button" onClick={addSkill} className="px-4 py-2.5 bg-[#a60303] text-white rounded-xl font-bold text-sm hover:bg-[#800202] transition-colors shrink-0">
+                                            <button type="button" onClick={addSkill} className="px-4 py-2.5 bg-[var(--primary)] text-white rounded-xl font-bold text-sm hover:bg-[var(--primary-dark)] transition-colors shrink-0">
                                                 <Plus size={16} />
                                             </button>
                                         </div>
                                         {form.skills.length > 0 && (
                                             <div className="flex flex-wrap gap-2 mt-2">
                                                 {form.skills.map(s => (
-                                                    <span key={s} className="flex items-center gap-1.5 bg-red-50 text-[#a60303] text-xs font-bold px-3 py-1.5 rounded-full border border-red-100">
+                                                    <span key={s} className="flex items-center gap-1.5 bg-accent text-[var(--primary)] text-xs font-bold px-3 py-1.5 rounded-full border border-[var(--primary)]/20">
                                                         {s}
                                                         <button onClick={() => removeSkill(s)} className="hover:text-red-700"><Trash2 size={11} /></button>
                                                     </span>
@@ -430,7 +430,7 @@ export default function JobApplyModal({ job, onClose }: Props) {
                                     <h3 className="font-black text-gray-900 text-base">Resume & Submission</h3>
 
                                     <Field label="Upload Resume (PDF only)" required>
-                                        <label className={`flex flex-col items-center justify-center gap-3 border-2 rounded-2xl p-6 cursor-pointer transition-all ${resumeFile ? "border-green-400 bg-green-50" : "border-dashed border-gray-300 bg-gray-50 hover:border-[#a60303] hover:bg-red-50"} group`}>
+                                        <label className={`flex flex-col items-center justify-center gap-3 border-2 rounded-2xl p-6 cursor-pointer transition-all ${resumeFile ? "border-green-400 bg-green-50" : "border-dashed border-gray-300 bg-gray-50 hover:border-[var(--primary)] hover:bg-accent"} group`}>
                                             <input
                                                 type="file"
                                                 accept=".pdf,application/pdf"
@@ -451,7 +451,7 @@ export default function JobApplyModal({ job, onClose }: Props) {
                                             ) : (
                                                 <>
                                                     <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center group-hover:bg-red-100 transition-colors">
-                                                        <Upload size={22} className="text-gray-400 group-hover:text-[#a60303] transition-colors" />
+                                                        <Upload size={22} className="text-gray-400 group-hover:text-[var(--primary)] transition-colors" />
                                                     </div>
                                                     <div className="text-center">
                                                         <p className="font-bold text-gray-700 text-sm">Click to upload your resume</p>
@@ -487,7 +487,7 @@ export default function JobApplyModal({ job, onClose }: Props) {
                                     </div>
 
                                     <label className="flex items-start gap-3 cursor-pointer">
-                                        <input type="checkbox" checked={form.declaration} onChange={e => setForm(f => ({ ...f, declaration: e.target.checked }))} className="w-4 h-4 mt-0.5 accent-[#a60303]" />
+                                        <input type="checkbox" checked={form.declaration} onChange={e => setForm(f => ({ ...f, declaration: e.target.checked }))} className="w-4 h-4 mt-0.5 accent-[var(--primary)]" />
                                         <span className="text-xs text-gray-600 leading-relaxed">
                                             I confirm that all the information provided is accurate and complete. I consent to First Bencher storing and processing my application data.
                                         </span>
@@ -495,7 +495,7 @@ export default function JobApplyModal({ job, onClose }: Props) {
                                 </>
                             )}
 
-                            {error && <p className="text-red-500 text-sm font-medium bg-red-50 px-4 py-2.5 rounded-xl">{error}</p>}
+                            {error && <p className="text-red-500 text-sm font-medium bg-accent px-4 py-2.5 rounded-xl">{error}</p>}
                         </div>
                     )}
                 </div>
@@ -512,11 +512,11 @@ export default function JobApplyModal({ job, onClose }: Props) {
                         </button>
                         <span className="text-xs font-bold text-gray-400">Step {step} of {STEPS.length}</span>
                         {step < 5 ? (
-                            <button onClick={next} className="flex items-center gap-2 bg-[#a60303] text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-[#800202] transition-colors">
+                            <button onClick={next} className="flex items-center gap-2 bg-[var(--primary)] text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-[var(--primary-dark)] transition-colors">
                                 Next <ChevronRight size={16} />
                             </button>
                         ) : (
-                            <button onClick={handleSubmit} disabled={submitting} className="flex items-center gap-2 bg-[#a60303] text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-[#800202] disabled:opacity-60 transition-colors">
+                            <button onClick={handleSubmit} disabled={submitting} className="flex items-center gap-2 bg-[var(--primary)] text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-[var(--primary-dark)] disabled:opacity-60 transition-colors">
                                 {submitting ? <><Loader2 size={16} className="animate-spin" /> Submitting…</> : <>Submit Application <CheckCircle2 size={16} /></>}
                             </button>
                         )}

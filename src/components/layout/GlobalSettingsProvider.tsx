@@ -24,6 +24,8 @@ export default function GlobalSettingsProvider({ children }: { children: React.R
                         if (settings.primary_color) root.style.setProperty("--primary", settings.primary_color);
                         if (settings.secondary_color) root.style.setProperty("--secondary", settings.secondary_color);
                         if (settings.accent_color) root.style.setProperty("--accent", settings.accent_color);
+                        // Keep --primary-dark in sync with the button hover colour (both represent the darker shade)
+                        if (settings.button_hover_bg) root.style.setProperty("--primary-dark", settings.button_hover_bg);
                         
                         // Font logic (dynamically inject Google Fonts if specified)
                         if (settings.font_family) {

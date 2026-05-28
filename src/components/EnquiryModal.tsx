@@ -87,7 +87,7 @@ export function EnquiryProvider({ children }: { children: React.ReactNode }) {
                         onClick={e => e.stopPropagation()}
                     >
                         {/* Header */}
-                        <div className="bg-[#a60303] px-6 py-5 flex items-start justify-between">
+                        <div className="bg-[var(--primary)] px-6 py-5 flex items-start justify-between">
                             <div>
                                 <h3 className="text-white font-black text-xl">Enquire Now</h3>
                                 <p className="text-red-200 text-xs mt-0.5 line-clamp-1 max-w-[300px]">{source}</p>
@@ -113,7 +113,7 @@ export function EnquiryProvider({ children }: { children: React.ReactNode }) {
                                 </div>
                                 <button
                                     onClick={close}
-                                    className="mt-2 bg-[#a60303] text-white px-8 py-3 rounded-xl font-bold text-sm hover:bg-[#800202] transition-colors"
+                                    className="mt-2 bg-[var(--primary)] text-white px-8 py-3 rounded-xl font-bold text-sm hover:bg-[var(--primary-dark)] transition-colors"
                                 >
                                     Close
                                 </button>
@@ -154,7 +154,7 @@ export function EnquiryProvider({ children }: { children: React.ReactNode }) {
                                         value={formData.message}
                                         onChange={e => setFormData(p => ({ ...p, message: e.target.value }))}
                                         placeholder="Any specific questions or requirements..."
-                                        className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm outline-none focus:border-[#a60303] focus:ring-2 focus:ring-red-100 resize-none transition-all"
+                                        className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 resize-none transition-all"
                                     />
                                 </div>
 
@@ -165,7 +165,7 @@ export function EnquiryProvider({ children }: { children: React.ReactNode }) {
                                 <button
                                     type="submit"
                                     disabled={submitting}
-                                    className="w-full bg-[#a60303] hover:bg-[#800202] text-white py-3.5 rounded-xl font-bold text-sm transition-colors shadow-lg shadow-red-900/20 flex items-center justify-center gap-2 disabled:opacity-60"
+                                    className="w-full bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white py-3.5 rounded-xl font-bold text-sm transition-colors shadow-lg shadow-red-900/20 flex items-center justify-center gap-2 disabled:opacity-60"
                                 >
                                     {submitting ? (
                                         <><Loader2 size={16} className="animate-spin" /> Submitting...</>
@@ -204,7 +204,7 @@ function InputField({
                 value={value}
                 onChange={e => onChange(e.target.value)}
                 placeholder={placeholder}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm outline-none focus:border-[#a60303] focus:ring-2 focus:ring-red-100 transition-all"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 transition-all"
             />
         </div>
     );

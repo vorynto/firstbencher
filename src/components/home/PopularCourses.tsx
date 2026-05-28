@@ -80,7 +80,7 @@ export default async function PopularCourses() {
     }
 
     return (
-        <section className="bg-red-50/30 py-14">
+        <section className="bg-accent/30 py-14">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col items-center">
                 <div className="text-center mb-16">
                     <h2 className="text-3xl md:text-4xl font-black text-[#1a202c] mb-3">Popular Courses</h2>
@@ -96,7 +96,7 @@ export default async function PopularCourses() {
                             <Link
                                 key={course.id}
                                 href={`/courses/${course.slug}`}
-                                className="bg-white rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgb(166,3,3,0.08)] transition-all duration-300 overflow-hidden flex flex-col border border-gray-200 hover:border-[#a60303]/25 group cursor-pointer"
+                                className="bg-white rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgb(166,3,3,0.08)] transition-all duration-300 overflow-hidden flex flex-col border border-gray-200 hover:border-[var(--primary)]/25 group cursor-pointer"
                             >
                                 
                                 {/* Image / Colored Header */}

@@ -46,11 +46,11 @@ export default async function SuccessStoriesPage() {
                             We are constantly collecting amazing experiences from our students. Check back soon for inspiring testimonials.
                         </p>
                         {user ? (
-                            <Link href="/feedback" className="bg-[#a60303] text-white px-8 py-3 rounded-full font-bold hover:bg-[#800202] transition-colors inline-block">
+                            <Link href="/feedback" className="bg-[var(--primary)] text-white px-8 py-3 rounded-full font-bold hover:bg-[var(--primary-dark)] transition-colors inline-block">
                                 Submit Your Story
                             </Link>
                         ) : (
-                            <Link href="/login?redirect=/feedback" className="bg-[#a60303] text-white px-8 py-3 rounded-full font-bold hover:bg-[#800202] transition-colors inline-block">
+                            <Link href="/login?redirect=/feedback" className="bg-[var(--primary)] text-white px-8 py-3 rounded-full font-bold hover:bg-[var(--primary-dark)] transition-colors inline-block">
                                 Sign In to Submit Your Story
                             </Link>
                         )}
@@ -69,13 +69,13 @@ export default async function SuccessStoriesPage() {
                                             className="w-16 h-16 rounded-full border-2 border-white shadow-md object-cover flex-shrink-0"
                                         />
                                     ) : (
-                                        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#a60303] to-[#c60404] flex items-center justify-center text-white font-bold text-2xl shadow-md flex-shrink-0">
+                                        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[var(--primary)] to-[#c60404] flex items-center justify-center text-white font-bold text-2xl shadow-md flex-shrink-0">
                                             {story.student_name.charAt(0).toUpperCase()}
                                         </div>
                                     )}
                                     <div>
                                         <h4 className="font-black text-gray-900 text-lg leading-tight">{story.student_name}</h4>
-                                        {story.course_name && <p className="text-sm font-semibold text-[#a60303] mt-0.5">{story.course_name}</p>}
+                                        {story.course_name && <p className="text-sm font-semibold text-[var(--primary)] mt-0.5">{story.course_name}</p>}
                                         {story.company_name && <p className="text-sm text-gray-500">{story.company_name}</p>}
                                     </div>
                                 </div>
@@ -88,7 +88,7 @@ export default async function SuccessStoriesPage() {
                                 </div>
 
                                 {/* Review message */}
-                                <div className="border-l-4 border-[#a60303]/20 pl-4">
+                                <div className="border-l-4 border-[var(--primary)]/20 pl-4">
                                     <p className="text-gray-700 leading-relaxed">&ldquo;{story.message}&rdquo;</p>
                                 </div>
 
@@ -96,7 +96,7 @@ export default async function SuccessStoriesPage() {
                                 {story.certificate_url && (
                                     <div className="pt-1">
                                         <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2 flex items-center gap-1.5">
-                                            <Award size={13} className="text-[#a60303]" /> Course Certificate
+                                            <Award size={13} className="text-[var(--primary)]" /> Course Certificate
                                         </p>
                                         <a
                                             href={story.certificate_url}
@@ -126,14 +126,14 @@ export default async function SuccessStoriesPage() {
                     {user ? (
                         <Link
                             href="/feedback"
-                            className="bg-[#1a1a1a] text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-[#a60303] transition-colors shadow-xl shadow-red-900/10 inline-flex items-center gap-2 group"
+                            className="bg-[#1a1a1a] text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-[var(--primary)] transition-colors shadow-xl shadow-red-900/10 inline-flex items-center gap-2 group"
                         >
                             Share Your Experience <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
                         </Link>
                     ) : (
                         <Link
                             href="/login?redirect=/feedback"
-                            className="bg-[#1a1a1a] text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-[#a60303] transition-colors shadow-xl shadow-red-900/10 inline-flex items-center gap-2 group"
+                            className="bg-[#1a1a1a] text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-[var(--primary)] transition-colors shadow-xl shadow-red-900/10 inline-flex items-center gap-2 group"
                         >
                             Sign In to Share Your Story <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
                         </Link>

@@ -24,7 +24,7 @@ export default function JobDetailClient({ job }: { job: Job }) {
     return (
         <section className="py-16">
             <div className="max-w-4xl mx-auto px-4 sm:px-6">
-                <Link href="/career" className="inline-flex items-center gap-2 text-[#a60303] font-bold text-sm hover:gap-3 transition-all mb-8">
+                <Link href="/career" className="inline-flex items-center gap-2 text-[var(--primary)] font-bold text-sm hover:gap-3 transition-all mb-8">
                     <ArrowLeft size={16} /> Back to Careers
                 </Link>
 
@@ -56,7 +56,7 @@ export default function JobDetailClient({ job }: { job: Job }) {
                             </div>
                             <button
                                 onClick={() => setApplyOpen(true)}
-                                className="bg-[#a60303] text-white px-7 py-3 rounded-2xl font-bold text-sm hover:bg-[#800202] transition-colors shrink-0"
+                                className="bg-[var(--primary)] text-white px-7 py-3 rounded-2xl font-bold text-sm hover:bg-[var(--primary-dark)] transition-colors shrink-0"
                             >
                                 Apply Now
                             </button>
@@ -85,14 +85,14 @@ export default function JobDetailClient({ job }: { job: Job }) {
                             </div>
                         )}
 
-                        <div className="bg-red-50 border border-red-100 rounded-2xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div className="bg-accent border border-[var(--primary)]/20 rounded-2xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                             <div>
                                 <p className="font-black text-gray-900">Ready to apply?</p>
                                 <p className="text-sm text-gray-500 mt-0.5">Submit your application and we&apos;ll get back to you soon.</p>
                             </div>
                             <button
                                 onClick={() => setApplyOpen(true)}
-                                className="bg-[#a60303] text-white px-7 py-3 rounded-2xl font-bold text-sm hover:bg-[#800202] transition-colors shrink-0"
+                                className="bg-[var(--primary)] text-white px-7 py-3 rounded-2xl font-bold text-sm hover:bg-[var(--primary-dark)] transition-colors shrink-0"
                             >
                                 Apply Now
                             </button>

@@ -43,8 +43,8 @@ export default async function CareerPage() {
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
                         {PERKS.map(({ icon: Icon, title, desc }) => (
                             <div key={title} className="flex gap-4 items-start">
-                                <div className="w-11 h-11 rounded-2xl bg-[#a60303]/8 flex items-center justify-center shrink-0">
-                                    <Icon size={20} className="text-[#a60303]" />
+                                <div className="w-11 h-11 rounded-2xl bg-[var(--primary)]/8 flex items-center justify-center shrink-0">
+                                    <Icon size={20} className="text-[var(--primary)]" />
                                 </div>
                                 <div>
                                     <p className="font-black text-gray-900 mb-1">{title}</p>

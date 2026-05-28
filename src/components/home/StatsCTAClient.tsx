@@ -27,7 +27,7 @@ export default function StatsCTAClient({ content }: { content: StatsCTAContent }
     const py = content.padding_y ? `${content.padding_y}px` : "40px";
     const imgH = content.image_height ? `${content.image_height}px` : "260px";
     const labelColor = content.stat_label_color || "#1f2937";
-    const strokeColor = content.stat_stroke_color || "#a60303";
+    const strokeColor = content.stat_stroke_color || "var(--primary)";
 
     const getYoutubeId = (url: string) => {
         if (!url) return null;

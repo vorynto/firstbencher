@@ -167,7 +167,7 @@ export default async function WorkshopDetailPage({ params }: Props) {
                                     </div>
                                     <Link
                                         href={`/contact?subject=Register%20for%20workshop:%20${encodeURIComponent(workshop.title)}`}
-                                        className={`inline-flex min-w-50 items-center justify-center gap-3 px-8 py-5 rounded-2xl font-bold transition-all shadow-xl ${isPast ? "bg-muted text-muted-foreground pointer-events-none" : "bg-[#a60303] text-white hover:scale-105 shadow-[#a60303]/20 hover:shadow-[#a60303]/40"}`}
+                                        className={`inline-flex min-w-50 items-center justify-center gap-3 px-8 py-5 rounded-2xl font-bold transition-all shadow-xl ${isPast ? "bg-muted text-muted-foreground pointer-events-none" : "bg-[var(--primary)] text-white hover:scale-105 shadow-[var(--primary)]/20 hover:shadow-[var(--primary)]/40"}`}
                                     >
                                         {isPast ? "Event Concluded" : "Register Now"}
                                         {!isPast && <ExternalLink size={20} />}

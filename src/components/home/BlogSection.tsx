@@ -32,12 +32,12 @@ export default function BlogSection({ blogs }: BlogSectionProps) {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
                 <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
                     <div className="max-w-2xl">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-50 text-[#a60303] text-[10px] font-black uppercase tracking-widest mb-4 border border-red-100/50">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#a60303] animate-pulse" />
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-50 text-[var(--primary)] text-[10px] font-black uppercase tracking-widest mb-4 border border-red-100/50">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[var(--primary)] animate-pulse" />
                             Latest Updates
                         </div>
                         <h2 className="text-4xl md:text-5xl font-black text-gray-900 leading-tight">
-                            From Our <span className="text-[#a60303]">Knowledge Hub</span>
+                            From Our <span className="text-[var(--primary)]">Knowledge Hub</span>
                         </h2>
                     </div>
                     <div className="hidden md:block">
@@ -78,17 +78,17 @@ export default function BlogSection({ blogs }: BlogSectionProps) {
                             <div className="p-8 flex flex-col flex-1">
                                 <div className="flex items-center gap-4 mb-4">
                                     <div className="flex items-center gap-1.5 text-xs font-bold text-gray-400">
-                                        <User size={14} className="text-[#a60303]" />
+                                        <User size={14} className="text-[var(--primary)]" />
                                         {blog.author || "First Bencher"}
                                     </div>
                                     <span className="w-1 h-1 rounded-full bg-gray-300" />
                                     <div className="flex items-center gap-1.5 text-xs font-bold text-gray-400">
-                                        <Calendar size={14} className="text-[#a60303]" />
+                                        <Calendar size={14} className="text-[var(--primary)]" />
                                         {new Date(blog.published_at).getFullYear()}
                                     </div>
                                 </div>
 
-                                <h3 className="text-2xl font-black text-gray-900 mb-4 group-hover:text-[#a60303] transition-colors line-clamp-2 leading-tight">
+                                <h3 className="text-2xl font-black text-gray-900 mb-4 group-hover:text-[var(--primary)] transition-colors line-clamp-2 leading-tight">
                                     {blog.title}
                                 </h3>
 
@@ -100,7 +100,7 @@ export default function BlogSection({ blogs }: BlogSectionProps) {
                                     <Button
                                         variant="ghost"
                                         href={`/blog/${blog.slug}`}
-                                        className="group/btn p-0 hover:bg-transparent text-[#a60303] flex items-center gap-2 font-black text-xs uppercase tracking-widest"
+                                        className="group/btn p-0 hover:bg-transparent text-[var(--primary)] flex items-center gap-2 font-black text-xs uppercase tracking-widest"
                                     >
                                         Keep Reading
                                         <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />

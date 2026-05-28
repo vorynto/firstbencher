@@ -50,7 +50,7 @@ export default function AboutSection() {
             return (
                 <>
                     {parts[0]}
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#a60303] to-[#F07C5A] italic">
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--primary)] to-[#F07C5A] italic">
                         Innovation
                     </span>
                     {parts[1]}
@@ -71,7 +71,7 @@ export default function AboutSection() {
                         <div className="absolute -left-12 -top-12 w-48 h-48 opacity-10 pointer-events-none hidden lg:block">
                             <div className="grid grid-cols-6 gap-4">
                                 {[...Array(36)].map((_, i) => (
-                                    <div key={i} className="w-1.5 h-1.5 rounded-full bg-[#a60303]" />
+                                    <div key={i} className="w-1.5 h-1.5 rounded-full bg-[var(--primary)]" />
                                 ))}
                             </div>
                         </div>
@@ -114,7 +114,7 @@ export default function AboutSection() {
 
                                 {/* Awards Badge — hidden on sm, visible on lg */}
                                 <div className="hidden lg:flex absolute -bottom-8 -left-16 bg-white p-5 rounded-2xl shadow-xl border border-gray-50 flex-col items-center text-center min-w-[140px]">
-                                    <p className="text-3xl font-black text-[#a60303] leading-none">{content.awards_count}</p>
+                                    <p className="text-3xl font-black text-[var(--primary)] leading-none">{content.awards_count}</p>
                                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">{content.awards_label}</p>
                                     <div className="mt-2 flex -space-x-2">
                                         {[1,2,3,4].map(i => (
@@ -127,7 +127,7 @@ export default function AboutSection() {
 
                         {/* Wavy Arrow Decoration */}
                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 opacity-20 hidden lg:block">
-                            <svg width="400" height="300" viewBox="0 0 400 300" fill="none" stroke="#a60303" strokeWidth="2" strokeDasharray="8 8">
+                            <svg width="400" height="300" viewBox="0 0 400 300" fill="none" stroke="var(--primary)" strokeWidth="2" strokeDasharray="8 8">
                                 <path d="M50,150 Q125,50 200,150 T350,150" fill="none" />
                                 <path d="M340,140 L350,150 L340,160" strokeLinecap="round" />
                             </svg>
@@ -137,8 +137,8 @@ export default function AboutSection() {
                     {/* ════════ RIGHT: TEXT CONTENT ════════ */}
                     <div className="flex-1 min-w-0">
                         {/* Section Tag */}
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-50 text-[#a60303] text-xs font-black uppercase tracking-[0.2em] mb-6 shadow-sm border border-red-100/50">
-                            <span className="w-2 h-2 rounded-full bg-[#a60303] animate-pulse"></span>
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-50 text-[var(--primary)] text-xs font-black uppercase tracking-[0.2em] mb-6 shadow-sm border border-red-100/50">
+                            <span className="w-2 h-2 rounded-full bg-[var(--primary)] animate-pulse"></span>
                             {content.badge_text}
                         </div>
 

@@ -97,7 +97,7 @@ export default async function DynamicCustomPage({ params }: { params: Promise<{ 
                                                     [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-6
                                                     [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:mb-6
                                                     [&_li]:mb-2
-                                                    [&_a]:text-[#a60303] [&_a]:font-bold [&_a]:underline
+                                                    [&_a]:text-[var(--primary)] [&_a]:font-bold [&_a]:underline
                                                     "
                                                     dangerouslySetInnerHTML={{
                                                         __html: sanitize((col.content || "").replace(/&nbsp;/g, ' '))

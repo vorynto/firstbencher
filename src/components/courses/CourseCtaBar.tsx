@@ -17,8 +17,8 @@ export default function CourseCtaBar({ courseTitle, visible = true }: { courseTi
                     onClick={() => openEnquiry(`Request Callback — ${source}`)}
                     className="flex flex-1 items-center justify-center gap-2.5 py-4 text-white hover:bg-white/5 transition-colors group"
                 >
-                    <div className="w-8 h-8 rounded-full bg-[#a60303]/20 group-hover:bg-[#a60303]/40 flex items-center justify-center transition-colors">
-                        <PhoneCall size={15} className="text-[#a60303]" />
+                    <div className="w-8 h-8 rounded-full bg-[var(--primary)]/20 group-hover:bg-[var(--primary)]/40 flex items-center justify-center transition-colors">
+                        <PhoneCall size={15} className="text-[var(--primary)]" />
                     </div>
                     <div className="text-left hidden sm:block">
                         <p className="text-[11px] text-gray-400 font-medium leading-none mb-0.5">Need help?</p>
@@ -41,7 +41,7 @@ export default function CourseCtaBar({ courseTitle, visible = true }: { courseTi
 
                 {/* Email Us */}
                 <a href="mailto:info@firstbencher.com" className="flex flex-1 items-center justify-center gap-2.5 py-4 text-white hover:bg-white/5 transition-colors group">
-                    <div className="w-8 h-8 rounded-full bg-[#a60303]/20 group-hover:bg-[#a60303]/40 flex items-center justify-center transition-colors">
+                    <div className="w-8 h-8 rounded-full bg-[var(--primary)]/20 group-hover:bg-[var(--primary)]/40 flex items-center justify-center transition-colors">
                         <Mail size={15} className="text-red-400" />
                     </div>
                     <div className="text-left hidden sm:block">

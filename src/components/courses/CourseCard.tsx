@@ -38,7 +38,7 @@ export default function CourseCard({ course, index }: CourseCardProps) {
     return (
         <Link
             href={`/courses/${course.slug}`}
-            className="bg-white rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgb(166,3,3,0.08)] transition-all duration-300 overflow-hidden flex flex-col border border-gray-200 hover:border-[#a60303]/25 group h-full cursor-pointer"
+            className="bg-white rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgb(166,3,3,0.08)] transition-all duration-300 overflow-hidden flex flex-col border border-gray-200 hover:border-[var(--primary)]/25 group h-full cursor-pointer"
         >
             {/* Header / Image Area — gradient always shown, image blended on top */}
             <div className="p-3">
@@ -62,7 +62,7 @@ export default function CourseCard({ course, index }: CourseCardProps) {
 
             {/* Content Area */}
             <div className="p-6 pt-2 flex flex-col flex-1">
-                <h4 className="text-[19px] font-extrabold text-[#1a202c] leading-tight mb-8 line-clamp-2 min-h-[48px] group-hover:text-[#a60303] transition-colors">
+                <h4 className="text-[19px] font-extrabold text-[#1a202c] leading-tight mb-8 line-clamp-2 min-h-[48px] group-hover:text-[var(--primary)] transition-colors">
                     {course.title}
                 </h4>
 

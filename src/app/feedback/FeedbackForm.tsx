@@ -59,7 +59,7 @@ export default function FeedbackForm({ prefillName = "" }: Props) {
                     <p className="text-gray-600 mb-8 leading-relaxed">
                         Your success story has been submitted and is pending review. Once approved it will appear on the Success Stories page and inspire countless other students.
                     </p>
-                    <Link href="/success-stories" className="bg-[#a60303] text-white px-8 py-3.5 rounded-full font-bold hover:bg-[#800202] transition-colors inline-block">
+                    <Link href="/success-stories" className="bg-[var(--primary)] text-white px-8 py-3.5 rounded-full font-bold hover:bg-[var(--primary-dark)] transition-colors inline-block">
                         View Success Stories
                     </Link>
                 </div>
@@ -70,7 +70,7 @@ export default function FeedbackForm({ prefillName = "" }: Props) {
     return (
         <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6">
             <div className="max-w-2xl mx-auto">
-                <Link href="/success-stories" className="inline-flex items-center gap-2 text-gray-500 hover:text-[#a60303] font-medium transition-colors mb-8">
+                <Link href="/success-stories" className="inline-flex items-center gap-2 text-gray-500 hover:text-[var(--primary)] font-medium transition-colors mb-8">
                     <ArrowLeft size={16} /> Back to Success Stories
                 </Link>
 
@@ -96,7 +96,7 @@ export default function FeedbackForm({ prefillName = "" }: Props) {
                                     type="text"
                                     value={form.student_name}
                                     onChange={e => setForm({ ...form, student_name: e.target.value })}
-                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#a60303] focus:ring-2 focus:ring-red-100 transition-all outline-none bg-gray-50 focus:bg-white"
+                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[var(--primary)] focus:ring-2 focus:ring-red-100 transition-all outline-none bg-gray-50 focus:bg-white"
                                     placeholder="e.g. John Doe"
                                 />
                             </div>
@@ -109,7 +109,7 @@ export default function FeedbackForm({ prefillName = "" }: Props) {
                                         type="text"
                                         value={form.course_name}
                                         onChange={e => setForm({ ...form, course_name: e.target.value })}
-                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#a60303] focus:ring-2 focus:ring-red-100 transition-all outline-none bg-gray-50 focus:bg-white"
+                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[var(--primary)] focus:ring-2 focus:ring-red-100 transition-all outline-none bg-gray-50 focus:bg-white"
                                         placeholder="e.g. PMP Certification"
                                     />
                                 </div>
@@ -119,7 +119,7 @@ export default function FeedbackForm({ prefillName = "" }: Props) {
                                         type="text"
                                         value={form.company_name}
                                         onChange={e => setForm({ ...form, company_name: e.target.value })}
-                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#a60303] focus:ring-2 focus:ring-red-100 transition-all outline-none bg-gray-50 focus:bg-white"
+                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[var(--primary)] focus:ring-2 focus:ring-red-100 transition-all outline-none bg-gray-50 focus:bg-white"
                                         placeholder="e.g. Google, Amazon"
                                     />
                                 </div>
@@ -132,7 +132,7 @@ export default function FeedbackForm({ prefillName = "" }: Props) {
                                         type="url"
                                         value={form.linkedin_url}
                                         onChange={e => setForm({ ...form, linkedin_url: e.target.value })}
-                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#a60303] focus:ring-2 focus:ring-red-100 transition-all outline-none bg-gray-50 focus:bg-white"
+                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[var(--primary)] focus:ring-2 focus:ring-red-100 transition-all outline-none bg-gray-50 focus:bg-white"
                                         placeholder="https://linkedin.com/..."
                                     />
                                 </div>
@@ -142,7 +142,7 @@ export default function FeedbackForm({ prefillName = "" }: Props) {
                                         type="url"
                                         value={form.video_url}
                                         onChange={e => setForm({ ...form, video_url: e.target.value })}
-                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#a60303] focus:ring-2 focus:ring-red-100 transition-all outline-none bg-gray-50 focus:bg-white"
+                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[var(--primary)] focus:ring-2 focus:ring-red-100 transition-all outline-none bg-gray-50 focus:bg-white"
                                         placeholder="YouTube or Vimeo link"
                                     />
                                 </div>
@@ -176,7 +176,7 @@ export default function FeedbackForm({ prefillName = "" }: Props) {
                                     rows={5}
                                     value={form.message}
                                     onChange={e => setForm({ ...form, message: e.target.value })}
-                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#a60303] focus:ring-2 focus:ring-red-100 transition-all outline-none bg-gray-50 focus:bg-white resize-none"
+                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[var(--primary)] focus:ring-2 focus:ring-red-100 transition-all outline-none bg-gray-50 focus:bg-white resize-none"
                                     placeholder="Share your experience with the course, how it helped your career, and any advice for future students..."
                                 />
                             </div>
@@ -203,7 +203,7 @@ export default function FeedbackForm({ prefillName = "" }: Props) {
                             <button
                                 type="submit"
                                 disabled={status === "submitting"}
-                                className="w-full bg-[#a60303] text-white py-4 rounded-xl font-bold text-lg hover:bg-[#800202] transition-colors disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-red-900/20"
+                                className="w-full bg-[var(--primary)] text-white py-4 rounded-xl font-bold text-lg hover:bg-[var(--primary-dark)] transition-colors disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-red-900/20"
                             >
                                 {status === "submitting" ? (
                                     <>

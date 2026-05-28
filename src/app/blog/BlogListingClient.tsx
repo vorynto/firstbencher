@@ -71,7 +71,7 @@ export default function BlogListingClient({ initialBlogs }: { initialBlogs: Blog
 
                                 <div className="p-8 md:p-10 flex flex-col flex-1">
                                     <div className="flex items-center gap-4 mb-5">
-                                        <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-[#a60303]">
+                                        <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-[var(--primary)]">
                                             <User size={12} />
                                             {blog.author || "First Bencher"}
                                         </div>
@@ -95,7 +95,7 @@ export default function BlogListingClient({ initialBlogs }: { initialBlogs: Blog
                                         <Button
                                             variant="ghost"
                                             href={`/blog/${blog.slug}`}
-                                            className="group/btn p-0 h-auto hover:bg-transparent text-[#a60303] flex items-center justify-between w-full font-black text-xs uppercase tracking-widest"
+                                            className="group/btn p-0 h-auto hover:bg-transparent text-[var(--primary)] flex items-center justify-between w-full font-black text-xs uppercase tracking-widest"
                                         >
                                             <span className="flex items-center gap-2">
                                                 Dive Deeper
