@@ -483,11 +483,19 @@ export default function CourseClientPage({ course, instructors = [], sidebarCont
 
                                     return (
                                         <div key={i} className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden flex flex-col md:flex-row">
-                                            <div className="bg-[var(--primary-tint)] shrink-0 w-full md:w-36 flex flex-col items-center justify-center p-6 gap-1 border-b md:border-b-0 md:border-r border-[var(--primary)]/20">
-                                                <Calendar size={22} className="text-[var(--primary)] mb-1" />
-                                                <span className="text-[10px] font-black uppercase text-[#1a202c] tracking-wider">Start Date</span>
-                                                <span className="text-5xl font-black text-[#1a202c] leading-none">{day}</span>
-                                                <span className="text-[13px] font-bold text-[#1a202c]">{month}, {year}</span>
+                                            <div className="bg-[var(--primary-tint)] shrink-0 w-full md:w-36 border-b md:border-b-0 md:border-r border-[var(--primary)]/20
+                                                flex flex-row items-center gap-2 px-4 py-3
+                                                md:flex-col md:items-center md:justify-center md:p-6 md:gap-1">
+                                                {/* Mobile: single line — icon + full date */}
+                                                <Calendar size={18} className="text-[var(--primary)] shrink-0 md:hidden" />
+                                                <span className="text-sm font-black text-[#1a202c] md:hidden">
+                                                    Start Date: {day} {month}, {year}
+                                                </span>
+                                                {/* Desktop: stacked column */}
+                                                <Calendar size={22} className="text-[var(--primary)] mb-1 hidden md:block" />
+                                                <span className="text-[10px] font-black uppercase text-[#1a202c] tracking-wider hidden md:block">Start Date</span>
+                                                <span className="text-5xl font-black text-[#1a202c] leading-none hidden md:block">{day}</span>
+                                                <span className="text-[13px] font-bold text-[#1a202c] hidden md:block">{month}, {year}</span>
                                             </div>
                                             <div className="p-6 md:p-8 flex-1 flex flex-col gap-4">
                                                 <h3 className="text-xl md:text-2xl font-black text-[var(--primary)] uppercase tracking-wide">
