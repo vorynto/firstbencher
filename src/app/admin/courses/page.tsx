@@ -52,6 +52,7 @@ type Course = {
         instructors: boolean;
         videos: boolean;
     };
+    section_bg_color?: string | null;
 };
 
 const defaultTabsEnabled = {
@@ -66,6 +67,7 @@ const defaultCourse: Partial<Course> = {
     card_inner_text: "", review_count: 0, instructor_ids: [],
     curriculum: [], faq: [], batches: [], videos: [],
     tabs_enabled: { ...defaultTabsEnabled },
+    section_bg_color: null,
 };
 
 export default function CoursesPage() {
@@ -142,6 +144,7 @@ export default function CoursesPage() {
             review_count: Number(editorData.review_count) || 0,
             instructor_ids: editorData.instructor_ids || [],
             videos: editorData.videos || [],
+            section_bg_color: editorData.section_bg_color || null,
         };
 
         let err;
@@ -558,6 +561,46 @@ function FormView({
                 <section className="bg-white p-6 rounded-2xl border border-gray-200 flex flex-col gap-5">
                     <h2 className="text-base font-bold border-b border-gray-100 pb-2">Media</h2>
                     <ImageUploadField label="Cover Image" value={editorData.image_url || ""} onChange={v => setEditorData({ ...editorData, image_url: v })} />
+                </section>
+
+                {/* Page Background Color */}
+                <section className="bg-white p-6 rounded-2xl border border-gray-200 flex flex-col gap-4">
+                    <h2 className="text-base font-bold border-b border-gray-100 pb-2">Page Background Color</h2>
+                    <label className="flex items-center gap-3 cursor-pointer select-none">
+                        <input
+                            type="checkbox"
+                            checked={!!editorData.section_bg_color}
+                            onChange={e => setEditorData({
+                                ...editorData,
+                                section_bg_color: e.target.checked ? "#4f46e5" : null,
+                            })}
+                            className="w-4 h-4 rounded accent-[var(--primary)]"
+                        />
+                        <span className="text-sm font-semibold text-gray-700">Enable custom background</span>
+                    </label>
+                    {editorData.section_bg_color && (
+                        <div className="flex flex-col gap-3">
+                            <div className="flex items-center gap-3">
+                                <input
+                                    type="color"
+                                    value={editorData.section_bg_color}
+                                    onChange={e => setEditorData({ ...editorData, section_bg_color: e.target.value })}
+                                    className="w-10 h-10 rounded-lg border border-gray-200 cursor-pointer p-0.5 bg-white"
+                                />
+                                <span className="text-sm font-mono text-gray-600">{editorData.section_bg_color}</span>
+                            </div>
+                            {/* Preview swatch */}
+                            <div
+                                className="h-10 rounded-xl border border-gray-200 flex items-center justify-center text-xs font-bold text-gray-500"
+                                style={{ backgroundColor: editorData.section_bg_color + "18" }}
+                            >
+                                Preview (mild tint)
+                            </div>
+                            <p className="text-[10px] text-gray-400 italic leading-snug">
+                                A light tint (~10% opacity) of the selected color will be used as the course page background.
+                            </p>
+                        </div>
+                    )}
                 </section>
 
                 <section className="bg-white p-6 rounded-2xl border border-gray-200 flex flex-col gap-5">

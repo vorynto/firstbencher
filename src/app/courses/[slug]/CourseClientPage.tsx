@@ -52,6 +52,7 @@ type Course = {
         instructors?: boolean;
         videos?: boolean;
     };
+    section_bg_color?: string | null;
 };
 
 const ALL_TABS = [
@@ -201,13 +202,21 @@ export default function CourseClientPage({ course, instructors = [], sidebarCont
         }
     };
 
-    const { title, category, short_description, description, rating, review_count, features, requirements, curriculum, faq, batches, videos, tabs_enabled } = course;
+    const { title, category, short_description, description, rating, review_count, features, requirements, curriculum, faq, batches, videos, tabs_enabled, section_bg_color } = course;
 
     const te = tabs_enabled || {};
     const TABS = ALL_TABS.filter(t => te[t.key as keyof typeof te] !== false);
 
+    // hex + "1a" appends ~10% alpha for a mild tint background
+    const pageBgStyle: React.CSSProperties | undefined = section_bg_color
+        ? { backgroundColor: section_bg_color + "1a" }
+        : undefined;
+
     return (
-        <div className="min-h-screen bg-gray-50 text-[#1a202c] pb-16">
+        <div
+            className={`min-h-screen text-[#1a202c] pb-16${!section_bg_color ? " bg-gray-50" : ""}`}
+            style={pageBgStyle}
+        >
 
             {/* ── HERO SECTION ─────────────────────────────────────────── */}
             <div ref={heroRef} className="bg-[#111111]">
