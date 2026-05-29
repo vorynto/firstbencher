@@ -232,21 +232,21 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
 
             <header className="relative z-50 w-full min-h-[118px]">
                 {/* ── Top Bar ── */}
-                <div className="bg-[#1a1a1a] text-[#c2c9d6] h-[42px]">
+                <div className="bg-[var(--primary)] text-white/80 h-[42px]">
                     <div className="container mx-auto px-6 lg:px-12 flex items-center justify-between h-full text-[13px] font-medium tracking-wide">
                         <div className="flex items-center gap-6">
                             <a href={`mailto:${topBar.email}`} className="flex items-center gap-2 hover:text-white transition-colors">
-                                <Mail size={14} className="text-yellow-400 shrink-0" />
+                                <Mail size={14} className="text-white/60 shrink-0" />
                                 {topBar.email}
                             </a>
-                            <span className="w-px h-4 bg-white/10 hidden sm:block" />
+                            <span className="w-px h-4 bg-white/20 hidden sm:block" />
                             <a href={`tel:${topBar.phone}`} className="hidden sm:flex items-center gap-2 hover:text-white transition-colors">
-                                <Phone size={14} className="text-yellow-400 shrink-0" />
+                                <Phone size={14} className="text-white/60 shrink-0" />
                                 {topBar.phone}
                             </a>
                         </div>
                         <div className="hidden md:flex items-center gap-2 hover:text-white transition-colors cursor-default">
-                            <MapPin size={14} className="text-yellow-400 shrink-0" />
+                            <MapPin size={14} className="text-white/60 shrink-0" />
                             {topBar.address}
                         </div>
                     </div>
