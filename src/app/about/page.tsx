@@ -179,7 +179,7 @@ export default async function AboutPage() {
                 <div className="absolute top-0 right-0 w-96 h-96 bg-primary-tint rounded-full blur-3xl opacity-30 -translate-y-1/2 translate-x-1/2" />
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
                     <div className="text-center max-w-3xl mx-auto mb-16">
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-tint text-[var(--primary)] text-[10px] font-black uppercase tracking-widest mb-4 border border-red-100/50">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-tint text-[var(--primary)] text-[10px] font-black uppercase tracking-widest mb-4 border border-[var(--primary)]/20">
                             <Award size={14} /> Our Core Purpose
                         </div>
                         <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-6">
@@ -189,7 +189,7 @@ export default async function AboutPage() {
 
                     <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
                         {/* Mission */}
-                        <div className="bg-white p-10 lg:p-12 rounded-[40px] shadow-xl shadow-red-900/5 border border-red-50 group hover:-translate-y-2 transition-all duration-500">
+                        <div className="bg-white p-10 lg:p-12 rounded-[40px] shadow-xl shadow-[var(--primary)]/5 border border-[var(--primary)]/10 group hover:-translate-y-2 transition-all duration-500">
                             <div className="w-16 h-16 rounded-2xl bg-orange-50 flex items-center justify-center text-orange-500 mb-8 group-hover:scale-110 transition-transform">
                                 <Award size={32} />
                             </div>
@@ -203,7 +203,7 @@ export default async function AboutPage() {
                         </div>
 
                         {/* Vision */}
-                        <div className="bg-white p-10 lg:p-12 rounded-[40px] shadow-xl shadow-red-900/5 border border-red-50 group hover:-translate-y-2 transition-all duration-500">
+                        <div className="bg-white p-10 lg:p-12 rounded-[40px] shadow-xl shadow-[var(--primary)]/5 border border-[var(--primary)]/10 group hover:-translate-y-2 transition-all duration-500">
                             <div className="w-16 h-16 rounded-2xl bg-yellow-50 flex items-center justify-center text-yellow-500 mb-8 group-hover:scale-110 transition-transform">
                                 <Award size={32} />
                             </div>
@@ -249,7 +249,7 @@ export default async function AboutPage() {
                     
                     <div className="max-w-7xl mx-auto px-4 sm:px-6">
                         <div className="text-center max-w-3xl mx-auto mb-20">
-                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-tint text-[var(--primary)] text-[10px] font-black uppercase tracking-widest mb-6 border border-red-100/50">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-tint text-[var(--primary)] text-[10px] font-black uppercase tracking-widest mb-6 border border-[var(--primary)]/20">
                                 <Users size={14} /> Our Visionaries
                             </div>
                             <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-6">
@@ -262,12 +262,12 @@ export default async function AboutPage() {
                             {team.members.map((member, i) => (
                                 <div key={i} className="group relative">
                                     {/* Card Container */}
-                                    <div className="relative bg-white rounded-[2.5rem] p-8 border border-gray-100 hover:border-red-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_50px_rgba(166,3,3,0.12)] transition-all duration-700 flex flex-col items-center text-center h-full hover:-translate-y-4">
+                                    <div className="relative bg-white rounded-[2.5rem] p-8 border border-gray-100 hover:border-[var(--primary)]/20 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_50px_rgba(var(--primary-rgb,166,3,3),0.12)] transition-all duration-700 flex flex-col items-center text-center h-full hover:-translate-y-4">
                                         
                                         {/* Image Frame */}
                                         <div className="relative mb-8 pt-2">
                                             {/* Decorative Ring */}
-                                            <div className="absolute inset-0 bg-red-600 rounded-[2.5rem] rotate-6 group-hover:rotate-12 group-hover:scale-105 transition-all duration-700" />
+                                            <div className="absolute inset-0 bg-[var(--primary)] rounded-[2.5rem] rotate-6 group-hover:rotate-12 group-hover:scale-105 transition-all duration-700" />
                                             
                                             <div className="relative w-40 h-40 rounded-[2.2rem] overflow-hidden bg-gray-100 border-4 border-white shadow-xl">
                                                 {member.image_url ? (
@@ -288,7 +288,7 @@ export default async function AboutPage() {
                                             <h3 className="text-2xl font-black text-gray-900 mb-1 group-hover:text-[var(--primary)] transition-colors duration-500">
                                                 {member.name}
                                             </h3>
-                                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--primary)] bg-primary-tint px-3 py-1 rounded-full border border-red-100">
+                                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--primary)] bg-primary-tint px-3 py-1 rounded-full border border-[var(--primary)]/20">
                                                 {member.role}
                                             </span>
                                         </div>
