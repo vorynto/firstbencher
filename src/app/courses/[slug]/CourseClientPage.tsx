@@ -839,34 +839,63 @@ export default function CourseClientPage({ course, instructors = [], sidebarCont
 
 function InstructorCarousel({ instructors }: { instructors: Instructor[] }) {
     const [current, setCurrent] = useState(0);
-
-    const prev = () => setCurrent(i => (i - 1 + instructors.length) % instructors.length);
-    const next = () => setCurrent(i => (i + 1) % instructors.length);
-
-    const inst = instructors[current];
+    const [isPaused, setIsPaused] = useState(false);
     const total = instructors.length;
 
-    const formatReviews = (n: number) => {
-        if (n >= 1000) return `${(n / 1000).toFixed(2)}k`;
-        return String(n);
-    };
+    const prev = () => setCurrent(i => (i - 1 + total) % total);
+    const next = () => setCurrent(i => (i + 1) % total);
+
+    // Auto-slide every 4 s; pauses while the user hovers
+    useEffect(() => {
+        if (total <= 1 || isPaused) return;
+        const timer = setInterval(() => setCurrent(i => (i + 1) % total), 4000);
+        return () => clearInterval(timer);
+    }, [total, isPaused]);
+
+    const inst = instructors[current];
+
+    const formatReviews = (n: number) =>
+        n >= 1000 ? `${(n / 1000).toFixed(2)}k` : String(n);
 
     return (
-        <div>
-            <div className="flex flex-col md:flex-row gap-0 border border-gray-200 rounded-2xl overflow-hidden bg-white shadow-sm">
+        /*
+         * Outer wrapper: px-5 creates space on each side so the nav buttons
+         * can sit exactly on the card edge (button centre = card edge).
+         * overflow-visible (default) lets the buttons render outside the
+         * inner card's overflow-hidden boundary.
+         */
+        <div
+            className="relative px-5"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+        >
+            {/* ── Prev button — left card edge, vertically centred ── */}
+            {total > 1 && (
+                <button
+                    onClick={prev}
+                    aria-label="Previous instructor"
+                    className="absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 bg-white border border-gray-200 rounded-full shadow-md hidden md:flex items-center justify-center hover:bg-gray-50 hover:shadow-lg transition-all z-10"
+                >
+                    <ChevronLeft size={18} className="text-gray-600" />
+                </button>
+            )}
+
+            {/* ── Next button — right card edge, vertically centred ── */}
+            {total > 1 && (
+                <button
+                    onClick={next}
+                    aria-label="Next instructor"
+                    className="absolute right-0 top-1/2 -translate-y-1/2 w-10 h-10 bg-white border border-gray-200 rounded-full shadow-md hidden md:flex items-center justify-center hover:bg-gray-50 hover:shadow-lg transition-all z-10"
+                >
+                    <ChevronRight size={18} className="text-gray-600" />
+                </button>
+            )}
+
+            {/* ── Card ── */}
+            <div className="flex flex-col md:flex-row border border-gray-200 rounded-2xl overflow-hidden bg-white shadow-sm">
 
                 {/* Left: Photo + identity */}
-                <div className="relative flex flex-col items-center pt-8 pb-6 px-6 bg-gray-50 md:w-64 shrink-0 border-b md:border-b-0 md:border-r border-gray-200">
-
-                    {/* Prev arrow — overlaid bottom-left of photo area */}
-                    {total > 1 && (
-                        <button
-                            onClick={prev}
-                            className="absolute bottom-6 left-5 w-9 h-9 bg-white border border-gray-200 rounded-full shadow-sm flex items-center justify-center hover:bg-gray-100 transition-colors z-10"
-                        >
-                            <ChevronLeft size={16} className="text-gray-600" />
-                        </button>
-                    )}
+                <div className="flex flex-col items-center pt-8 pb-6 px-6 bg-gray-50 md:w-64 shrink-0 border-b md:border-b-0 md:border-r border-gray-200">
 
                     {/* Photo */}
                     {inst.profile_image_url ? (
@@ -903,14 +932,14 @@ function InstructorCarousel({ instructors }: { instructors: Instructor[] }) {
                         </div>
                     )}
 
-                    {/* Slide indicator */}
+                    {/* Dot indicators */}
                     {total > 1 && (
                         <div className="flex items-center gap-1.5 mt-4">
                             {instructors.map((_, i) => (
                                 <button
                                     key={i}
                                     onClick={() => setCurrent(i)}
-                                    className={`w-2 h-2 rounded-full transition-all ${i === current ? "bg-[var(--primary)] w-4" : "bg-gray-300"}`}
+                                    className={`h-2 rounded-full transition-all ${i === current ? "bg-[var(--primary)] w-4" : "bg-gray-300 w-2"}`}
                                 />
                             ))}
                         </div>
@@ -918,21 +947,11 @@ function InstructorCarousel({ instructors }: { instructors: Instructor[] }) {
                 </div>
 
                 {/* Right: Experience + Qualifications */}
-                <div className="relative flex-1 p-6 md:p-8">
-
-                    {/* Next arrow */}
-                    {total > 1 && (
-                        <button
-                            onClick={next}
-                            className="absolute top-1/2 right-4 -translate-y-1/2 w-9 h-9 bg-white border border-gray-200 rounded-full shadow-sm flex items-center justify-center hover:bg-gray-100 transition-colors z-10"
-                        >
-                            <ChevronRight size={16} className="text-gray-600" />
-                        </button>
-                    )}
+                <div className="flex-1 p-6 md:p-8">
 
                     {/* Experience */}
                     {inst.description && (
-                        <div className="mb-6 pr-8">
+                        <div className="mb-6">
                             <h4 className="text-[#1d4ed8] font-black text-lg mb-3">Experience</h4>
                             <p className="text-gray-700 text-sm leading-relaxed">{inst.description}</p>
                         </div>
@@ -956,6 +975,33 @@ function InstructorCarousel({ instructors }: { instructors: Instructor[] }) {
                     )}
                 </div>
             </div>
+
+            {/* Mobile nav — shown below card on small screens */}
+            {total > 1 && (
+                <div className="flex md:hidden items-center justify-center gap-4 mt-4">
+                    <button
+                        onClick={prev}
+                        className="w-9 h-9 bg-white border border-gray-200 rounded-full shadow-sm flex items-center justify-center hover:bg-gray-50 transition-all"
+                    >
+                        <ChevronLeft size={16} className="text-gray-600" />
+                    </button>
+                    <div className="flex items-center gap-1.5">
+                        {instructors.map((_, i) => (
+                            <button
+                                key={i}
+                                onClick={() => setCurrent(i)}
+                                className={`h-2 rounded-full transition-all ${i === current ? "bg-[var(--primary)] w-4" : "bg-gray-300 w-2"}`}
+                            />
+                        ))}
+                    </div>
+                    <button
+                        onClick={next}
+                        className="w-9 h-9 bg-white border border-gray-200 rounded-full shadow-sm flex items-center justify-center hover:bg-gray-50 transition-all"
+                    >
+                        <ChevronRight size={16} className="text-gray-600" />
+                    </button>
+                </div>
+            )}
         </div>
     );
 }
