@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Mail, Lock, Eye, EyeOff, AlertCircle, Loader2, ShieldCheck, ArrowRight } from "lucide-react";
+import { useSiteLogo } from "@/hooks/useSiteLogo";
 
 export default function AdminLoginPage() {
     const [email, setEmail] = useState("");
@@ -14,6 +15,7 @@ export default function AdminLoginPage() {
     const [error, setError] = useState<string | null>(null);
     const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
     const router = useRouter();
+    const logoUrl = useSiteLogo();
 
     // Track mouse for subtle parallax effect
     useEffect(() => {
@@ -74,8 +76,8 @@ export default function AdminLoginPage() {
                         <div className="relative mb-8 transform transition-transform hover:scale-105 duration-500">
                             <div className="absolute -inset-4 bg-primary/5 rounded-full blur-xl scale-0 group-hover:scale-100 transition-transform duration-700" />
                             <Image
-                                src="/logo.png"
-                                alt="First Bencher"
+                                src={logoUrl}
+                                alt="Site Logo"
                                 width={180}
                                 height={60}
                                 className="object-contain w-auto h-16 relative z-10"

@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Mail, Lock, Eye, EyeOff, User, AlertCircle, Loader2, ArrowRight, CheckCircle2 } from "lucide-react";
+import { useSiteLogo } from "@/hooks/useSiteLogo";
 
 function RegisterForm() {
     const router = useRouter();
@@ -14,6 +15,7 @@ function RegisterForm() {
     const [showPass, setShowPass] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const logoUrl = useSiteLogo();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -43,7 +45,7 @@ function RegisterForm() {
     return (
         <div className="w-full lg:w-1/2 p-10 md:p-20 flex flex-col justify-center">
             <div className="mb-8 lg:hidden">
-                <Image src="/logo.png" alt="First Bencher" width={160} height={52} className="object-contain h-12 w-auto mb-6" />
+                <Image src={logoUrl} alt="Site Logo" width={160} height={52} className="object-contain h-12 w-auto mb-6" />
             </div>
 
             <header className="mb-8">
@@ -163,7 +165,7 @@ export default function RegisterPage() {
 
                     <div className="relative z-10">
                         <Link href="/" className="inline-block transition-transform hover:scale-105">
-                            <Image src="/logo.png" alt="First Bencher" width={180} height={60} className="object-contain h-14 w-auto brightness-0 invert" />
+                            <Image src={logoUrl} alt="Site Logo" width={180} height={60} className="object-contain h-14 w-auto brightness-0 invert" />
                         </Link>
                     </div>
 

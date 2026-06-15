@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { Mail, Lock, Eye, EyeOff, AlertCircle, Loader2, User, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { useSiteLogo } from "@/hooks/useSiteLogo";
 
 function LoginForm() {
     const [email, setEmail] = useState("");
@@ -17,6 +18,7 @@ function LoginForm() {
     const searchParams = useSearchParams();
     const redirect = searchParams.get("redirect") || "/";
     const errorParam = searchParams.get("error");
+    const logoUrl = useSiteLogo();
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -57,8 +59,8 @@ function LoginForm() {
         <div className="w-full lg:w-1/2 p-10 md:p-20 flex flex-col justify-center">
             <div className="mb-10 lg:hidden">
                 <Image
-                    src="/logo.png"
-                    alt="First Bencher"
+                    src={logoUrl}
+                    alt="Site Logo"
                     width={160}
                     height={52}
                     className="object-contain h-12 w-auto mb-8"
@@ -177,8 +179,8 @@ export default function StudentLoginPage() {
                     <div className="relative z-10">
                         <Link href="/" className="inline-block transition-transform hover:scale-105">
                             <Image
-                                src="/logo.png"
-                                alt="First Bencher"
+                                src={logoUrl}
+                                alt="Site Logo"
                                 width={180}
                                 height={60}
                                 className="object-contain h-14 w-auto brightness-0 invert"
