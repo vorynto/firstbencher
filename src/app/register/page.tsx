@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { Mail, Lock, Eye, EyeOff, User, AlertCircle, Loader2, ArrowRight, CheckCircle2 } from "lucide-react";
 import { useSiteLogo } from "@/hooks/useSiteLogo";
 
-function RegisterForm() {
+function RegisterForm({ logoUrl }: { logoUrl: string }) {
     const router = useRouter();
     const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
@@ -15,7 +15,6 @@ function RegisterForm() {
     const [showPass, setShowPass] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const logoUrl = useSiteLogo();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -152,6 +151,7 @@ function RegisterForm() {
 }
 
 export default function RegisterPage() {
+    const logoUrl = useSiteLogo();
     return (
         <div className="min-h-screen flex items-center justify-center bg-[#F8F9FF] px-4 py-8 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-primary/5 rounded-bl-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
@@ -203,7 +203,7 @@ export default function RegisterPage() {
                         <Loader2 className="animate-spin text-primary" size={32} />
                     </div>
                 }>
-                    <RegisterForm />
+                    <RegisterForm logoUrl={logoUrl} />
                 </Suspense>
             </div>
         </div>

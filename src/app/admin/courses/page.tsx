@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
-import { Plus, Search, Edit2, Trash2, ArrowLeft, Loader2, ListPlus, X, CheckCircle2, ChevronDown, ToggleLeft, ToggleRight, UserCircle2, Youtube } from "lucide-react";
+import { Plus, Search, Edit2, Trash2, ArrowLeft, Loader2, ListPlus, X, CheckCircle2, ChevronDown, ToggleLeft, ToggleRight, UserCircle2, Youtube, CheckCircle, AlertCircle, Target, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase";
 import ImageUploadField from "@/components/admin/ImageUploadField";
@@ -70,6 +70,66 @@ const defaultCourse: Partial<Course> = {
     section_bg_color: null,
 };
 
+// ── SEO ──────────────────────────────────────────────────────────
+type CourseSeoData = {
+    seoTitle: string;
+    metaDescription: string;
+    focusKeyword: string;
+    supportingKeywords: string[];
+};
+
+const defaultCourseSeo: CourseSeoData = { seoTitle: "", metaDescription: "", focusKeyword: "", supportingKeywords: [] };
+
+type SeoCheck = { pass: boolean; label: string; points: number; suggestion?: string };
+
+function computeCourseSeoScore(
+    seo: CourseSeoData,
+    ctx: { title: string; slug: string; description: string; shortDescription: string }
+): { score: number; checks: SeoCheck[] } {
+    const title = (seo.seoTitle || ctx.title || "").trim();
+    const desc = (seo.metaDescription || ctx.shortDescription || "").trim();
+    const kw = (seo.focusKeyword || "").trim().toLowerCase();
+    const slug = (ctx.slug || "").trim().toLowerCase();
+    const kwSlug = kw.replace(/\s+/g, "-");
+    const contentText = (ctx.description || "").replace(/<[^>]+>/g, " ").toLowerCase();
+    const wordCount = contentText.split(/\s+/).filter(Boolean).length;
+    const supporting = seo.supportingKeywords || [];
+    const checks: SeoCheck[] = [];
+    let score = 0;
+
+    const add = (pass: boolean, label: string, points: number, suggestion?: string) => {
+        if (pass) score += points;
+        checks.push({ pass, label, points, suggestion });
+    };
+
+    add(title.length > 0, "SEO title is set", 5, "Add an SEO title to override the course title in search results");
+    add(desc.length > 0, "Meta description is set", 5, "Write a compelling meta description");
+    add(kw.length > 0, "Focus keyword is set", 5, "Enter the main keyword you want to rank for");
+
+    if (kw) {
+        add(title.toLowerCase().includes(kw), `Focus keyword in SEO title`, 15, `Add "${kw}" to your SEO title`);
+        add(title.toLowerCase().startsWith(kw), `Focus keyword at start of SEO title`, 10, `Move "${kw}" to the beginning of your SEO title`);
+        add(desc.toLowerCase().includes(kw), `Focus keyword in meta description`, 15, `Include "${kw}" naturally in your meta description`);
+        add(slug.includes(kwSlug), `Focus keyword in URL slug`, 10, `Add "${kwSlug}" to the URL slug`);
+        add(contentText.includes(kw), `Focus keyword used in description`, 5, `Use "${kw}" naturally in your course description`);
+    } else {
+        checks.push({ pass: false, label: "Focus keyword in SEO title (+15)", points: 15, suggestion: "Set a focus keyword first" });
+        checks.push({ pass: false, label: "Focus keyword at start of title (+10)", points: 10, suggestion: "Set a focus keyword first" });
+        checks.push({ pass: false, label: "Focus keyword in meta description (+15)", points: 15, suggestion: "Set a focus keyword first" });
+        checks.push({ pass: false, label: "Focus keyword in URL slug (+10)", points: 10, suggestion: "Set a focus keyword first" });
+        checks.push({ pass: false, label: "Focus keyword in description (+5)", points: 5, suggestion: "Set a focus keyword first" });
+    }
+
+    add(title.length >= 50 && title.length <= 60, `SEO title length 50-60 chars (${title.length})`, 10,
+        title.length < 50 ? `Add ${50 - title.length} more characters` : `Remove ${title.length - 60} characters`);
+    add(desc.length >= 120 && desc.length <= 160, `Meta description 120-160 chars (${desc.length})`, 10,
+        desc.length < 120 ? `Add ${120 - desc.length} more characters` : `Remove ${desc.length - 160} characters`);
+    add(supporting.length >= 2, `Supporting keywords added (${supporting.length}/2 min)`, 10, "Add at least 2 supporting keywords");
+    add(wordCount >= 200, `Description length ≥ 200 words (${wordCount})`, 5, "Write at least 200 words for better rankings");
+
+    return { score, checks };
+}
+
 export default function CoursesPage() {
     const supabase = useMemo(() => createClient(), []);
     const [courses, setCourses] = useState<Course[]>([]);
@@ -77,6 +137,8 @@ export default function CoursesPage() {
     const [searchTerm, setSearchTerm] = useState("");
     const [view, setView] = useState<"list" | "form" | "tags">("list");
     const [editorData, setEditorData] = useState<Partial<Course>>(defaultCourse);
+    const [seoData, setSeoData] = useState<CourseSeoData>(defaultCourseSeo);
+    const [newKw, setNewKw] = useState("");
     const [predefinedTags, setPredefinedTags] = useState<string[]>([]);
     const [allInstructors, setAllInstructors] = useState<Instructor[]>([]);
     const [saving, setSaving] = useState(false);
@@ -110,8 +172,14 @@ export default function CoursesPage() {
         setLoading(false);
     };
 
-    const handleEdit = (course: Course) => {
+    const handleEdit = async (course: Course) => {
         setEditorData({ ...course, instructor_ids: course.instructor_ids || [] });
+        const { data } = await supabase
+            .from("pages_content")
+            .select("content")
+            .eq("page_name", `seo:course:${course.id}`)
+            .maybeSingle();
+        setSeoData(data?.content ? { ...defaultCourseSeo, ...(data.content as Partial<CourseSeoData>) } : defaultCourseSeo);
         setView("form");
     };
 
@@ -148,12 +216,22 @@ export default function CoursesPage() {
         };
 
         let err;
+        let savedId = editorData.id;
+
         if (editorData.id) {
             const { error } = await supabase.from("courses").update(payload).match({ id: editorData.id });
             err = error;
         } else {
-            const { error } = await supabase.from("courses").insert([payload]);
+            const { data: inserted, error } = await supabase.from("courses").insert([payload]).select("id").single();
             err = error;
+            if (!err && inserted) savedId = inserted.id;
+        }
+
+        if (!err && savedId) {
+            await supabase.from("pages_content").upsert(
+                { page_name: `seo:course:${savedId}`, content: seoData, updated_at: new Date().toISOString() },
+                { onConflict: "page_name" }
+            );
         }
 
         setSaving(false);
@@ -186,7 +264,7 @@ export default function CoursesPage() {
                         <button onClick={() => setView("tags")} className="bg-white border border-gray-200 text-gray-700 px-5 py-2.5 rounded-xl font-bold flex items-center gap-2 hover:bg-gray-50 transition-colors shadow-sm text-sm">
                             Manage Tags
                         </button>
-                        <button onClick={() => { setEditorData(defaultCourse); setView("form"); }} className="bg-[var(--primary)] text-white px-5 py-2.5 rounded-xl font-bold flex items-center gap-2 hover:bg-[var(--primary-dark)] transition-colors shadow-sm text-sm">
+                        <button onClick={() => { setEditorData(defaultCourse); setSeoData(defaultCourseSeo); setView("form"); }} className="bg-[var(--primary)] text-white px-5 py-2.5 rounded-xl font-bold flex items-center gap-2 hover:bg-[var(--primary-dark)] transition-colors shadow-sm text-sm">
                             <Plus size={18} /> Add Course
                         </button>
                     </div>
@@ -265,6 +343,10 @@ export default function CoursesPage() {
                     allInstructors={allInstructors}
                     saving={saving}
                     saveCourse={saveCourse}
+                    seoData={seoData}
+                    setSeoData={setSeoData}
+                    newKw={newKw}
+                    setNewKw={setNewKw}
                 />
             )}
 
@@ -352,6 +434,7 @@ function AccordionSection({ title, isOpen, onToggle, tabKey, tabEnabled, onTabTo
 
 function FormView({
     editorData, setEditorData, predefinedTags, allInstructors, saving, saveCourse,
+    seoData, setSeoData, newKw, setNewKw,
 }: {
     editorData: Partial<Course>;
     setEditorData: (d: Partial<Course>) => void;
@@ -359,6 +442,10 @@ function FormView({
     allInstructors: Instructor[];
     saving: boolean;
     saveCourse: () => void;
+    seoData: CourseSeoData;
+    setSeoData: React.Dispatch<React.SetStateAction<CourseSeoData>>;
+    newKw: string;
+    setNewKw: (v: string) => void;
 }) {
     const [openSections, setOpenSections] = useState<Set<string>>(new Set(["basic"]));
 
@@ -611,6 +698,18 @@ function FormView({
                     <Field label="Enrolled Students Count" type="number" value={editorData.review_count?.toString() || "0"} onChange={v => setEditorData({ ...editorData, review_count: parseInt(v) })} placeholder="e.g. 12500" />
                     <p className="text-[10px] text-gray-400 italic -mt-3">Shown in the hero trust bar as &quot;X+ Students Enrolled &amp; Rated&quot;.</p>
                 </section>
+
+                {/* ── SEO Panel ── */}
+                <CourseSeoPanel
+                    seoData={seoData}
+                    setSeoData={setSeoData}
+                    newKw={newKw}
+                    setNewKw={setNewKw}
+                    courseTitle={editorData.title || ""}
+                    courseSlug={editorData.slug || ""}
+                    courseDescription={editorData.description || ""}
+                    courseShortDescription={editorData.short_description || ""}
+                />
 
                 <section className="bg-white p-6 rounded-2xl border border-gray-200 flex flex-col gap-5">
                     <h2 className="text-base font-bold border-b border-gray-100 pb-2">Tags & Sorting</h2>
@@ -1061,6 +1160,187 @@ function VideoBuilder({ data, onChange }: { data: { title: string; url: string }
                     >
                         Add
                     </button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+// ── CourseSeoPanel ──────────────────────────────────────────────
+
+function CourseSeoPanel({
+    seoData, setSeoData, newKw, setNewKw,
+    courseTitle, courseSlug, courseDescription, courseShortDescription,
+}: {
+    seoData: CourseSeoData;
+    setSeoData: React.Dispatch<React.SetStateAction<CourseSeoData>>;
+    newKw: string;
+    setNewKw: (v: string) => void;
+    courseTitle: string;
+    courseSlug: string;
+    courseDescription: string;
+    courseShortDescription: string;
+}) {
+    const { score, checks } = computeCourseSeoScore(seoData, {
+        title: courseTitle,
+        slug: courseSlug,
+        description: courseDescription,
+        shortDescription: courseShortDescription,
+    });
+    const scoreColor = score >= 80 ? "#16a34a" : score >= 50 ? "#ea580c" : "#dc2626";
+    const scoreLabel = score >= 80 ? "Good" : score >= 50 ? "Needs Work" : "Poor";
+
+    const addKw = () => {
+        const t = newKw.trim();
+        if (!t || seoData.supportingKeywords.includes(t)) return;
+        setSeoData(s => ({ ...s, supportingKeywords: [...s.supportingKeywords, t] }));
+        setNewKw("");
+    };
+
+    const inputCls = "w-full px-3 py-2 text-sm rounded-lg border border-gray-200 focus:ring-2 focus:ring-[var(--primary)]/20 focus:border-[var(--primary)] outline-none bg-white";
+
+    return (
+        <div className="flex flex-col gap-4">
+            {/* Score card */}
+            <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+                <div className="flex items-center gap-2 mb-4">
+                    <Target size={16} className="text-[var(--primary)]" />
+                    <h3 className="font-black text-gray-900 text-sm">SEO Score</h3>
+                </div>
+                <div className="flex items-center gap-4 mb-4">
+                    <div className="relative w-20 h-20 shrink-0">
+                        <svg viewBox="0 0 36 36" className="w-20 h-20 -rotate-90">
+                            <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f3f4f6" strokeWidth="3" />
+                            <circle
+                                cx="18" cy="18" r="15.9" fill="none"
+                                stroke={scoreColor} strokeWidth="3" strokeLinecap="round"
+                                strokeDasharray={`${score} 100`}
+                                style={{ transition: "stroke-dasharray 0.5s ease" }}
+                            />
+                        </svg>
+                        <div className="absolute inset-0 flex flex-col items-center justify-center">
+                            <span className="text-xl font-black" style={{ color: scoreColor }}>{score}</span>
+                            <span className="text-[9px] font-bold text-gray-400">/100</span>
+                        </div>
+                    </div>
+                    <div>
+                        <p className="font-black text-lg" style={{ color: scoreColor }}>{scoreLabel}</p>
+                        <p className="text-xs text-gray-400 mt-0.5 leading-snug">
+                            {score >= 80 ? "Great SEO! Keep it up." : score >= 50 ? "Fix the issues below to improve." : "Several improvements needed."}
+                        </p>
+                    </div>
+                </div>
+                <div className="flex flex-col gap-1.5 max-h-52 overflow-y-auto pr-1">
+                    {checks.map((chk, i) => (
+                        <div key={i} className={cn("flex items-start gap-2 p-2 rounded-lg text-xs", chk.pass ? "bg-green-50" : "bg-red-50")}>
+                            <div className={cn("w-4 h-4 rounded-full flex items-center justify-center shrink-0 mt-0.5", chk.pass ? "bg-green-500" : "bg-red-400")}>
+                                {chk.pass ? <CheckCircle size={10} className="text-white" /> : <AlertCircle size={10} className="text-white" />}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className={cn("font-semibold leading-snug", chk.pass ? "text-green-800" : "text-red-700")}>{chk.label}</p>
+                                {!chk.pass && chk.suggestion && (
+                                    <p className="text-red-500 mt-0.5 leading-snug">{chk.suggestion}</p>
+                                )}
+                            </div>
+                            <span className={cn("text-[10px] font-black shrink-0", chk.pass ? "text-green-600" : "text-gray-400")}>+{chk.points}</span>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* SEO fields */}
+            <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm flex flex-col gap-4">
+                <div className="flex items-center gap-2 border-b border-gray-100 pb-3">
+                    <TrendingUp size={16} className="text-[var(--primary)]" />
+                    <h3 className="font-black text-gray-900 text-sm">SEO Settings</h3>
+                </div>
+
+                {/* SEO Title */}
+                <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest">SEO Title</label>
+                        <span className={cn("text-[10px] font-bold", seoData.seoTitle.length > 60 ? "text-red-500" : seoData.seoTitle.length >= 50 ? "text-green-600" : "text-gray-400")}>
+                            {seoData.seoTitle.length}/60
+                        </span>
+                    </div>
+                    <input
+                        type="text"
+                        value={seoData.seoTitle}
+                        onChange={e => setSeoData(s => ({ ...s, seoTitle: e.target.value }))}
+                        placeholder="Title shown in search results..."
+                        className={inputCls}
+                        maxLength={70}
+                    />
+                    <div className="h-1 rounded-full bg-gray-100 overflow-hidden">
+                        <div
+                            className={cn("h-full rounded-full transition-all", seoData.seoTitle.length > 60 ? "bg-red-400" : seoData.seoTitle.length >= 50 ? "bg-green-400" : "bg-orange-300")}
+                            style={{ width: `${Math.min(100, (seoData.seoTitle.length / 60) * 100)}%` }}
+                        />
+                    </div>
+                </div>
+
+                {/* Meta Description */}
+                <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                        <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest">Meta Description</label>
+                        <span className={cn("text-[10px] font-bold", seoData.metaDescription.length > 160 ? "text-red-500" : seoData.metaDescription.length >= 120 ? "text-green-600" : "text-gray-400")}>
+                            {seoData.metaDescription.length}/160
+                        </span>
+                    </div>
+                    <textarea
+                        rows={3}
+                        value={seoData.metaDescription}
+                        onChange={e => setSeoData(s => ({ ...s, metaDescription: e.target.value }))}
+                        placeholder="Compelling description for search results..."
+                        className={cn(inputCls, "resize-none")}
+                        maxLength={180}
+                    />
+                    <div className="h-1 rounded-full bg-gray-100 overflow-hidden">
+                        <div
+                            className={cn("h-full rounded-full transition-all", seoData.metaDescription.length > 160 ? "bg-red-400" : seoData.metaDescription.length >= 120 ? "bg-green-400" : "bg-orange-300")}
+                            style={{ width: `${Math.min(100, (seoData.metaDescription.length / 160) * 100)}%` }}
+                        />
+                    </div>
+                </div>
+
+                {/* Focus Keyword */}
+                <div className="space-y-1.5">
+                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest">Focus Keyword</label>
+                    <input
+                        type="text"
+                        value={seoData.focusKeyword}
+                        onChange={e => setSeoData(s => ({ ...s, focusKeyword: e.target.value }))}
+                        placeholder="e.g. pmp certification online"
+                        className={inputCls}
+                    />
+                </div>
+
+                {/* Supporting Keywords */}
+                <div className="space-y-1.5">
+                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest">Supporting Keywords</label>
+                    {seoData.supportingKeywords.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5 mb-2">
+                            {seoData.supportingKeywords.map(kw => (
+                                <span key={kw} className="flex items-center gap-1 px-2 py-1 bg-red-50 text-[var(--primary)] rounded-lg text-xs font-semibold">
+                                    {kw}
+                                    <button onClick={() => setSeoData(s => ({ ...s, supportingKeywords: s.supportingKeywords.filter(k => k !== kw) }))} className="hover:text-red-700 transition-colors">
+                                        <X size={10} />
+                                    </button>
+                                </span>
+                            ))}
+                        </div>
+                    )}
+                    <div className="flex gap-2">
+                        <input
+                            type="text"
+                            value={newKw}
+                            onChange={e => setNewKw(e.target.value)}
+                            onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); addKw(); } }}
+                            placeholder="Add keyword..."
+                            className={cn(inputCls, "flex-1")}
+                        />
+                        <button onClick={addKw} className="px-3 py-2 bg-gray-100 text-gray-700 text-xs font-bold rounded-lg border border-gray-200 hover:bg-gray-200 whitespace-nowrap">Add</button>
+                    </div>
                 </div>
             </div>
         </div>

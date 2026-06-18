@@ -8,7 +8,7 @@ import { Mail, Lock, Eye, EyeOff, AlertCircle, Loader2, User, ArrowRight } from 
 import Link from "next/link";
 import { useSiteLogo } from "@/hooks/useSiteLogo";
 
-function LoginForm() {
+function LoginForm({ logoUrl }: { logoUrl: string }) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPass, setShowPass] = useState(false);
@@ -18,7 +18,6 @@ function LoginForm() {
     const searchParams = useSearchParams();
     const redirect = searchParams.get("redirect") || "/";
     const errorParam = searchParams.get("error");
-    const logoUrl = useSiteLogo();
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -166,6 +165,7 @@ function LoginForm() {
 }
 
 export default function StudentLoginPage() {
+    const logoUrl = useSiteLogo();
     return (
         <div className="min-h-screen flex items-center justify-center bg-[#F8F9FF] px-4 py-8 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-primary/5 rounded-bl-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
@@ -216,7 +216,7 @@ export default function StudentLoginPage() {
                 </div>
 
                 <Suspense fallback={<div className="w-full lg:w-1/2 flex items-center justify-center"><Loader2 className="animate-spin text-primary" size={32} /></div>}>
-                    <LoginForm />
+                    <LoginForm logoUrl={logoUrl} />
                 </Suspense>
             </div>
         </div>

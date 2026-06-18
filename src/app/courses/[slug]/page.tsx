@@ -40,23 +40,41 @@ export async function generateMetadata({
     const { slug } = await params;
     const { data: course } = await supabase
         .from("courses")
-        .select("title, short_description, image_url, category, rating, review_count")
+        .select("id, title, short_description, image_url, category, rating, review_count, tags")
         .eq("slug", slug)
         .single();
 
     if (!course) return { title: "Course | First Bencher" };
 
-    const title = `${course.title} — Online Training`;
+    // Check for admin-set SEO data
+    const { data: seoRow } = await supabase
+        .from("pages_content")
+        .select("content")
+        .eq("page_name", `seo:course:${course.id}`)
+        .maybeSingle();
+    const seo = seoRow?.content as { seoTitle?: string; metaDescription?: string; focusKeyword?: string; supportingKeywords?: string[] } | null;
+
+    const title = seo?.seoTitle || `${course.title} — Online Training`;
     const description =
+        seo?.metaDescription ||
         course.short_description ||
         `Enroll in ${course.title} at First Bencher and earn your certification.`;
     const url = `${SITE_URL}/courses/${slug}`;
+
+    const keywords = [
+        seo?.focusKeyword,
+        ...(seo?.supportingKeywords || []),
+        course.title,
+        course.category,
+        ...(course.tags || []),
+        "certification", "training", "First Bencher",
+    ].filter(Boolean) as string[];
 
     return {
         title,
         description,
         alternates: { canonical: url },
-        keywords: [course.title, course.category, "certification", "training", "First Bencher"].filter(Boolean) as string[],
+        keywords,
         openGraph: {
             type: "website",
             url,
@@ -121,6 +139,23 @@ export default async function CourseDetailPage({
     const sidebarContent = (sidebarResult.data?.content ?? {}) as Record<string, unknown>;
 
     const courseUrl = `${SITE_URL}/courses/${slug}`;
+    // FAQPage JSON-LD (only when FAQs are present)
+    const faqJsonLd: Record<string, unknown> | null =
+        course.faq && course.faq.length > 0
+            ? {
+                "@context": "https://schema.org",
+                "@type": "FAQPage",
+                mainEntity: course.faq.map((item: { question: string; answer: string }) => ({
+                    "@type": "Question",
+                    name: item.question,
+                    acceptedAnswer: {
+                        "@type": "Answer",
+                        text: item.answer.replace(/<[^>]+>/g, ""),
+                    },
+                })),
+            }
+            : null;
+
     const courseJsonLd: Record<string, unknown> = {
         "@context": "https://schema.org",
         "@type": "Course",
@@ -161,6 +196,7 @@ export default async function CourseDetailPage({
     return (
         <>
             <JsonLd data={courseJsonLd} />
+            {faqJsonLd && <JsonLd data={faqJsonLd} />}
             <CourseClientPage course={course} instructors={instructors} sidebarContent={sidebarContent} />
         </>
     );
