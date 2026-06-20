@@ -191,22 +191,6 @@ export default function AboutSection() {
                 </div>
             </div>
 
-            <style jsx>{`
-                @keyframes bounce-slow {
-                    0%, 100% { transform: translateY(-5%); animation-timing-function: cubic-bezier(0.8,0,1,1); }
-                    50% { transform: none; animation-timing-function: cubic-bezier(0,0,0.2,1); }
-                }
-                .animate-bounce-slow {
-                    animation: bounce-slow 3s infinite;
-                }
-                @keyframes spin-slow {
-                    from { transform: rotate(0deg); }
-                    to { transform: rotate(360deg); }
-                }
-                .animate-spin-slow {
-                    animation: spin-slow 8s linear infinite;
-                }
-            `}</style>
         </section>
     );
 }

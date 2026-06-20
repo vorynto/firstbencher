@@ -37,12 +37,12 @@ const defaults: HeroContent = {
     hero_image_url: "",
     popular_categories: "Accounting,Business,Development,Marketing,Meditation",
     corporate_clients: [
-        { name: "Mahindra", logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/Mahindra_Logotype.png/640px-Mahindra_Logotype.png", _id: "1" },
-        { name: "Ford", logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Ford_logo_flat.svg/640px-Ford_logo_flat.svg.png", _id: "2" },
-        { name: "HCL", logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/HCL_Technologies_logo.svg/640px-HCL_Technologies_logo.svg.png", _id: "3" },
-        { name: "Infosys", logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Infosys_logo.svg/640px-Infosys_logo.svg.png", _id: "4" },
-        { name: "Amazon", logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/640px-Amazon_logo.svg.png", _id: "5" },
-        { name: "IBM", logo_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/IBM_logo.svg/640px-IBM_logo.svg.png", _id: "6" },
+        { name: "Mahindra", logo_url: "https://logo.clearbit.com/mahindra.com", _id: "1" },
+        { name: "Ford", logo_url: "https://logo.clearbit.com/ford.com", _id: "2" },
+        { name: "HCL", logo_url: "https://logo.clearbit.com/hcltech.com", _id: "3" },
+        { name: "Infosys", logo_url: "https://logo.clearbit.com/infosys.com", _id: "4" },
+        { name: "Amazon", logo_url: "https://logo.clearbit.com/amazon.com", _id: "5" },
+        { name: "IBM", logo_url: "https://logo.clearbit.com/ibm.com", _id: "6" },
     ],
 };
 

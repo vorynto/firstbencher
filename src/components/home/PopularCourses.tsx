@@ -1,7 +1,6 @@
 import React from "react";
 import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
-import Button from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 
 // Server component Supabase client
@@ -121,9 +120,9 @@ export default async function PopularCourses() {
 
                                     {/* Action Button */}
                                     <div className="mt-auto">
-                                        <Button className="w-full rounded-md shadow-md pointer-events-none">
+                                        <div className="inline-flex items-center justify-center w-full font-bold rounded-md text-sm px-8 py-3.5 shadow-md bg-button-bg text-button-text transition-all duration-300">
                                             Know more
-                                        </Button>
+                                        </div>
                                     </div>
                                 </div>
                             </Link>

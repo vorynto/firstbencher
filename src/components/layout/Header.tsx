@@ -7,7 +7,7 @@ type NavCategory = { name: string; emoji: string; count: number };
 type HeaderContent = {
     email: string;
     phone: string;
-    address: string;
+    offer: string;
     logo_header?: string;
     nav_links?: Array<{ name: string; href: string; hasDropdown: boolean }>;
     nav_categories?: NavCategory[];
@@ -23,7 +23,7 @@ type HeaderContent = {
 const defaults: HeaderContent = {
     email: "info@firstbencher.com",
     phone: "+1 (234) 567-8900",
-    address: "123 Business Avenue, New York, NY 10001, USA",
+    offer: "🎉 Limited Time Offer — Get 20% off on all courses! Use code: LEARN20",
     nav_links: [
         { name: "Home", href: "/", hasDropdown: false },
         { name: "About", href: "/about", hasDropdown: false },

@@ -156,7 +156,7 @@ export default function HeroClient({ content }: { content: HeroContent }) {
                             <br />
                             <span className="text-[var(--primary)] relative inline-block mt-2 font-black">
                                 {h.title_highlight}
-                                <svg className="absolute -bottom-4 left-0 w-full rotate-2 opacity-80" height="15" viewBox="0 0 300 15" preserveAspectRatio="none">
+                                <svg className="absolute -bottom-4 left-0 w-[55%] rotate-2 opacity-80" height="15" viewBox="0 0 300 15" preserveAspectRatio="none">
                                     <path d="M0 10 Q150 -5 300 12" stroke="var(--primary)" strokeWidth="4" fill="none" strokeLinecap="round" />
                                 </svg>
                             </span>
@@ -209,11 +209,19 @@ export default function HeroClient({ content }: { content: HeroContent }) {
                                                 className="flex-shrink-0 transition-all duration-300 transform hover:scale-110"
                                                 title={client.name}
                                             >
-                                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                        {/* eslint-disable-next-line @next/next/no-img-element */}
                                                 <img
                                                     src={client.logo_url}
                                                     alt={client.name}
                                                     className="h-7 lg:h-8 object-contain w-auto"
+                                                    onError={(e) => {
+                                                        const t = e.currentTarget;
+                                                        t.style.display = "none";
+                                                        const span = document.createElement("span");
+                                                        span.className = "text-xs font-bold text-gray-500";
+                                                        span.textContent = client.name;
+                                                        t.parentElement?.appendChild(span);
+                                                    }}
                                                 />
                                             </div>
                                         ))}

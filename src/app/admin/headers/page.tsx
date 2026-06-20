@@ -13,7 +13,7 @@ type NavLink = { name: string; href: string; hasDropdown: boolean; subLinks?: Na
 type NavCategory = { name: string; emoji: string; count: number; _id: string };
 type HeaderVariant = { id: string; name: string; is_default: boolean; page_key: string };
 type HeaderContent = {
-    email: string; phone: string; address: string;
+    email: string; phone: string; offer: string;
     nav_links: NavLink[];
     nav_categories: NavCategory[];
     show_search: boolean; show_cart: boolean; auth_buttons_active: boolean;
@@ -22,7 +22,7 @@ type HeaderContent = {
 };
 
 const BLANK_CONTENT: HeaderContent = {
-    email: "", phone: "", address: "",
+    email: "", phone: "", offer: "",
     nav_links: [],
     nav_categories: [],
     show_search: true, show_cart: true, auth_buttons_active: true,
@@ -81,7 +81,7 @@ function HeaderEditor({ content, onChange, dbCategories }: {
                     <Field label="Email" value={content.email} onChange={v => u("email", v)} placeholder="info@firstbencher.com" />
                     <Field label="Phone" value={content.phone} onChange={v => u("phone", v)} placeholder="+1 (234) 567-8900" />
                     <div className="md:col-span-2">
-                        <Field label="Address" value={content.address} onChange={v => u("address", v)} placeholder="123 Business Avenue..." />
+                        <Field label="Offer" value={content.offer} onChange={v => u("offer", v)} placeholder="🎉 Limited Time Offer — Get 20% off! Use code: LEARN20" />
                     </div>
                 </div>
             </div>

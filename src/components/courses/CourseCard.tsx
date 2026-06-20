@@ -1,7 +1,6 @@
 import React from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import Button from "@/components/ui/Button";
 
 export type Course = {
     id: string;
@@ -68,9 +67,9 @@ export default function CourseCard({ course, index }: CourseCardProps) {
 
                 {/* Action Button */}
                 <div className="mt-auto">
-                    <Button className="w-full rounded-md shadow-md pointer-events-none">
+                    <div className="inline-flex items-center justify-center w-full font-bold rounded-md text-sm px-8 py-3.5 shadow-md bg-button-bg text-button-text transition-all duration-300">
                         Know More
-                    </Button>
+                    </div>
                 </div>
             </div>
         </Link>

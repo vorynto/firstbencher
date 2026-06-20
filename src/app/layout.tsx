@@ -178,8 +178,9 @@ export default async function RootLayout({
 
     return (
         <html lang="en" className="scroll-pt-30" style={{ colorScheme: "light" }}>
-            {/* Inject correct CSS variables before first paint — prevents color flash */}
-            {cssVars && <style dangerouslySetInnerHTML={{ __html: cssVars }} />}
+            <head>
+                {cssVars && <style dangerouslySetInnerHTML={{ __html: cssVars }} />}
+            </head>
             <body
                 suppressHydrationWarning
                 className={`${inter.variable} font-sans antialiased bg-background text-foreground overflow-x-hidden`}

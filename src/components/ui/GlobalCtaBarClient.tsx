@@ -52,7 +52,7 @@ export default function GlobalCtaBarClient({ phone, email }: Props) {
                 {/* Email Us */}
                 <a
                     href={`mailto:${email}`}
-                    className="flex flex-1 items-center justify-center gap-2.5 py-4 text-white hover:bg-white/5 transition-colors group"
+                    className="hidden sm:flex flex-1 items-center justify-center gap-2.5 py-4 text-white hover:bg-white/5 transition-colors group"
                 >
                     <div className="w-8 h-8 rounded-full bg-[var(--primary)]/20 group-hover:bg-[var(--primary)]/40 flex items-center justify-center transition-colors shrink-0">
                         <Mail size={15} className="text-[var(--primary)]" />
@@ -70,7 +70,7 @@ export default function GlobalCtaBarClient({ phone, email }: Props) {
                         onClick={() => openEnquiry("Enroll Now")}
                         className="w-full font-black text-sm px-6 rounded-none"
                     >
-                        <span className="hidden sm:inline">Enroll</span> Now
+                        Enroll Now
                     </Button>
                 </div>
             </div>

@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import {
     Search, Menu, X, ShoppingCart, User,
     ChevronDown, LayoutGrid, Star, Clock,
-    Mail, Phone, MapPin
+    Mail, Phone
 } from "lucide-react";
 import Button from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
@@ -17,7 +17,7 @@ type NavCategory = { name: string; emoji: string; count: number };
 type TopBarContent = {
     email: string;
     phone: string;
-    address: string;
+    offer: string;
     logo_header?: string;
     nav_links?: Array<{ name: string; href: string; hasDropdown: boolean; subLinks?: Array<{ name: string; href: string }> }>;
     nav_categories?: NavCategory[];
@@ -233,22 +233,27 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
             <header className="relative z-50 w-full min-h-[118px]">
                 {/* ── Top Bar ── */}
                 <div className="bg-[var(--primary)] text-white/80 h-[42px]">
-                    <div className="container mx-auto px-6 lg:px-12 flex items-center justify-between h-full text-[13px] font-medium tracking-wide">
-                        <div className="flex items-center gap-6">
+                    <div className="container mx-auto px-6 lg:px-12 flex items-center h-full text-[13px] font-medium tracking-wide">
+                        {/* Email + Phone — desktop only */}
+                        <div className="hidden md:flex items-center gap-6 shrink-0">
                             <a href={`mailto:${topBar.email}`} className="flex items-center gap-2 hover:text-white transition-colors">
                                 <Mail size={14} className="text-white/60 shrink-0" />
                                 {topBar.email}
                             </a>
-                            <span className="w-px h-4 bg-white/20 hidden sm:block" />
-                            <a href={`tel:${topBar.phone}`} className="hidden sm:flex items-center gap-2 hover:text-white transition-colors">
+                            <span className="w-px h-4 bg-white/20" />
+                            <a href={`tel:${topBar.phone}`} className="flex items-center gap-2 hover:text-white transition-colors">
                                 <Phone size={14} className="text-white/60 shrink-0" />
                                 {topBar.phone}
                             </a>
                         </div>
-                        <div className="hidden md:flex items-center gap-2 hover:text-white transition-colors cursor-default">
-                            <MapPin size={14} className="text-white/60 shrink-0" />
-                            {topBar.address}
-                        </div>
+                        {/* Offer — centered on mobile, right-aligned on desktop */}
+                        {topBar.offer && (
+                            <div className="flex-1 flex items-center justify-center md:justify-end">
+                                <span className="text-white font-medium text-[13px] text-center md:text-right leading-tight">
+                                    {topBar.offer}
+                                </span>
+                            </div>
+                        )}
                     </div>
                 </div>
 
