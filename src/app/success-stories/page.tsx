@@ -46,11 +46,11 @@ export default async function SuccessStoriesPage() {
                             We are constantly collecting amazing experiences from our students. Check back soon for inspiring testimonials.
                         </p>
                         {user ? (
-                            <Link href="/feedback" className="bg-[var(--primary)] text-white px-8 py-3 rounded-full font-bold hover:bg-[var(--primary-dark)] transition-colors inline-block">
+                            <Link href="/feedback" className="bg-[var(--primary)] text-white px-8 py-3 rounded-lg font-bold hover:bg-[var(--primary-dark)] transition-colors inline-block">
                                 Submit Your Story
                             </Link>
                         ) : (
-                            <Link href="/login?redirect=/feedback" className="bg-[var(--primary)] text-white px-8 py-3 rounded-full font-bold hover:bg-[var(--primary-dark)] transition-colors inline-block">
+                            <Link href="/login?redirect=/feedback" className="bg-[var(--primary)] text-white px-8 py-3 rounded-lg font-bold hover:bg-[var(--primary-dark)] transition-colors inline-block">
                                 Sign In to Submit Your Story
                             </Link>
                         )}
@@ -126,14 +126,14 @@ export default async function SuccessStoriesPage() {
                     {user ? (
                         <Link
                             href="/feedback"
-                            className="bg-[#1a1a1a] text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-[var(--primary)] transition-colors shadow-xl shadow-red-900/10 inline-flex items-center gap-2 group"
+                            className="bg-[#1a1a1a] text-white px-10 py-4 rounded-lg font-bold text-lg hover:bg-[var(--primary)] transition-colors shadow-xl shadow-red-900/10 inline-flex items-center gap-2 group"
                         >
                             Share Your Experience <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
                         </Link>
                     ) : (
                         <Link
                             href="/login?redirect=/feedback"
-                            className="bg-[#1a1a1a] text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-[var(--primary)] transition-colors shadow-xl shadow-red-900/10 inline-flex items-center gap-2 group"
+                            className="bg-[#1a1a1a] text-white px-10 py-4 rounded-lg font-bold text-lg hover:bg-[var(--primary)] transition-colors shadow-xl shadow-red-900/10 inline-flex items-center gap-2 group"
                         >
                             Sign In to Share Your Story <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
                         </Link>

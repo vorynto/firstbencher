@@ -50,8 +50,8 @@ async function resolveFooterKey(pathname: string): Promise<string> {
 
     try {
         const [pagesRes, footersRes] = await Promise.all([
-            supabaseAdmin.from("pages_content").select("content").eq("page_name", "system:custom_pages").single(),
-            supabaseAdmin.from("pages_content").select("content").eq("page_name", "system:footers").single(),
+            supabaseAdmin.from("pages_content").select("content").eq("page_name", "system:custom_pages").maybeSingle(),
+            supabaseAdmin.from("pages_content").select("content").eq("page_name", "system:footers").maybeSingle(),
         ]);
 
         const customPages: Array<{ slug: string; footer_id?: string }> =
@@ -80,8 +80,8 @@ export default async function Footer() {
         const footerKey = await resolveFooterKey(pathname);
 
         const [footerRes, globalRes] = await Promise.all([
-            supabaseAdmin.from("pages_content").select("content").eq("page_name", footerKey).single(),
-            supabaseAdmin.from("pages_content").select("content").eq("page_name", "global_settings").single(),
+            supabaseAdmin.from("pages_content").select("content").eq("page_name", footerKey).maybeSingle(),
+            supabaseAdmin.from("pages_content").select("content").eq("page_name", "global_settings").maybeSingle(),
         ]);
 
         if (footerRes.data?.content) {

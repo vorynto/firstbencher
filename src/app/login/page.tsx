@@ -100,7 +100,7 @@ function LoginForm({ logoUrl }: { logoUrl: string }) {
                             onChange={(e) => setEmail(e.target.value)}
                             required
                             placeholder="your@email.com"
-                            className="w-full pl-14 pr-4 py-4 rounded-2xl border border-gray-100 bg-gray-50/50 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none text-sm font-medium text-gray-700 transition-all"
+                            className="w-full pl-14 pr-4 py-4 rounded-2xl border border-gray-900 bg-gray-50/50 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none text-sm font-medium text-gray-700 transition-all"
                         />
                     </div>
                 </div>
@@ -118,7 +118,7 @@ function LoginForm({ logoUrl }: { logoUrl: string }) {
                             onChange={(e) => setPassword(e.target.value)}
                             required
                             placeholder="••••••••••••"
-                            className="w-full pl-14 pr-14 py-4 rounded-2xl border border-gray-100 bg-gray-50/50 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none text-sm font-medium text-gray-700 transition-all"
+                            className="w-full pl-14 pr-14 py-4 rounded-2xl border border-gray-900 bg-gray-50/50 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/5 outline-none text-sm font-medium text-gray-700 transition-all"
                         />
                         <button
                             type="button"
@@ -175,18 +175,6 @@ export default function StudentLoginPage() {
                 <div className="hidden lg:flex w-1/2 bg-[#1E1E2F] p-16 flex-col justify-between relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
                     <div className="absolute bottom-0 left-0 w-32 h-32 bg-primary/20 rounded-full translate-y-1/2 -translate-x-1/2 blur-2xl" />
-
-                    <div className="relative z-10">
-                        <Link href="/" className="inline-block transition-transform hover:scale-105">
-                            <Image
-                                src={logoUrl}
-                                alt="Site Logo"
-                                width={180}
-                                height={60}
-                                className="object-contain h-14 w-auto brightness-0 invert"
-                            />
-                        </Link>
-                    </div>
 
                     <div className="relative z-10 max-w-sm">
                         <h2 className="text-4xl font-black text-white leading-tight mb-6">

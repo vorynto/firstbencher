@@ -631,12 +631,44 @@ function ContactHeaderEditor({ content, onChange }: { content: ContentMap; onCha
 function ContactDetailsEditor({ content, onChange }: { content: ContentMap; onChange: (c: ContentMap) => void }) {
     const s = (k: string) => (content[k] as string) ?? "";
     const u = (k: string, v: string) => onChange({ ...content, [k]: v });
+
+    const branches = (content.branches as Array<{ office_name: string; address: string }>) ?? [];
+    const updateBranch = (idx: number, key: string, val: string) => {
+        const next = branches.map((b, i) => (i === idx ? { ...b, [key]: val } : b));
+        onChange({ ...content, branches: next });
+    };
+    const addBranch = () => onChange({ ...content, branches: [...branches, { office_name: "", address: "" }] });
+    const removeBranch = (idx: number) => onChange({ ...content, branches: branches.filter((_, i) => i !== idx) });
+
     return (
         <div className="flex flex-col gap-5">
             <Field label="Email Address" value={s("email")} onChange={v => u("email", v)} placeholder="info@firstbencher.com" />
             <Field label="Phone Number" value={s("phone")} onChange={v => u("phone", v)} placeholder="+1 (234) 567-8900" />
             <Field label="Address" value={s("address")} onChange={v => u("address", v)} type="textarea" rows={2} />
             <Field label="Google Maps Embed URL" value={s("map_embed_url")} onChange={v => u("map_embed_url", v)} type="url" placeholder="https://maps.google.com/..." />
+
+            {/* Branch Offices */}
+            <div>
+                <p className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-1 border-b border-border pb-2">Branch Offices</p>
+                <p className="text-xs text-muted-foreground mb-4 mt-2">Displayed in a 3-column grid below the contact section. Each card shows the office location as a heading with the full address below.</p>
+                <div className="flex flex-col gap-4">
+                    {branches.map((b, idx) => (
+                        <div key={idx} className="p-4 bg-accent/20 rounded-2xl border border-border">
+                            <div className="flex justify-between items-center mb-3">
+                                <p className="text-xs font-bold text-muted-foreground">Office {idx + 1}</p>
+                                <button onClick={() => removeBranch(idx)} className="text-red-400 hover:text-red-600 p-1 rounded-lg hover:bg-primary-tint transition-colors"><Trash2 size={14} /></button>
+                            </div>
+                            <div className="flex flex-col gap-3">
+                                <Field label="Office Location (Heading)" value={b.office_name} onChange={v => updateBranch(idx, "office_name", v)} placeholder="e.g. Main Office — New York" />
+                                <Field label="Full Address" value={b.address} onChange={v => updateBranch(idx, "address", v)} type="textarea" rows={3} placeholder="123 Business Avenue, New York, NY 10001, USA" />
+                            </div>
+                        </div>
+                    ))}
+                    <button onClick={addBranch} className="flex items-center gap-2 px-4 py-3 rounded-xl border-2 border-dashed border-border hover:border-primary hover:bg-primary/5 text-sm font-bold text-muted-foreground hover:text-primary transition-all">
+                        <Plus size={16} /> Add Branch Office
+                    </button>
+                </div>
+            </div>
         </div>
     );
 }

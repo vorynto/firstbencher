@@ -14,6 +14,8 @@ import {
     RefreshCw,
     ChevronDown,
     AlertCircle,
+    Trash2,
+    Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase";
@@ -47,6 +49,19 @@ function formatDate(iso: string) {
     });
 }
 
+// Inquiry subjects are stored as "Action — Target" (e.g. "Course Enquiry — PMP Training",
+// "Enroll Now — Home Page"). Split so the page/course is shown prominently.
+function parseSource(subject: string | null): { target: string; action: string } {
+    if (!subject || !subject.trim()) return { target: "Unknown source", action: "General" };
+    // Legacy contact-form submissions stored just "Contact Form"
+    if (subject.trim() === "Contact Form") return { target: "General Enquiry", action: "Contact Us Form" };
+    const parts = subject.split("—").map((s) => s.trim()).filter(Boolean);
+    if (parts.length >= 2) {
+        return { target: parts.slice(1).join(" — "), action: parts[0] };
+    }
+    return { target: subject.trim(), action: "General" };
+}
+
 function timeAgo(iso: string) {
     const diff = Date.now() - new Date(iso).getTime();
     const mins = Math.floor(diff / 60000);
@@ -66,6 +81,8 @@ export default function InquiriesPage() {
     const [filterStatus, setFilterStatus] = useState<string>("all");
     const [selected, setSelected] = useState<Inquiry | null>(null);
     const [updatingId, setUpdatingId] = useState<string | null>(null);
+    const [confirmDelete, setConfirmDelete] = useState<Inquiry | null>(null);
+    const [deleting, setDeleting] = useState(false);
 
     const supabase = createClient();
 
@@ -105,6 +122,19 @@ export default function InquiriesPage() {
             }
         }
         setUpdatingId(null);
+    }
+
+    async function handleDelete(id: string) {
+        setDeleting(true);
+        const { error: err } = await supabase.from("inquiries").delete().eq("id", id);
+        setDeleting(false);
+        if (err) {
+            setError(err.message);
+        } else {
+            setInquiries((prev) => prev.filter((i) => i.id !== id));
+            if (selected?.id === id) setSelected(null);
+        }
+        setConfirmDelete(null);
     }
 
     const filtered = inquiries.filter((i) => {
@@ -248,11 +278,24 @@ export default function InquiriesPage() {
                                             </div>
                                         </td>
 
-                                        {/* Source */}
+                                        {/* Source — page / course they submitted from */}
                                         <td className="px-8 py-5 max-w-[260px]">
-                                            <p className="text-xs font-bold text-primary truncate">
-                                                {inquiry.subject ?? "—"}
-                                            </p>
+                                            {(() => {
+                                                const src = parseSource(inquiry.subject);
+                                                return (
+                                                    <div className="flex items-start gap-2">
+                                                        <BookOpen size={14} className="text-primary shrink-0 mt-0.5" />
+                                                        <div className="min-w-0">
+                                                            <p className="text-xs font-bold text-foreground truncate" title={src.target}>
+                                                                {src.target}
+                                                            </p>
+                                                            <p className="text-[10px] text-muted-foreground uppercase tracking-wider truncate">
+                                                                {src.action}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })()}
                                         </td>
 
                                         {/* Status */}
@@ -294,6 +337,13 @@ export default function InquiriesPage() {
                                                     className="p-2 rounded-lg bg-primary text-white hover:opacity-90 transition-all"
                                                 >
                                                     <MessageSquare size={16} />
+                                                </button>
+                                                <button
+                                                    onClick={() => setConfirmDelete(inquiry)}
+                                                    title="Delete inquiry"
+                                                    className="p-2 rounded-lg border border-border bg-background hover:bg-red-50 hover:text-red-600 hover:border-red-200 transition-all"
+                                                >
+                                                    <Trash2 size={16} />
                                                 </button>
                                             </div>
                                         </td>
@@ -404,6 +454,53 @@ export default function InquiriesPage() {
                                         </button>
                                     ))}
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Delete confirmation */}
+            {confirmDelete && (
+                <div
+                    className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+                    onClick={() => !deleting && setConfirmDelete(null)}
+                >
+                    <div
+                        className="bg-background rounded-3xl shadow-2xl w-full max-w-md p-8"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="flex flex-col items-center text-center gap-4">
+                            <div className="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center">
+                                <AlertCircle size={32} className="text-red-500" />
+                            </div>
+                            <div>
+                                <h3 className="text-xl font-black text-foreground">Delete this inquiry?</h3>
+                                <p className="text-muted-foreground text-sm mt-2 leading-relaxed">
+                                    You&apos;re about to permanently delete the inquiry from{" "}
+                                    <strong className="text-foreground">{confirmDelete.full_name}</strong>.
+                                    This action cannot be undone.
+                                </p>
+                            </div>
+                            <div className="flex gap-3 w-full mt-2">
+                                <button
+                                    onClick={() => setConfirmDelete(null)}
+                                    disabled={deleting}
+                                    className="flex-1 py-3 rounded-xl border border-border font-bold text-sm hover:bg-accent/20 transition-all disabled:opacity-50"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={() => handleDelete(confirmDelete.id)}
+                                    disabled={deleting}
+                                    className="flex-1 py-3 rounded-xl bg-red-500 text-white font-bold text-sm hover:bg-red-600 transition-all flex items-center justify-center gap-2 disabled:opacity-60"
+                                >
+                                    {deleting ? (
+                                        <><Loader2 size={16} className="animate-spin" /> Deleting…</>
+                                    ) : (
+                                        <><Trash2 size={16} /> Delete</>
+                                    )}
+                                </button>
                             </div>
                         </div>
                     </div>

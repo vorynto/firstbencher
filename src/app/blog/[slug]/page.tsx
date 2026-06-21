@@ -203,7 +203,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
                                     ))}
                                 </div>
                             </div>
-                            <Button variant="outline" className="rounded-full px-8">
+                            <Button variant="outline" className="px-8">
                                 Subscribe to Newsletter
                             </Button>
                         </div>

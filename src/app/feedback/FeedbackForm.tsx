@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, CheckCircle2, Loader2, Star } from "lucide-react";
-import { createClient } from "@/lib/supabase";
 import ImageUploadField from "@/components/admin/ImageUploadField";
 
 type Props = {
@@ -12,6 +11,7 @@ type Props = {
 
 export default function FeedbackForm({ prefillName = "" }: Props) {
     const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+    const [errorMsg, setErrorMsg] = useState("");
     const [rating, setRating] = useState(5);
     const [hoverRating, setHoverRating] = useState(0);
     const [imageUrlPreview, setImageUrlPreview] = useState<string | null>(null);
@@ -30,20 +30,26 @@ export default function FeedbackForm({ prefillName = "" }: Props) {
         try {
             setStatus("submitting");
 
-            const supabase = createClient();
-            const { error } = await supabase.from("success_stories").insert([{
-                ...form,
-                rating,
-                image_url: imageUrlPreview,
-                certificate_url: certificateUrlPreview,
-                is_approved: false  // Admin must approve before it appears on the website
-            }]);
+            const res = await fetch("/api/success-stories", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    ...form,
+                    rating,
+                    image_url: imageUrlPreview,
+                    certificate_url: certificateUrlPreview,
+                }),
+            });
 
-            if (error) throw error;
+            if (!res.ok) {
+                const data = await res.json().catch(() => ({}));
+                throw new Error(data.error || "Submission failed");
+            }
             setStatus("success");
 
         } catch (error) {
             console.error("Error submitting feedback:", error);
+            setErrorMsg(error instanceof Error ? error.message : "Something went wrong submitting your form. Please try again or contact support.");
             setStatus("error");
         }
     };
@@ -59,7 +65,7 @@ export default function FeedbackForm({ prefillName = "" }: Props) {
                     <p className="text-gray-600 mb-8 leading-relaxed">
                         Your success story has been submitted and is pending review. Once approved it will appear on the Success Stories page and inspire countless other students.
                     </p>
-                    <Link href="/success-stories" className="bg-[var(--primary)] text-white px-8 py-3.5 rounded-full font-bold hover:bg-[var(--primary-dark)] transition-colors inline-block">
+                    <Link href="/success-stories" className="bg-[var(--primary)] text-white px-8 py-3.5 rounded-lg font-bold hover:bg-[var(--primary-dark)] transition-colors inline-block">
                         View Success Stories
                     </Link>
                 </div>
@@ -84,7 +90,7 @@ export default function FeedbackForm({ prefillName = "" }: Props) {
                     <form onSubmit={handleSubmit} className="p-8 space-y-6">
                         {status === "error" && (
                             <div className="bg-red-50 text-red-600 p-4 rounded-xl border border-red-100 font-medium text-sm text-center mb-6">
-                                Something went wrong submitting your form. Please try again or contact support.
+                                {errorMsg || "Something went wrong submitting your form. Please try again or contact support."}
                             </div>
                         )}
 

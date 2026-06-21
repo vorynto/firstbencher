@@ -17,11 +17,12 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://firstbencher.com";
 // Cached fetch — re-validates every 60 seconds so new scripts go live quickly
 const getCustomCode = unstable_cache(
     async () => {
-        const { data } = await supabaseAdmin
+        const { data, error } = await supabaseAdmin
             .from("pages_content")
             .select("content")
             .eq("page_name", "custom_code")
-            .single();
+            .maybeSingle();
+        if (error) throw error; // don't cache a failed read
         return {
             header_code: (data?.content?.header_code as string) || "",
             body_code: (data?.content?.body_code as string) || "",
@@ -35,11 +36,15 @@ const getCustomCode = unstable_cache(
 // are correct on the very first paint, eliminating the red flash before JS loads.
 const getGlobalSettings = unstable_cache(
     async () => {
-        const { data } = await supabaseAdmin
+        const { data, error } = await supabaseAdmin
             .from("pages_content")
             .select("content")
             .eq("page_name", "global_settings")
-            .single();
+            .maybeSingle();
+        // Throw on a real read error so the failure isn't cached for 60s —
+        // otherwise a transient DB blip would paint the whole site with the
+        // default (red) theme until the cache expired.
+        if (error) throw error;
         return (data?.content ?? {}) as Record<string, string>;
     },
     ["global_settings_layout"],
@@ -170,10 +175,11 @@ const websiteJsonLd = {
 export default async function RootLayout({
     children,
 }: Readonly<{ children: React.ReactNode }>) {
-    const [{ header_code, body_code }, globalSettings] = await Promise.all([
-        getCustomCode(),
-        getGlobalSettings(),
+    const [customCode, globalSettings] = await Promise.all([
+        getCustomCode().catch(() => ({ header_code: "", body_code: "" })),
+        getGlobalSettings().catch(() => ({} as Record<string, string>)),
     ]);
+    const { header_code, body_code } = customCode;
     const cssVars = buildCssVars(globalSettings);
 
     return (

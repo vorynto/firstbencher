@@ -381,7 +381,7 @@ export default function HeroClient({ content }: { content: HeroContent }) {
                                     <Link
                                         key={index}
                                         href={`/courses?cat=${slugify(trimmed)}`}
-                                        className="bg-white hover:bg-[var(--primary)] hover:text-white text-[#64748B] px-5 py-2 rounded-full text-[13px] font-semibold transition-colors border border-gray-200 shadow-sm"
+                                        className="bg-white hover:bg-[var(--primary)] hover:text-white text-[#64748B] px-5 py-2 rounded-lg text-[13px] font-semibold transition-colors border border-gray-200 shadow-sm"
                                     >
                                         {trimmed}
                                     </Link>

@@ -160,7 +160,7 @@ export default function CoursesPageClient({
                                                 key={cat}
                                                 onClick={() => toggleCategory(cat)}
                                                 className={cn(
-                                                    "px-3 py-1.5 rounded-full text-xs font-bold border transition-all",
+                                                    "px-3 py-1.5 rounded-lg text-xs font-bold border transition-all",
                                                     selectedCategories.includes(cat)
                                                         ? "bg-[var(--primary)] text-white border-[var(--primary)]"
                                                         : "bg-gray-50 text-gray-600 border-gray-200 hover:border-[var(--primary)]/40 hover:text-[var(--primary)]"

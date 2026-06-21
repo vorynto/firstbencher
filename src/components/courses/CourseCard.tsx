@@ -61,12 +61,12 @@ export default function CourseCard({ course, index }: CourseCardProps) {
 
             {/* Content Area */}
             <div className="p-6 pt-2 flex flex-col flex-1">
-                <h4 className="text-[19px] font-extrabold text-[#1a202c] leading-tight mb-8 line-clamp-2 min-h-[48px] group-hover:text-[var(--primary)] transition-colors">
+                <h4 className="text-[19px] font-extrabold text-[#1a202c] leading-tight mb-1 line-clamp-2 min-h-[48px] group-hover:text-[var(--primary)] transition-colors">
                     {course.title}
                 </h4>
 
                 {/* Action Button */}
-                <div className="mt-auto">
+                <div className="mt-auto pt-1">
                     <div className="inline-flex items-center justify-center w-full font-bold rounded-md text-sm px-8 py-3.5 shadow-md bg-button-bg text-button-text transition-all duration-300">
                         Know More
                     </div>

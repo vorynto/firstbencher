@@ -49,8 +49,8 @@ async function resolveHeaderKey(pathname: string): Promise<string> {
     try {
         // Look up whether this custom page has an assigned header
         const [pagesRes, headersRes] = await Promise.all([
-            supabaseAdmin.from("pages_content").select("content").eq("page_name", "system:custom_pages").single(),
-            supabaseAdmin.from("pages_content").select("content").eq("page_name", "system:headers").single(),
+            supabaseAdmin.from("pages_content").select("content").eq("page_name", "system:custom_pages").maybeSingle(),
+            supabaseAdmin.from("pages_content").select("content").eq("page_name", "system:headers").maybeSingle(),
         ]);
 
         const customPages: Array<{ slug: string; header_id?: string }> =
@@ -80,8 +80,8 @@ export default async function Header() {
         const headerKey = await resolveHeaderKey(pathname);
 
         const [headerRes, globalRes] = await Promise.all([
-            supabaseAdmin.from("pages_content").select("content").eq("page_name", headerKey).single(),
-            supabaseAdmin.from("pages_content").select("content").eq("page_name", "global_settings").single(),
+            supabaseAdmin.from("pages_content").select("content").eq("page_name", headerKey).maybeSingle(),
+            supabaseAdmin.from("pages_content").select("content").eq("page_name", "global_settings").maybeSingle(),
         ]);
 
         if (headerRes.data?.content) {

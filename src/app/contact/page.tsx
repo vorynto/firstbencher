@@ -3,7 +3,8 @@ import { Mail, Phone, MapPin, Clock } from "lucide-react";
 import ContactForm from "./ContactForm";
 
 type ContactHeader = { title: string; subtitle: string; office_hours: string; };
-type ContactDetails = { email: string; phone: string; address: string; map_embed_url: string; };
+type Branch = { office_name: string; address: string };
+type ContactDetails = { email: string; phone: string; address: string; map_embed_url: string; branches?: Branch[]; };
 
 const defaultHeader: ContactHeader = {
     title: "Get In Touch",
@@ -15,6 +16,7 @@ const defaultDetails: ContactDetails = {
     phone: "+1 (234) 567-8900",
     address: "123 Business Avenue, New York, NY 10001, USA",
     map_embed_url: "",
+    branches: [],
 };
 
 async function fetchSection<T>(supabase: Awaited<ReturnType<typeof createServerSupabaseClient>>, key: string, defaults: T): Promise<T> {
@@ -59,7 +61,7 @@ export default async function ContactPage() {
                         {/* Left: Contact Info */}
                         <div className="flex flex-col gap-6">
                             <div>
-                                <h2 className="text-3xl font-black text-gray-900 mb-2">Contact Information</h2>
+                                <h2 className="text-3xl font-black text-gray-900 mb-2">Corporate Office</h2>
                                 <p className="text-gray-500 text-sm">Reach out through any of these channels — we&apos;d love to hear from you.</p>
                             </div>
                             {contactItems.map((item, i) => (
@@ -95,6 +97,31 @@ export default async function ContactPage() {
                     </div>
                 </div>
             </section>
+
+            {/* ── Branch Offices ── */}
+            {details.branches && details.branches.length > 0 && (
+                <section className="py-14 bg-gray-50 border-t border-gray-100">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6">
+                        <div className="text-center mb-10">
+                            <h2 className="text-3xl font-black text-gray-900 mb-2">Our Branch Offices</h2>
+                            <p className="text-gray-500 text-sm">Visit us at any of our locations.</p>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {details.branches.map((branch, i) => (
+                                <div key={i} className="bg-white rounded-2xl border border-gray-100 p-6 hover:border-primary/20 hover:shadow-md transition-all">
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <div className="w-11 h-11 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center shrink-0">
+                                            <MapPin size={20} />
+                                        </div>
+                                        <h3 className="text-lg font-black text-gray-900 leading-tight">{branch.office_name}</h3>
+                                    </div>
+                                    <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-line">{branch.address}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            )}
         </div>
     );
 }

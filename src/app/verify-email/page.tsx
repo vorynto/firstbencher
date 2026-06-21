@@ -180,7 +180,7 @@ function VerifyEmailForm() {
                                 value={digit}
                                 onChange={e => handleOtpChange(i, e.target.value)}
                                 onKeyDown={e => handleKeyDown(i, e)}
-                                className="w-12 h-14 text-center text-2xl font-black rounded-2xl border-2 border-gray-100 bg-gray-50 focus:border-primary focus:ring-4 focus:ring-primary/10 focus:bg-white outline-none transition-all text-gray-900"
+                                className="w-12 h-14 text-center text-2xl font-black rounded-2xl border-2 border-gray-900 bg-gray-50 focus:border-primary focus:ring-4 focus:ring-primary/10 focus:bg-white outline-none transition-all text-gray-900"
                             />
                         ))}
                     </div>
@@ -235,12 +235,6 @@ export default function VerifyEmailPage() {
                 <div className="hidden lg:flex w-1/2 bg-[#1E1E2F] p-16 flex-col justify-between relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2" />
                     <div className="absolute bottom-0 left-0 w-32 h-32 bg-primary/20 rounded-full translate-y-1/2 -translate-x-1/2 blur-2xl" />
-
-                    <div className="relative z-10">
-                        <Link href="/" className="inline-block transition-transform hover:scale-105">
-                            <Image src="/logo.png" alt="First Bencher" width={180} height={60} className="object-contain h-14 w-auto brightness-0 invert" />
-                        </Link>
-                    </div>
 
                     <div className="relative z-10 max-w-sm">
                         <div className="w-20 h-20 bg-primary/20 rounded-full flex items-center justify-center mb-8">

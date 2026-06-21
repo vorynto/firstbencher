@@ -562,14 +562,14 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
                         <Button
                             variant="outline"
                             href={topBar.login_href || "/login"}
-                            className="w-full text-sm font-bold rounded-full py-3"
+                            className="w-full text-sm font-bold rounded-lg py-3"
                             onClick={() => setIsOpen(false)}
                         >
                             {topBar.login_text || "Login"}
                         </Button>
                         <Button
                             href={topBar.register_href || "/register"}
-                            className="w-full text-sm font-bold rounded-full py-3"
+                            className="w-full text-sm font-bold rounded-lg py-3"
                             onClick={() => setIsOpen(false)}
                         >
                             {topBar.register_text || "Register"}

@@ -25,6 +25,7 @@ type Course = {
     description: string;
     short_description: string;
     image_url: string;
+    partner_logo_url: string;
     price: number | null;
     duration: string;
     category: string;
@@ -62,7 +63,7 @@ const defaultTabsEnabled = {
 
 const defaultCourse: Partial<Course> = {
     title: "", slug: "", description: "", short_description: "",
-    image_url: "", price: 0, duration: "", category: "Project Management",
+    image_url: "", partner_logo_url: "", price: 0, duration: "", category: "Project Management",
     active: true, tags: [], rating: 5.0, features: [], requirements: "", popular_order: 0,
     card_inner_text: "", review_count: 0, instructor_ids: [],
     curriculum: [], faq: [], batches: [], videos: [],
@@ -648,6 +649,12 @@ function FormView({
                 <section className="bg-white p-6 rounded-2xl border border-gray-200 flex flex-col gap-5">
                     <h2 className="text-base font-bold border-b border-gray-100 pb-2">Media</h2>
                     <ImageUploadField label="Cover Image" value={editorData.image_url || ""} onChange={v => setEditorData({ ...editorData, image_url: v })} />
+                    <ImageUploadField
+                        label="Accreditation / Partner Logo (shown in trust bar)"
+                        value={editorData.partner_logo_url || ""}
+                        onChange={v => setEditorData({ ...editorData, partner_logo_url: v })}
+                    />
+                    <p className="text-xs text-gray-400 -mt-2">Optional. Defaults to the PMI Authorized Training Partner badge if left empty.</p>
                 </section>
 
                 {/* Page Background Color */}

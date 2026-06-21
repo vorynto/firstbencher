@@ -115,18 +115,10 @@ export default function FooterClient({ content }: { content: FooterContent }) {
                 </div>
 
                 {/* Copyright */}
-                <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <p className="text-gray-200 text-xs text-center md:text-left">
+                <div className="border-t border-white/10 pt-8 flex justify-center items-center">
+                    <p className="text-gray-200 text-xs text-center">
                         {copyrightText}
                     </p>
-                    <div className="flex gap-6">
-                        <span className="text-gray-200 text-xs text-center md:text-right">
-                            Developed By{" "}
-                            <Link href="https://vorynto.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors font-semibold">
-                                Vorynto Technologies
-                            </Link>
-                        </span>
-                    </div>
                 </div>
             </div>
         </footer>

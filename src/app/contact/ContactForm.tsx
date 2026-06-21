@@ -29,7 +29,7 @@ export default function ContactForm() {
             full_name: form.name.trim(),
             email: form.email.trim(),
             phone: form.phone.trim(),
-            subject: form.subject.trim() || "Contact Form",
+            subject: `Contact Us Form — ${form.subject.trim() || "General Enquiry"}`,
             message: form.message.trim(),
             status: "pending",
         }]);

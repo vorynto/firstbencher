@@ -41,7 +41,7 @@ export default function BlogSection({ blogs }: BlogSectionProps) {
                         </h2>
                     </div>
                     <div className="hidden md:block">
-                        <Button variant="outline" href="/blog" className="rounded-full px-8 border-gray-200">
+                        <Button variant="outline" href="/blog" className="px-8 border-gray-200">
                             View All Posts
                         </Button>
                     </div>
@@ -113,7 +113,7 @@ export default function BlogSection({ blogs }: BlogSectionProps) {
 
                 {/* Mobile View All Button */}
                 <div className="md:hidden text-center">
-                    <Button variant="outline" href="/blog" className="rounded-full w-full border-gray-200">
+                    <Button variant="outline" href="/blog" className="w-full border-gray-200">
                         View All Posts
                     </Button>
                 </div>

@@ -6,7 +6,8 @@ import {
     Phone, Mail, CheckCircle2, Star, Clock,
     Users, Award, ChevronDown, ChevronUp,
     Globe, Calendar, MapPin, Loader2, Send,
-    ChevronLeft, ChevronRight, UserCircle2, Youtube
+    ChevronLeft, ChevronRight, UserCircle2, Youtube,
+    Building2, X
 } from "lucide-react";
 import { createClient } from "@/lib/supabase";
 import { useEnquiry } from "@/components/EnquiryModal";
@@ -30,6 +31,7 @@ type Course = {
     description?: string;
     short_description?: string;
     image_url?: string;
+    partner_logo_url?: string;
     price?: number | null;
     duration?: string;
     category?: string;
@@ -103,10 +105,13 @@ export default function CourseClientPage({ course, instructors = [], sidebarCont
     const [stickyNavVisible, setStickyNavVisible] = useState(false);
     const [openCurriculum, setOpenCurriculum] = useState<number | null>(0);
     const [openFaq, setOpenFaq] = useState<number | null>(0);
-    const [isFormFixed, setIsFormFixed] = useState(false);
     const heroRef = useRef<HTMLDivElement>(null);
-    const sentinelRef = useRef<HTMLDivElement>(null);
     const tabsContainerRef = useRef<HTMLElement>(null);
+    const formWrapRef = useRef<HTMLDivElement>(null);
+
+    // Vertically center the sticky enquiry form in the viewport (clamped below
+    // the sticky tab nav). Recomputed on resize and when the form height changes.
+    const [stickyTop, setStickyTop] = useState(76);
 
     // Inline hero card enquiry form state
     const [formData, setFormData] = useState(defaultForm);
@@ -154,20 +159,28 @@ export default function CourseClientPage({ course, instructors = [], sidebarCont
         const handleScroll = () => {
             if (!heroRef.current) return;
             const heroBottom = heroRef.current.getBoundingClientRect().bottom;
-            const heroPast = heroBottom <= 0;
-            setStickyNavVisible(heroPast);
-
-            // Fix the enquiry form to the right side once hero is scrolled past,
-            // until the sentinel (placed before the footer) enters the viewport.
-            if (heroPast && sentinelRef.current) {
-                const sentinelTop = sentinelRef.current.getBoundingClientRect().top;
-                setIsFormFixed(sentinelTop > window.innerHeight);
-            } else {
-                setIsFormFixed(false);
-            }
+            setStickyNavVisible(heroBottom <= 0);
         };
         window.addEventListener("scroll", handleScroll, { passive: true });
         return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+
+    useEffect(() => {
+        const el = formWrapRef.current;
+        if (!el) return;
+        const compute = () => {
+            const h = el.offsetHeight;
+            // center in viewport, but never tuck under the 76px sticky tab nav
+            setStickyTop(Math.max(76, (window.innerHeight - h) / 2));
+        };
+        compute();
+        window.addEventListener("resize", compute);
+        const ro = new ResizeObserver(compute);
+        ro.observe(el);
+        return () => {
+            window.removeEventListener("resize", compute);
+            ro.disconnect();
+        };
     }, []);
 
     useEffect(() => {
@@ -357,13 +370,7 @@ export default function CourseClientPage({ course, instructors = [], sidebarCont
                         </div>
                         <div>
                             <div className="flex items-center gap-1 mb-0.5">
-                                {[1, 2, 3, 4, 5].map(i => (
-                                    <Star
-                                        key={i}
-                                        size={14}
-                                        className={i <= Math.round(rating ?? 5) ? "text-yellow-400 fill-yellow-400" : "text-gray-200 fill-gray-200"}
-                                    />
-                                ))}
+                                <StarRating rating={rating ?? 5} size={14} />
                                 {rating && (
                                     <span className="text-gray-800 font-black text-sm ml-1">{rating.toFixed(1)}</span>
                                 )}
@@ -377,12 +384,12 @@ export default function CourseClientPage({ course, instructors = [], sidebarCont
                         </div>
                     </div>
 
-                    {/* Col 2 — Authorized Training Partner */}
+                    {/* Col 2 — Accreditation / Partner Logo (dynamic per course) */}
                     <div className="flex justify-center">
-                        <div className="border border-gray-200 rounded-xl px-4 py-2 inline-flex items-center shadow-sm">
+                        <div className="inline-flex items-center border border-gray-200 rounded-xl px-4 py-2 shadow-sm">
                             <img
-                                src="/pmi-atp-logo.png"
-                                alt="PMI Authorized Training Partner"
+                                src={course.partner_logo_url || "/pmi-atp-logo.png"}
+                                alt="Accreditation / Training Partner"
                                 className="h-14 object-contain"
                             />
                         </div>
@@ -699,138 +706,361 @@ export default function CourseClientPage({ course, instructors = [], sidebarCont
                             <VideoSlider videos={videos} />
                         </section>
                     )}
+
+                    {/* Mobile Enquiry Form — shown only on mobile, at bottom of content */}
+                    <div className="lg:hidden">
+                        <EnquiryFormBlock courseTitle={title} />
+                    </div>
                 </div>
 
                 {/* RIGHT SIDEBAR */}
                 <div className="hidden lg:block">
-                    <div className="sticky top-[68px] space-y-6">
-
-                        {/* "Have Questions?" — shown only before hero is scrolled past */}
-                        {!isFormFixed && (
-                            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4">
-                                <h3 className="font-black text-lg text-[#1a202c]">{sb.contact_title}</h3>
-                                <p className="text-gray-500 text-sm">{sb.contact_subtitle}</p>
-                                <a href={`tel:${sb.phone}`} className="flex items-center gap-3 p-3 rounded-xl bg-accent border border-[var(--primary)]/20 hover:bg-[var(--primary-tint)] transition-colors">
-                                    <div className="w-10 h-10 bg-[var(--primary)] rounded-lg flex items-center justify-center shrink-0">
-                                        <Phone size={18} className="text-white" />
-                                    </div>
-                                    <div>
-                                        <p className="text-xs text-gray-400 font-medium">Call Us</p>
-                                        <p className="font-black text-[#1a202c] text-sm">{sb.phone}</p>
-                                    </div>
-                                </a>
-                                <a href={`mailto:${sb.email}`} className="flex items-center gap-3 p-3 rounded-xl bg-accent border border-[var(--primary)]/20 hover:bg-[var(--primary-tint)] transition-colors">
-                                    <div className="w-10 h-10 bg-[var(--primary-dark)] rounded-lg flex items-center justify-center shrink-0">
-                                        <Mail size={18} className="text-white" />
-                                    </div>
-                                    <div>
-                                        <p className="text-xs text-gray-400 font-medium">Email Us</p>
-                                        <p className="font-black text-[#1a202c] text-sm">{sb.email}</p>
-                                    </div>
-                                </a>
-                                <button
-                                    onClick={() => openEnquiry(`${sb.callback_button_text} — ${title}`)}
-                                    className="w-full bg-[var(--primary)] text-white py-3 rounded-xl font-bold text-sm hover:bg-[var(--primary-dark)] transition-colors"
-                                >
-                                    {sb.callback_button_text}
-                                </button>
+                    {/* Have Questions? — static (scrolls with page) */}
+                    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4 mb-6">
+                        <h3 className="font-black text-lg text-[#1a202c]">{sb.contact_title}</h3>
+                        <p className="text-gray-500 text-sm">{sb.contact_subtitle}</p>
+                        <a href={`tel:${sb.phone}`} className="flex items-center gap-3 p-3 rounded-xl bg-accent border border-[var(--primary)]/20 hover:bg-[var(--primary-tint)] transition-colors">
+                            <div className="w-10 h-10 bg-[var(--primary)] rounded-lg flex items-center justify-center shrink-0">
+                                <Phone size={18} className="text-white" />
                             </div>
-                        )}
-
-                        {/* Course Highlights — always shown */}
-                        <div className="bg-[#111111] rounded-2xl p-6 text-white">
-                            <p className="text-[var(--primary-tint)] text-xs font-bold uppercase tracking-wider mb-3">{sb.highlights_title}</p>
-                            <ul className="space-y-3 text-sm">
-                                {(sb.highlights ?? []).map((item, i) => (
-                                    <li key={i} className="flex items-center gap-2 text-white/80">
-                                        <CheckCircle2 size={14} className="text-[var(--primary)] shrink-0" />
-                                        {item}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-
-                        {/* Enquiry Form — slides in after hero is scrolled past */}
-                        {isFormFixed && (
-                            <div
-                                key="sidebar-enquiry"
-                                className="animate-in fade-in slide-in-from-top-8 duration-500 bg-white overflow-hidden border border-gray-200 shadow-lg"
-                            >
-                                <div className="bg-[var(--primary)] px-5 py-3.5">
-                                    <h3 className="text-white font-black text-lg">Enquiry Form</h3>
-                                </div>
-
-                                {submitted ? (
-                                    <div className="p-8 flex flex-col items-center gap-4 text-center">
-                                        <div className="w-14 h-14 rounded-full bg-green-50 flex items-center justify-center">
-                                            <CheckCircle2 size={28} className="text-green-500" />
-                                        </div>
-                                        <div>
-                                            <p className="font-black text-[#1a202c] text-lg">Enquiry Received!</p>
-                                            <p className="text-gray-500 text-sm mt-1">Our team will contact you shortly.</p>
-                                        </div>
-                                        <button
-                                            onClick={() => setSubmitted(false)}
-                                            className="text-sm text-[var(--primary)] font-bold hover:underline mt-2"
-                                        >
-                                            Submit another enquiry
-                                        </button>
-                                    </div>
-                                ) : (
-                                    <form onSubmit={handleEnquiry} className="p-5 space-y-3">
-                                        {[
-                                            { label: "Full Name *", type: "text", key: "name", placeholder: "e.g. John Smith" },
-                                            { label: "Email Address *", type: "email", key: "email", placeholder: "e.g. john@example.com" },
-                                            { label: "Phone Number *", type: "tel", key: "phone", placeholder: "e.g. +1 234 567 8900" },
-                                        ].map(({ label, type, key, placeholder }) => (
-                                            <div key={key}>
-                                                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">{label}</label>
-                                                <input
-                                                    type={type}
-                                                    required
-                                                    value={formData[key as keyof typeof formData]}
-                                                    onChange={e => setFormData(p => ({ ...p, [key]: e.target.value }))}
-                                                    placeholder={placeholder}
-                                                    className="w-full px-3 py-2 rounded border border-gray-200 text-sm outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 transition-all"
-                                                />
-                                            </div>
-                                        ))}
-                                        <div>
-                                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
-                                                Message <span className="normal-case font-normal text-gray-400">(optional)</span>
-                                            </label>
-                                            <textarea
-                                                rows={2}
-                                                value={formData.message}
-                                                onChange={e => setFormData(p => ({ ...p, message: e.target.value }))}
-                                                placeholder="Any specific questions or requirements..."
-                                                className="w-full px-3 py-2 rounded border border-gray-200 text-sm outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 resize-none transition-all"
-                                            />
-                                        </div>
-                                        {formError && <p className="text-red-500 text-xs font-medium">{formError}</p>}
-                                        <button
-                                            type="submit"
-                                            disabled={submitting}
-                                            className="w-full bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white py-2.5 font-bold text-sm transition-colors shadow-lg shadow-red-900/20 flex items-center justify-center gap-2 disabled:opacity-60"
-                                        >
-                                            {submitting
-                                                ? <><Loader2 size={16} className="animate-spin" /> Submitting...</>
-                                                : <><Send size={16} /> Send Enquiry</>
-                                            }
-                                        </button>
-                                        <p className="text-[11px] text-center text-gray-400">By submitting, you agree to be contacted by our team.</p>
-                                    </form>
-                                )}
+                            <div>
+                                <p className="text-xs text-gray-400 font-medium">Call Us</p>
+                                <p className="font-black text-[#1a202c] text-sm">{sb.phone}</p>
                             </div>
-                        )}
+                        </a>
+                        <a href={`mailto:${sb.email}`} className="flex items-center gap-3 p-3 rounded-xl bg-accent border border-[var(--primary)]/20 hover:bg-[var(--primary-tint)] transition-colors">
+                            <div className="w-10 h-10 bg-[var(--primary-dark)] rounded-lg flex items-center justify-center shrink-0">
+                                <Mail size={18} className="text-white" />
+                            </div>
+                            <div>
+                                <p className="text-xs text-gray-400 font-medium">Email Us</p>
+                                <p className="font-black text-[#1a202c] text-sm">{sb.email}</p>
+                            </div>
+                        </a>
+                        <button
+                            onClick={() => openEnquiry(`${sb.callback_button_text} — ${title}`)}
+                            className="w-full bg-[var(--primary)] text-white py-3 rounded-xl font-bold text-sm hover:bg-[var(--primary-dark)] transition-colors"
+                        >
+                            {sb.callback_button_text}
+                        </button>
+                    </div>
 
+                    {/* Want Corporate Training? — static (scrolls with page) */}
+                    <div className="mb-6">
+                        <CorporateTrainingCard courseTitle={title} />
+                    </div>
+
+                    {/* Enquiry Form — sticky, vertically centered after the highlights scroll past */}
+                    <div ref={formWrapRef} className="sticky" style={{ top: stickyTop }}>
+                        <EnquiryFormBlock courseTitle={title} />
                     </div>
                 </div>
             </div>
 
-            {/* Sentinel — enquiry form stops floating when this enters the viewport */}
-            <div ref={sentinelRef} className="h-px" aria-hidden="true" />
+        </div>
+    );
+}
 
+// ── StarRating ───────────────────────────────────────────────────
+// Renders 5 stars with partial fill so fractional ratings (e.g. 4.5, 4.9)
+// are reflected visually by clipping a filled star over an empty one.
+
+function StarRating({ rating, size = 14 }: { rating: number; size?: number }) {
+    return (
+        <div className="flex items-center gap-0.5">
+            {[0, 1, 2, 3, 4].map(i => {
+                const fill = Math.max(0, Math.min(1, rating - i)); // 0 → 1 per star
+                return (
+                    <div key={i} className="relative shrink-0" style={{ width: size, height: size }}>
+                        <Star size={size} className="absolute inset-0 text-gray-200 fill-gray-200" />
+                        {fill > 0 && (
+                            <div className="absolute inset-0 overflow-hidden" style={{ width: `${fill * 100}%` }}>
+                                <Star
+                                    size={size}
+                                    className="text-yellow-400 fill-yellow-400 shrink-0"
+                                    style={{ width: size, height: size, maxWidth: "none" }}
+                                />
+                            </div>
+                        )}
+                    </div>
+                );
+            })}
+        </div>
+    );
+}
+
+// ── CorporateTrainingCard ────────────────────────────────────────
+// Promo card + popup with a corporate-specific enquiry form.
+
+const corporateDefaults = { name: "", email: "", phone: "", company: "", team_size: "", message: "" };
+
+function CorporateTrainingCard({ courseTitle }: { courseTitle: string }) {
+    const supabase = createClient();
+    const [open, setOpen] = useState(false);
+    const [form, setForm] = useState(corporateDefaults);
+    const [submitting, setSubmitting] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
+    const [error, setError] = useState("");
+
+    const openModal = () => {
+        setForm(corporateDefaults);
+        setSubmitted(false);
+        setError("");
+        setOpen(true);
+    };
+    const close = () => setOpen(false);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!form.name.trim() || !form.email.trim() || !form.phone.trim() || !form.company.trim()) {
+            setError("Please fill in all required fields.");
+            return;
+        }
+        setError("");
+        setSubmitting(true);
+        const source = `Corporate Training Enquiry — ${courseTitle}`;
+        const composedMessage =
+            `Company: ${form.company.trim()}\n` +
+            `Team size: ${form.team_size.trim() || "Not specified"}\n` +
+            `Message: ${form.message.trim() || "—"}`;
+        const { error: dbError } = await supabase.from("inquiries").insert([{
+            full_name: form.name.trim(),
+            email: form.email.trim(),
+            phone: form.phone.trim(),
+            subject: source,
+            message: composedMessage,
+            status: "pending",
+        }]);
+        setSubmitting(false);
+        if (dbError) {
+            setError("Something went wrong. Please try again.");
+        } else {
+            setSubmitted(true);
+            fetch("/api/mail/send", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    type: "enquiry",
+                    data: {
+                        name: form.name.trim(), email: form.email.trim(), phone: form.phone.trim(),
+                        source, message: composedMessage,
+                    },
+                }),
+            }).catch(() => {});
+        }
+    };
+
+    return (
+        <>
+            {/* Promo card */}
+            <div className="bg-[#111111] rounded-2xl p-6 text-white">
+                <div className="w-12 h-12 rounded-xl bg-[var(--primary)]/20 flex items-center justify-center mb-4">
+                    <Building2 size={24} className="text-[var(--primary)]" />
+                </div>
+                <h3 className="font-black text-lg leading-snug mb-2">Want Corporate Training?</h3>
+                <p className="text-white/70 text-sm leading-relaxed mb-5">
+                    Upskill your entire team with customized, instructor-led training tailored to your
+                    organization&apos;s goals — flexible schedules, group discounts, and dedicated support.
+                </p>
+                <button
+                    onClick={openModal}
+                    className="w-full bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white py-3 rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-2"
+                >
+                    <Building2 size={16} /> Enquire for Your Team
+                </button>
+            </div>
+
+            {/* Popup */}
+            {open && (
+                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4" onClick={close}>
+                    <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+                    <div
+                        className="relative bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto"
+                        onClick={e => e.stopPropagation()}
+                    >
+                        {/* Header */}
+                        <div className="bg-[var(--primary)] px-6 py-5 flex items-start justify-between sticky top-0">
+                            <div>
+                                <h3 className="text-white font-black text-xl">Corporate Training Enquiry</h3>
+                                <p className="text-red-200 text-xs mt-0.5 line-clamp-1 max-w-[300px]">{courseTitle}</p>
+                            </div>
+                            <button onClick={close} className="text-white/70 hover:text-white transition-colors p-1 -mt-0.5 -mr-1 shrink-0">
+                                <X size={20} />
+                            </button>
+                        </div>
+
+                        {submitted ? (
+                            <div className="p-10 flex flex-col items-center gap-4 text-center">
+                                <div className="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center">
+                                    <CheckCircle2 size={32} className="text-green-500" />
+                                </div>
+                                <div>
+                                    <p className="font-black text-[#1a202c] text-xl">Thank You!</p>
+                                    <p className="text-gray-500 text-sm mt-2 leading-relaxed">
+                                        Your corporate training enquiry has been received.<br />Our team will reach out within 24 hours.
+                                    </p>
+                                </div>
+                                <button onClick={close} className="mt-2 bg-[var(--primary)] text-white px-8 py-3 rounded-xl font-bold text-sm hover:bg-[var(--primary-dark)] transition-colors">
+                                    Close
+                                </button>
+                            </div>
+                        ) : (
+                            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+                                {[
+                                    { label: "Full Name *", type: "text", key: "name", placeholder: "e.g. John Smith" },
+                                    { label: "Work Email *", type: "email", key: "email", placeholder: "e.g. john@company.com" },
+                                    { label: "Phone Number *", type: "tel", key: "phone", placeholder: "e.g. +1 234 567 8900" },
+                                    { label: "Company Name *", type: "text", key: "company", placeholder: "e.g. Acme Corp" },
+                                    { label: "Team Size", type: "text", key: "team_size", placeholder: "e.g. 15 employees" },
+                                ].map(({ label, type, key, placeholder }) => (
+                                    <div key={key}>
+                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">{label}</label>
+                                        <input
+                                            type={type}
+                                            required={label.includes("*")}
+                                            value={form[key as keyof typeof form]}
+                                            onChange={e => setForm(p => ({ ...p, [key]: e.target.value }))}
+                                            placeholder={placeholder}
+                                            className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 transition-all"
+                                        />
+                                    </div>
+                                ))}
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
+                                        Message <span className="normal-case font-normal text-gray-400">(optional)</span>
+                                    </label>
+                                    <textarea
+                                        rows={3}
+                                        value={form.message}
+                                        onChange={e => setForm(p => ({ ...p, message: e.target.value }))}
+                                        placeholder="Tell us about your training needs, preferred schedule, etc."
+                                        className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 resize-none transition-all"
+                                    />
+                                </div>
+                                {error && <p className="text-red-500 text-xs font-semibold">{error}</p>}
+                                <button
+                                    type="submit"
+                                    disabled={submitting}
+                                    className="w-full bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white py-3.5 rounded-xl font-bold text-sm transition-colors shadow-lg shadow-red-900/20 flex items-center justify-center gap-2 disabled:opacity-60"
+                                >
+                                    {submitting
+                                        ? <><Loader2 size={16} className="animate-spin" /> Submitting...</>
+                                        : <><Send size={16} /> Send Enquiry</>
+                                    }
+                                </button>
+                                <p className="text-[11px] text-center text-gray-400">We respect your privacy. No spam, ever.</p>
+                            </form>
+                        )}
+                    </div>
+                </div>
+            )}
+        </>
+    );
+}
+
+// ── EnquiryFormBlock ─────────────────────────────────────────────
+// Self-contained enquiry form with its own state, so it can be rendered
+// in multiple places (sticky desktop sidebar + bottom of mobile content).
+
+function EnquiryFormBlock({ courseTitle }: { courseTitle: string }) {
+    const supabase = createClient();
+    const [formData, setFormData] = useState(defaultForm);
+    const [submitting, setSubmitting] = useState(false);
+    const [submitted, setSubmitted] = useState(false);
+    const [formError, setFormError] = useState("");
+
+    const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (!formData.name || !formData.email || !formData.phone) {
+            setFormError("Please fill in all required fields.");
+            return;
+        }
+        setFormError("");
+        setSubmitting(true);
+        const { error } = await supabase.from("inquiries").insert([{
+            full_name: formData.name,
+            email: formData.email,
+            phone: formData.phone,
+            subject: `Course Enquiry — ${courseTitle}`,
+            message: formData.message || `Enquiry about ${courseTitle}`,
+            status: "pending",
+        }]);
+        setSubmitting(false);
+        if (error) {
+            setFormError("Something went wrong. Please try again.");
+        } else {
+            setSubmitted(true);
+            setFormData(defaultForm);
+        }
+    };
+
+    return (
+        <div className="bg-white overflow-hidden border border-gray-200 shadow-lg rounded-lg">
+            <div className="bg-[var(--primary)] px-5 py-3.5">
+                <h3 className="text-white font-black text-lg">Enquiry Form</h3>
+            </div>
+
+            {submitted ? (
+                <div className="p-8 flex flex-col items-center gap-4 text-center">
+                    <div className="w-14 h-14 rounded-full bg-green-50 flex items-center justify-center">
+                        <CheckCircle2 size={28} className="text-green-500" />
+                    </div>
+                    <div>
+                        <p className="font-black text-[#1a202c] text-lg">Enquiry Received!</p>
+                        <p className="text-gray-500 text-sm mt-1">Our team will contact you shortly.</p>
+                    </div>
+                    <button
+                        onClick={() => setSubmitted(false)}
+                        className="text-sm text-[var(--primary)] font-bold hover:underline mt-2"
+                    >
+                        Submit another enquiry
+                    </button>
+                </div>
+            ) : (
+                <form onSubmit={handleSubmit} className="p-5 space-y-3">
+                    {[
+                        { label: "Full Name *", type: "text", key: "name", placeholder: "e.g. John Smith" },
+                        { label: "Email Address *", type: "email", key: "email", placeholder: "e.g. john@example.com" },
+                        { label: "Phone Number *", type: "tel", key: "phone", placeholder: "e.g. +1 234 567 8900" },
+                    ].map(({ label, type, key, placeholder }) => (
+                        <div key={key}>
+                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">{label}</label>
+                            <input
+                                type={type}
+                                required
+                                value={formData[key as keyof typeof formData]}
+                                onChange={e => setFormData(p => ({ ...p, [key]: e.target.value }))}
+                                placeholder={placeholder}
+                                className="w-full px-3 py-2 rounded border border-gray-200 text-sm outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 transition-all"
+                            />
+                        </div>
+                    ))}
+                    <div>
+                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
+                            Message <span className="normal-case font-normal text-gray-400">(optional)</span>
+                        </label>
+                        <textarea
+                            rows={2}
+                            value={formData.message}
+                            onChange={e => setFormData(p => ({ ...p, message: e.target.value }))}
+                            placeholder="Any specific questions or requirements..."
+                            className="w-full px-3 py-2 rounded border border-gray-200 text-sm outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 resize-none transition-all"
+                        />
+                    </div>
+                    {formError && <p className="text-red-500 text-xs font-medium">{formError}</p>}
+                    <button
+                        type="submit"
+                        disabled={submitting}
+                        className="w-full bg-[var(--primary)] hover:bg-[var(--primary-dark)] text-white py-2.5 font-bold text-sm transition-colors shadow-lg shadow-red-900/20 flex items-center justify-center gap-2 disabled:opacity-60"
+                    >
+                        {submitting
+                            ? <><Loader2 size={16} className="animate-spin" /> Submitting...</>
+                            : <><Send size={16} /> Send Enquiry</>
+                        }
+                    </button>
+                    <p className="text-[11px] text-center text-gray-400">By submitting, you agree to be contacted by our team.</p>
+                </form>
+            )}
         </div>
     );
 }

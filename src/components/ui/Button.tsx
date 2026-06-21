@@ -63,7 +63,7 @@ export default function Button({
     if (hoverTextColor) (inlineStyles as any)["--button-hover-text"] = hoverTextColor;
 
     const combinedClassName = cn(
-        "inline-flex items-center justify-center font-bold rounded-full transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed",
+        "inline-flex items-center justify-center font-bold rounded-lg transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed",
         variantStyles[variant],
         sizeStyles[size],
         className

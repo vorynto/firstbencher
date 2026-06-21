@@ -55,7 +55,7 @@ export default async function HeroSection() {
             .from("pages_content")
             .select("content")
             .eq("page_name", "home_hero")
-            .single();
+            .maybeSingle();
 
         if (data?.content) {
             content = { ...defaults, ...(data.content as Partial<HeroContent>) };

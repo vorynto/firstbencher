@@ -29,14 +29,14 @@ export default function NotFound() {
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                     <Link
                         href="/"
-                        className="w-full sm:w-auto px-8 py-4 bg-primary text-white font-bold rounded-full flex items-center justify-center gap-2 hover:bg-primary/90 transition-all hover:scale-105 active:scale-95 shadow-lg shadow-primary/25"
+                        className="w-full sm:w-auto px-8 py-4 bg-primary text-white font-bold rounded-lg flex items-center justify-center gap-2 hover:bg-primary/90 transition-all hover:scale-105 active:scale-95 shadow-lg shadow-primary/25"
                     >
                         <Home size={20} />
                         Return to Home
                     </Link>
                     <button
                         onClick={() => window.history.back()}
-                        className="w-full sm:w-auto px-8 py-4 bg-white/5 border border-white/10 text-foreground font-bold rounded-full flex items-center justify-center gap-2 hover:bg-white/10 transition-all"
+                        className="w-full sm:w-auto px-8 py-4 bg-white/5 border border-white/10 text-foreground font-bold rounded-lg flex items-center justify-center gap-2 hover:bg-white/10 transition-all"
                     >
                         <ArrowLeft size={20} />
                         Go Back
