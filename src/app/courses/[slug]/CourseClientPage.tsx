@@ -678,7 +678,20 @@ export default function CourseClientPage({ course, instructors = [], sidebarCont
                                     }
                                 </button>
                                 {openFaq === i && (
-                                    <p className="text-gray-600 text-sm pb-4 leading-relaxed">{item.answer}</p>
+                                    <div
+                                        className="text-gray-600 text-sm pb-4 leading-relaxed
+                                        [&_ul]:list-disc [&_ul]:ml-5 [&_ul]:my-2 [&_ul]:space-y-1
+                                        [&_ol]:list-decimal [&_ol]:ml-5 [&_ol]:my-2 [&_ol]:space-y-1
+                                        [&_li]:pl-1
+                                        [&_p]:mb-2 last:[&_p]:mb-0
+                                        [&_a]:text-[var(--primary)] [&_a]:underline
+                                        [&_strong]:font-bold [&_h2]:font-bold [&_h2]:text-base [&_h2]:mt-3 [&_h2]:mb-1.5
+                                        [&_h3]:font-bold [&_h3]:text-sm [&_h3]:mt-2 [&_h3]:mb-1
+                                        [&_table]:w-full [&_table]:border-collapse [&_table]:my-3 [&_table]:text-xs
+                                        [&_th]:border [&_th]:border-gray-300 [&_th]:bg-gray-50 [&_th]:px-3 [&_th]:py-2 [&_th]:text-left [&_th]:font-bold
+                                        [&_td]:border [&_td]:border-gray-200 [&_td]:px-3 [&_td]:py-2 [&_td]:align-top"
+                                        dangerouslySetInnerHTML={{ __html: sanitize(item.answer) }}
+                                    />
                                 )}
                             </div>
                         )) : (

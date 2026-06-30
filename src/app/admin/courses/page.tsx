@@ -922,41 +922,51 @@ function CurriculumBuilder({ data, onChange }: { data: { title: string; lessons:
 }
 
 function FAQBuilder({ data, onChange }: { data: { question: string; answer: string }[], onChange: (arr: { question: string; answer: string }[]) => void }) {
-    const [q, setQ] = useState("");
-    const [a, setA] = useState("");
-
     const addFaq = () => {
-        if (!q.trim() || !a.trim()) return;
-        onChange([...data, { question: q.trim(), answer: a.trim() }]);
-        setQ("");
-        setA("");
+        onChange([...data, { question: "", answer: "" }]);
     };
 
     const removeFaq = (idx: number) => {
         onChange(data.filter((_, i) => i !== idx));
     };
 
+    const updateFaq = (idx: number, field: "question" | "answer", value: string) => {
+        const next = [...data];
+        next[idx] = { ...next[idx], [field]: value };
+        onChange(next);
+    };
+
     return (
         <div className="space-y-4">
             <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">Frequently Asked Questions</label>
-            
-            <div className="space-y-3">
+
+            <div className="space-y-4">
                 {data.map((faq, idx) => (
-                    <div key={idx} className="p-3 border border-gray-200 rounded-xl bg-gray-50 flex gap-3 items-start">
-                        <div className="flex-1 space-y-1">
-                            <p className="font-bold text-sm text-gray-800">Q: {faq.question}</p>
-                            <p className="text-sm text-gray-600">A: {faq.answer}</p>
+                    <div key={idx} className="p-4 border border-gray-200 rounded-xl bg-gray-50 space-y-3">
+                        <div className="flex items-center justify-between gap-3">
+                            <span className="text-[11px] font-black uppercase tracking-widest text-gray-400">Question {idx + 1}</span>
+                            <button onClick={() => removeFaq(idx)} className="text-red-400 hover:text-red-600 p-1 shrink-0"><Trash2 size={16} /></button>
                         </div>
-                        <button onClick={() => removeFaq(idx)} className="text-red-400 hover:text-red-600 p-1"><Trash2 size={16} /></button>
+                        <input
+                            type="text"
+                            value={faq.question}
+                            onChange={e => updateFaq(idx, "question", e.target.value)}
+                            placeholder="Question..."
+                            className="w-full px-3 py-2 text-sm font-semibold border border-gray-200 rounded-lg outline-none focus:border-[var(--primary)] bg-white"
+                        />
+                        <div>
+                            <p className="text-[11px] font-bold text-gray-400 mb-1.5">Answer — use the toolbar for bullet points, lists & formatting</p>
+                            <TipTapEditor
+                                value={faq.answer || ""}
+                                onChange={v => updateFaq(idx, "answer", v)}
+                                placeholder="Type the answer. Use bullet/numbered lists for steps, and emojis (✅ ⭐ 👉) for icon bullets…"
+                            />
+                        </div>
                     </div>
                 ))}
             </div>
 
-            <div className="space-y-2 border border-gray-200 p-3 rounded-xl bg-white">
-                <input type="text" value={q} onChange={e => setQ(e.target.value)} placeholder="Question..." className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-[var(--primary)]" />
-                <textarea value={a} onChange={e => setA(e.target.value)} placeholder="Answer..." rows={2} className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-[var(--primary)] resize-none" />
-                <button onClick={addFaq} className="w-full py-2 bg-gray-100 text-gray-700 text-sm font-bold rounded-lg border border-gray-200 hover:bg-gray-200">Add FAQ</button>
-            </div>
+            <button onClick={addFaq} className="w-full py-2 bg-gray-100 text-gray-700 text-sm font-bold rounded-lg border border-gray-200 hover:bg-gray-200">+ Add FAQ</button>
         </div>
     );
 }
