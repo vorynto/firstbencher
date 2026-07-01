@@ -14,7 +14,8 @@ type FooterContent = {
     tagline: string;
     email: string;
     phone: string;
-    address: string;
+    phone2: string;
+    phone3: string;
     facebook_url: string;
     twitter_url: string;
     linkedin_url: string;
@@ -29,7 +30,8 @@ const BLANK_CONTENT: FooterContent = {
     tagline: "",
     email: "",
     phone: "",
-    address: "",
+    phone2: "",
+    phone3: "",
     facebook_url: "",
     twitter_url: "",
     linkedin_url: "",
@@ -150,9 +152,8 @@ function FooterEditor({ content, onChange }: { content: FooterContent; onChange:
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <Field label="Email" value={content.email} onChange={v => u("email", v)} placeholder="info@example.com" />
                     <Field label="Phone" value={content.phone} onChange={v => u("phone", v)} placeholder="+1 (234) 567-8900" />
-                    <div className="md:col-span-2">
-                        <Field label="Address" value={content.address} onChange={v => u("address", v)} placeholder="123 Business Avenue..." />
-                    </div>
+                    <Field label="Mobile Number 2" value={content.phone2} onChange={v => u("phone2", v)} placeholder="+91 98765 43210" />
+                    <Field label="Mobile Number 3" value={content.phone3} onChange={v => u("phone3", v)} placeholder="+91 91234 56789" />
                 </div>
             </div>
 

@@ -6,7 +6,8 @@ type FooterContent = {
     tagline: string;
     email: string;
     phone: string;
-    address: string;
+    phone2?: string;
+    phone3?: string;
     facebook_url: string;
     twitter_url: string;
     linkedin_url: string;
@@ -22,7 +23,8 @@ const defaults: FooterContent = {
     tagline: "Global leader in providing training and consulting solutions for Project Management, Quality Management, AI and Machine Learning.",
     email: "info@firstbencher.com",
     phone: "+1 (234) 567-890",
-    address: "123 Business Avenue, Global Tech Hub, Sector 45",
+    phone2: "",
+    phone3: "",
     facebook_url: "#",
     twitter_url: "#",
     linkedin_url: "#",

@@ -21,7 +21,13 @@ const ALLOWED_ATTRS: sanitizeHtml.IOptions["allowedAttributes"] = {
 
 export function sanitize(html: string): string {
   if (!html) return "";
-  return sanitizeHtml(html, {
+  // Replace non-breaking spaces (both the &nbsp; entity and the raw
+  // character) with regular spaces. Pasted rich text often carries these, and
+  // they glue words into one unbreakable token — which then either overflows
+  // its container or gets broken mid-word by overflow-wrap. Regular spaces wrap
+  // normally at word boundaries.
+  const normalized = html.replace(/&nbsp;/gi, " ").replace(/\u00a0/g, " ");
+  return sanitizeHtml(normalized, {
     allowedTags: ALLOWED_TAGS,
     allowedAttributes: ALLOWED_ATTRS,
     allowedSchemes: ["http", "https", "mailto", "tel"],

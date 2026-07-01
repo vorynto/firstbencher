@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
-import { Plus, Search, Edit2, Trash2, ArrowLeft, Loader2, ListPlus, X, CheckCircle2, ChevronDown, ToggleLeft, ToggleRight, UserCircle2, Youtube, CheckCircle, AlertCircle, Target, TrendingUp } from "lucide-react";
+import { Plus, Search, Edit2, Trash2, ArrowLeft, Loader2, ListPlus, X, CheckCircle2, ChevronDown, ToggleLeft, ToggleRight, UserCircle2, Youtube, CheckCircle, AlertCircle, Target, TrendingUp, GripVertical } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase";
 import ImageUploadField from "@/components/admin/ImageUploadField";
@@ -39,7 +39,7 @@ type Course = {
     review_count: number;
     instructor_ids: string[];
     created_at?: string;
-    curriculum?: { title: string; lessons: string[] }[];
+    curriculum?: { title: string; lessons: string[]; submodules?: { title: string; lessons: string[] }[] }[];
     faq?: { question: string; answer: string }[];
     batches?: any[];
     videos?: { title: string; url: string }[];
@@ -53,6 +53,8 @@ type Course = {
         instructors: boolean;
         videos: boolean;
     };
+    custom_tabs?: { id: string; label: string; content: string }[];
+    tab_order?: string[];
     section_bg_color?: string | null;
 };
 
@@ -61,6 +63,19 @@ const defaultTabsEnabled = {
     curriculum: true, eligibility: true, faq: true, instructors: true, videos: true,
 };
 
+// Built-in tabs. `id` (hyphenated) matches the section DOM id / tab id on the
+// detail page; `key` (underscored) matches the tabs_enabled visibility flag.
+const BUILT_IN_TAB_DEFS: { id: string; label: string; key: keyof typeof defaultTabsEnabled }[] = [
+    { id: "overview",       label: "Overview",       key: "overview" },
+    { id: "training-dates", label: "Training Dates", key: "training_dates" },
+    { id: "key-features",   label: "Key Features",   key: "key_features" },
+    { id: "curriculum",     label: "Curriculum",     key: "curriculum" },
+    { id: "eligibility",    label: "Eligibility",    key: "eligibility" },
+    { id: "faq",            label: "FAQs",           key: "faq" },
+    { id: "instructors",    label: "Instructors",    key: "instructors" },
+    { id: "videos",         label: "Videos",         key: "videos" },
+];
+
 const defaultCourse: Partial<Course> = {
     title: "", slug: "", description: "", short_description: "",
     image_url: "", partner_logo_url: "", price: 0, duration: "", category: "Project Management",
@@ -68,6 +83,7 @@ const defaultCourse: Partial<Course> = {
     card_inner_text: "", review_count: 0, instructor_ids: [],
     curriculum: [], faq: [], batches: [], videos: [],
     tabs_enabled: { ...defaultTabsEnabled },
+    custom_tabs: [], tab_order: [],
     section_bg_color: null,
 };
 
@@ -213,6 +229,8 @@ export default function CoursesPage() {
             review_count: Number(editorData.review_count) || 0,
             instructor_ids: editorData.instructor_ids || [],
             videos: editorData.videos || [],
+            custom_tabs: editorData.custom_tabs || [],
+            tab_order: editorData.tab_order || [],
             section_bg_color: editorData.section_bg_color || null,
         };
 
@@ -600,6 +618,29 @@ function FormView({
                         onChange={arr => setEditorData({ ...editorData, videos: arr })}
                     />
                 </AccordionSection>
+
+                {/* Custom Tabs */}
+                <AccordionSection
+                    title="Custom Tabs" isOpen={openSections.has("custom_tabs")} onToggle={() => toggle("custom_tabs")}
+                    badge={editorData.custom_tabs?.length ? `${editorData.custom_tabs.length} tabs` : undefined}
+                >
+                    <CustomTabsBuilder
+                        data={editorData.custom_tabs || []}
+                        onChange={arr => setEditorData({ ...editorData, custom_tabs: arr })}
+                    />
+                </AccordionSection>
+
+                {/* Tab Order (drag & drop) */}
+                <AccordionSection
+                    title="Tab Order (Drag & Drop)" isOpen={openSections.has("tab_order")} onToggle={() => toggle("tab_order")}
+                >
+                    <TabOrderManager
+                        tabsEnabled={tabs}
+                        customTabs={editorData.custom_tabs || []}
+                        order={editorData.tab_order || []}
+                        onChange={ord => setEditorData({ ...editorData, tab_order: ord })}
+                    />
+                </AccordionSection>
             </div>
 
             {/* ── Sidebar Column ── */}
@@ -840,83 +881,133 @@ function LessonAdder({ onAdd }: { onAdd: (title: string) => void }) {
     );
 }
 
-function CurriculumBuilder({ data, onChange }: { data: { title: string; lessons: string[] }[], onChange: (arr: { title: string; lessons: string[] }[]) => void }) {
-    const [newSection, setNewSection] = useState("");
+type SubModule = { title: string; lessons: string[] };
+type Module = { title: string; lessons: string[]; submodules?: SubModule[] };
 
-    const addSection = () => {
-        if (!newSection.trim()) return;
-        onChange([...data, { title: newSection.trim(), lessons: [] }]);
-        setNewSection("");
-    };
+function CurriculumBuilder({ data, onChange }: { data: Module[], onChange: (arr: Module[]) => void }) {
+    const updateModule = (idx: number, patch: Partial<Module>) =>
+        onChange(data.map((m, i) => (i === idx ? { ...m, ...patch } : m)));
 
-    const removeSection = (idx: number) => {
-        onChange(data.filter((_, i) => i !== idx));
-    };
+    const addModule = () => onChange([...data, { title: "", lessons: [], submodules: [] }]);
+    const removeModule = (idx: number) => onChange(data.filter((_, i) => i !== idx));
 
-    const addLesson = (sectionIdx: number, title: string) => {
+    // ── Module-level points ──
+    const addModuleLesson = (idx: number, title: string) => {
         if (!title.trim()) return;
-        const newData = data.map((section, idx) => {
-            if (idx === sectionIdx) {
-                return { ...section, lessons: [...section.lessons, title.trim()] };
-            }
-            return section;
-        });
-        onChange(newData);
+        updateModule(idx, { lessons: [...data[idx].lessons, title.trim()] });
     };
+    const updateModuleLesson = (idx: number, lIdx: number, value: string) =>
+        updateModule(idx, { lessons: data[idx].lessons.map((l, i) => (i === lIdx ? value : l)) });
+    const removeModuleLesson = (idx: number, lIdx: number) =>
+        updateModule(idx, { lessons: data[idx].lessons.filter((_, i) => i !== lIdx) });
 
-    const removeLesson = (sectionIdx: number, lessonIdx: number) => {
-        const newData = data.map((section, idx) => {
-            if (idx === sectionIdx) {
-                return { ...section, lessons: section.lessons.filter((_, i) => i !== lessonIdx) };
-            }
-            return section;
-        });
-        onChange(newData);
+    // ── Sub-modules ──
+    const subs = (idx: number) => data[idx].submodules || [];
+    const updateSub = (idx: number, sIdx: number, patch: Partial<SubModule>) =>
+        updateModule(idx, { submodules: subs(idx).map((s, i) => (i === sIdx ? { ...s, ...patch } : s)) });
+
+    const addSubModule = (idx: number) =>
+        updateModule(idx, { submodules: [...subs(idx), { title: "", lessons: [] }] });
+    const removeSubModule = (idx: number, sIdx: number) =>
+        updateModule(idx, { submodules: subs(idx).filter((_, i) => i !== sIdx) });
+
+    // ── Sub-module points ──
+    const addSubLesson = (idx: number, sIdx: number, title: string) => {
+        if (!title.trim()) return;
+        updateSub(idx, sIdx, { lessons: [...subs(idx)[sIdx].lessons, title.trim()] });
     };
+    const updateSubLesson = (idx: number, sIdx: number, lIdx: number, value: string) =>
+        updateSub(idx, sIdx, { lessons: subs(idx)[sIdx].lessons.map((l, i) => (i === lIdx ? value : l)) });
+    const removeSubLesson = (idx: number, sIdx: number, lIdx: number) =>
+        updateSub(idx, sIdx, { lessons: subs(idx)[sIdx].lessons.filter((_, i) => i !== lIdx) });
 
     return (
         <div className="space-y-4">
-            
             <div className="space-y-4">
-                {data.map((sectionItem, idx) => (
+                {data.map((moduleItem, idx) => (
                     <div key={idx} className="p-4 border border-gray-200 rounded-xl bg-gray-50 space-y-3">
-                        <div className="flex justify-between items-center bg-white p-2 rounded-lg border border-gray-200">
-                            <span className="font-bold text-sm text-gray-800 flex-1 px-2">{sectionItem.title}</span>
-                            <button onClick={() => removeSection(idx)} className="text-red-400 hover:text-red-600 p-1"><Trash2 size={16} /></button>
+                        {/* Module header */}
+                        <div className="flex items-center gap-2 bg-white p-2 rounded-lg border border-gray-200">
+                            <span className="w-6 h-6 rounded-md bg-[var(--primary)]/10 text-[var(--primary)] text-xs font-black flex items-center justify-center shrink-0">{idx + 1}</span>
+                            <input
+                                type="text"
+                                value={moduleItem.title}
+                                onChange={e => updateModule(idx, { title: e.target.value })}
+                                placeholder={`Module ${idx + 1} title (e.g. Introduction)...`}
+                                className="flex-1 px-2 py-1 text-sm font-bold text-gray-800 border border-transparent hover:border-gray-200 focus:border-[var(--primary)] rounded outline-none bg-transparent focus:bg-white"
+                            />
+                            <button onClick={() => removeModule(idx)} className="text-red-400 hover:text-red-600 p-1 shrink-0" title="Delete module"><Trash2 size={16} /></button>
                         </div>
-                        
+
+                        {/* Module-level points */}
                         <div className="pl-6 space-y-2">
-                            {sectionItem.lessons.map((lesson, lIdx) => (
-                                <div key={lIdx} className="flex justify-between items-center text-sm text-gray-600 bg-white p-2 rounded border border-gray-100">
-                                    <div className="flex-1 flex gap-2 items-center">
-                                        <CheckCircle2 size={14} className="text-green-500 shrink-0" />
-                                        <span>{lesson}</span>
+                            <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Points</p>
+                            {moduleItem.lessons.map((lesson, lIdx) => (
+                                <PointRow
+                                    key={lIdx}
+                                    value={lesson}
+                                    onChange={v => updateModuleLesson(idx, lIdx, v)}
+                                    onRemove={() => removeModuleLesson(idx, lIdx)}
+                                />
+                            ))}
+                            <LessonAdder onAdd={title => addModuleLesson(idx, title)} />
+                        </div>
+
+                        {/* Sub-modules */}
+                        <div className="pl-6 space-y-3">
+                            {subs(idx).map((sub, sIdx) => (
+                                <div key={sIdx} className="p-3 border border-gray-200 rounded-lg bg-white space-y-2">
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-xs font-black text-[var(--primary)] shrink-0">{idx + 1}.{sIdx + 1}</span>
+                                        <input
+                                            type="text"
+                                            value={sub.title}
+                                            onChange={e => updateSub(idx, sIdx, { title: e.target.value })}
+                                            placeholder={`Sub-module ${idx + 1}.${sIdx + 1} title...`}
+                                            className="flex-1 px-2 py-1 text-sm font-semibold text-gray-700 border border-transparent hover:border-gray-200 focus:border-[var(--primary)] rounded outline-none bg-transparent"
+                                        />
+                                        <button onClick={() => removeSubModule(idx, sIdx)} className="text-red-400 hover:text-red-600 p-1 shrink-0" title="Delete sub-module"><Trash2 size={14} /></button>
                                     </div>
-                                    <button onClick={() => removeLesson(idx, lIdx)} className="text-red-400 hover:text-red-600 px-1"><X size={14} /></button>
+                                    <div className="pl-4 space-y-2">
+                                        {sub.lessons.map((lesson, lIdx) => (
+                                            <PointRow
+                                                key={lIdx}
+                                                value={lesson}
+                                                onChange={v => updateSubLesson(idx, sIdx, lIdx, v)}
+                                                onRemove={() => removeSubLesson(idx, sIdx, lIdx)}
+                                            />
+                                        ))}
+                                        <LessonAdder onAdd={title => addSubLesson(idx, sIdx, title)} />
+                                    </div>
                                 </div>
                             ))}
-                            <LessonAdder onAdd={(title) => addLesson(idx, title)} />
+                            <button
+                                onClick={() => addSubModule(idx)}
+                                className="text-xs font-bold text-[var(--primary)] hover:underline flex items-center gap-1"
+                            >
+                                <Plus size={13} /> Add Sub-module ({idx + 1}.{subs(idx).length + 1})
+                            </button>
                         </div>
                     </div>
                 ))}
             </div>
 
-            <div className="flex gap-2">
-                <input 
-                    type="text" 
-                    value={newSection} 
-                    onChange={e => setNewSection(e.target.value)} 
-                    onKeyDown={e => {
-                        if (e.key === "Enter") {
-                            e.preventDefault();
-                            addSection();
-                        }
-                    }} 
-                    placeholder="New Section Title (e.g. Section 01)..." 
-                    className="flex-1 w-full px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-[var(--primary)]" 
-                />
-                <button onClick={addSection} className="px-3 py-2 bg-gray-100 text-gray-700 text-sm font-bold rounded-lg border border-gray-200 hover:bg-gray-200 whitespace-nowrap">Add Section</button>
-            </div>
+            <button onClick={addModule} className="w-full py-2 bg-gray-100 text-gray-700 text-sm font-bold rounded-lg border border-gray-200 hover:bg-gray-200">+ Add Module</button>
+        </div>
+    );
+}
+
+function PointRow({ value, onChange, onRemove }: { value: string; onChange: (v: string) => void; onRemove: () => void }) {
+    return (
+        <div className="flex items-center gap-2 text-sm text-gray-600 bg-white p-1.5 rounded border border-gray-100">
+            <CheckCircle2 size={14} className="text-green-500 shrink-0" />
+            <input
+                type="text"
+                value={value}
+                onChange={e => onChange(e.target.value)}
+                className="flex-1 px-1 py-0.5 text-sm border border-transparent hover:border-gray-200 focus:border-[var(--primary)] rounded outline-none bg-transparent"
+            />
+            <button onClick={onRemove} className="text-red-400 hover:text-red-600 px-1 shrink-0"><X size={14} /></button>
         </div>
     );
 }
@@ -967,6 +1058,106 @@ function FAQBuilder({ data, onChange }: { data: { question: string; answer: stri
             </div>
 
             <button onClick={addFaq} className="w-full py-2 bg-gray-100 text-gray-700 text-sm font-bold rounded-lg border border-gray-200 hover:bg-gray-200">+ Add FAQ</button>
+        </div>
+    );
+}
+
+type CustomTab = { id: string; label: string; content: string };
+
+function CustomTabsBuilder({ data, onChange }: { data: CustomTab[]; onChange: (arr: CustomTab[]) => void }) {
+    const newId = () =>
+        (typeof crypto !== "undefined" && crypto.randomUUID)
+            ? crypto.randomUUID()
+            : `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`;
+
+    const addTab = () => onChange([...data, { id: newId(), label: "", content: "" }]);
+    const removeTab = (id: string) => onChange(data.filter(t => t.id !== id));
+    const update = (id: string, patch: Partial<CustomTab>) =>
+        onChange(data.map(t => (t.id === id ? { ...t, ...patch } : t)));
+
+    return (
+        <div className="space-y-4">
+            <p className="text-xs text-gray-400">
+                Add extra tabs with rich content. They appear on the course detail page and can be reordered under &ldquo;Tab Order&rdquo;.
+            </p>
+            {data.map((tab) => (
+                <div key={tab.id} className="p-4 border border-gray-200 rounded-xl bg-gray-50 space-y-3">
+                    <div className="flex items-center gap-2">
+                        <input
+                            type="text"
+                            value={tab.label}
+                            onChange={e => update(tab.id, { label: e.target.value })}
+                            placeholder="Tab name (e.g. Why Choose Us)"
+                            className="flex-1 px-3 py-2 text-sm font-semibold border border-gray-200 rounded-lg outline-none focus:border-[var(--primary)] bg-white"
+                        />
+                        <button onClick={() => removeTab(tab.id)} className="text-red-400 hover:text-red-600 p-1 shrink-0" title="Delete tab"><Trash2 size={16} /></button>
+                    </div>
+                    <div>
+                        <p className="text-[11px] font-bold text-gray-400 mb-1.5">Content — use the toolbar for bullet points, lists, headings &amp; formatting</p>
+                        <TipTapEditor
+                            value={tab.content || ""}
+                            onChange={v => update(tab.id, { content: v })}
+                            placeholder="Write this tab's content…"
+                        />
+                    </div>
+                </div>
+            ))}
+            <button onClick={addTab} className="w-full py-2 bg-gray-100 text-gray-700 text-sm font-bold rounded-lg border border-gray-200 hover:bg-gray-200">+ Add Custom Tab</button>
+        </div>
+    );
+}
+
+function TabOrderManager({ tabsEnabled, customTabs, order, onChange }: {
+    tabsEnabled: typeof defaultTabsEnabled;
+    customTabs: CustomTab[];
+    order: string[];
+    onChange: (order: string[]) => void;
+}) {
+    const [dragId, setDragId] = useState<string | null>(null);
+
+    const available = [
+        ...BUILT_IN_TAB_DEFS.map(t => ({ id: t.id, label: t.label, enabled: tabsEnabled[t.key] !== false, custom: false })),
+        ...customTabs.map(t => ({ id: `custom-${t.id}`, label: t.label || "Untitled Tab", enabled: true, custom: true })),
+    ];
+    const availIds = available.map(a => a.id);
+
+    // Known order first (only ids that still exist), then any tabs not yet ordered.
+    const ordered = [
+        ...order.filter(id => availIds.includes(id)),
+        ...availIds.filter(id => !order.includes(id)),
+    ];
+    const items = ordered.map(id => available.find(a => a.id === id)!).filter(Boolean);
+
+    const move = (from: string, to: string) => {
+        if (from === to) return;
+        const next = [...ordered];
+        next.splice(next.indexOf(from), 1);
+        next.splice(next.indexOf(to), 0, from);
+        onChange(next);
+    };
+
+    return (
+        <div className="space-y-2">
+            <p className="text-xs text-gray-400">Drag to reorder how tabs appear on the course detail page. Hidden tabs are greyed out (toggle visibility on each section).</p>
+            {items.map((item) => (
+                <div
+                    key={item.id}
+                    draggable
+                    onDragStart={() => setDragId(item.id)}
+                    onDragEnd={() => setDragId(null)}
+                    onDragOver={e => e.preventDefault()}
+                    onDrop={() => { if (dragId) move(dragId, item.id); setDragId(null); }}
+                    className={cn(
+                        "flex items-center gap-3 p-3 rounded-lg border bg-white cursor-grab active:cursor-grabbing transition-colors",
+                        dragId === item.id ? "border-[var(--primary)] opacity-50" : "border-gray-200 hover:border-gray-300"
+                    )}
+                >
+                    <GripVertical size={16} className="text-gray-400 shrink-0" />
+                    <span className={cn("text-sm font-semibold flex-1", item.enabled ? "text-gray-800" : "text-gray-400 line-through")}>{item.label}</span>
+                    {item.custom && <span className="text-[10px] font-black uppercase tracking-wider text-[var(--primary)] bg-[var(--primary)]/10 px-2 py-0.5 rounded-full">Custom</span>}
+                    {!item.enabled && <span className="text-[10px] font-bold text-gray-400">Hidden</span>}
+                </div>
+            ))}
         </div>
     );
 }

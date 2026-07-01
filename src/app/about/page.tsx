@@ -294,8 +294,8 @@ export default async function AboutPage() {
                                         </div>
 
                                         {/* Bio */}
-                                        <div 
-                                            className="text-gray-500 text-sm leading-relaxed line-clamp-3 mb-8 opacity-80 group-hover:opacity-100 transition-opacity prose prose-sm prose-gray italic"
+                                        <div
+                                            className="w-full max-w-none text-gray-500 text-sm leading-relaxed line-clamp-3 mb-8 opacity-80 group-hover:opacity-100 transition-opacity prose prose-sm prose-gray italic break-words [&_p]:m-0"
                                             dangerouslySetInnerHTML={{ __html: sanitize(member.bio) }}
                                         />
 

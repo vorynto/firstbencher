@@ -1,12 +1,13 @@
 import React from "react";
 import Link from "next/link";
-import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
+import { Mail, Phone, Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
 
 type FooterContent = {
     tagline: string;
     email: string;
     phone: string;
-    address: string;
+    phone2?: string;
+    phone3?: string;
     facebook_url: string;
     twitter_url: string;
     linkedin_url: string;
@@ -92,18 +93,16 @@ export default function FooterClient({ content }: { content: FooterContent }) {
                     <div>
                         <h4 className="text-lg font-bold mb-6">Contact Us</h4>
                         <ul className="flex flex-col gap-6">
-                            <li className="flex items-start gap-4">
-                                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center shrink-0">
-                                    <MapPin size={18} className="text-primary" />
-                                </div>
-                                <div className="text-sm text-gray-200">{content.address}</div>
-                            </li>
-                            <li className="flex items-center gap-4">
-                                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center shrink-0">
-                                    <Phone size={18} className="text-primary" />
-                                </div>
-                                <div className="text-sm text-gray-200">{content.phone}</div>
-                            </li>
+                            {[content.phone, content.phone2, content.phone3]
+                                .filter((p): p is string => !!p && p.trim() !== "")
+                                .map((p, i) => (
+                                    <li key={i} className="flex items-center gap-4">
+                                        <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+                                            <Phone size={18} className="text-primary" />
+                                        </div>
+                                        <a href={`tel:${p.replace(/[^+\d]/g, "")}`} className="text-sm text-gray-200 hover:text-white transition-colors">{p}</a>
+                                    </li>
+                                ))}
                             <li className="flex items-center gap-4">
                                 <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center shrink-0">
                                     <Mail size={18} className="text-primary" />

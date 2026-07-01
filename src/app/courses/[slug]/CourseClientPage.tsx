@@ -39,7 +39,7 @@ type Course = {
     review_count?: number;
     features?: string[];
     requirements?: string;
-    curriculum?: { title: string; lessons: string[] }[];
+    curriculum?: { title: string; lessons: string[]; submodules?: { title: string; lessons: string[] }[] }[];
     faq?: { question: string; answer: string }[];
     tags?: string[];
     batches?: any[];
@@ -54,6 +54,8 @@ type Course = {
         instructors?: boolean;
         videos?: boolean;
     };
+    custom_tabs?: { id: string; label: string; content: string }[];
+    tab_order?: string[];
     section_bg_color?: string | null;
 };
 
@@ -218,7 +220,30 @@ export default function CourseClientPage({ course, instructors = [], sidebarCont
     const { title, category, short_description, description, rating, review_count, features, requirements, curriculum, faq, batches, videos, tabs_enabled, section_bg_color } = course;
 
     const te = tabs_enabled || {};
-    const TABS = ALL_TABS.filter(t => te[t.key as keyof typeof te] !== false);
+    const customTabs = course.custom_tabs || [];
+
+    // Build the tab list: enabled built-in tabs + custom tabs, then apply the
+    // admin-defined order (tab_order). Unlisted tabs keep their natural order at
+    // the end. Each entry's `id` matches its section's DOM id.
+    const allTabEntries: { id: string; label: string; custom?: boolean; content?: string }[] = [
+        ...ALL_TABS.filter(t => te[t.key as keyof typeof te] !== false),
+        ...customTabs.map(ct => ({ id: `custom-${ct.id}`, label: ct.label, custom: true, content: ct.content })),
+    ];
+    const tabOrder = course.tab_order || [];
+    const rank = (id: string) => {
+        const i = tabOrder.indexOf(id);
+        return i === -1 ? Number.MAX_SAFE_INTEGER : i;
+    };
+    const TABS = allTabEntries
+        .map((t, i) => ({ t, i }))
+        .sort((a, b) => (rank(a.t.id) - rank(b.t.id)) || (a.i - b.i))
+        .map(x => x.t);
+
+    // Visual order for each section (CSS flex `order`), keyed by section DOM id.
+    const sectionOrder = (id: string) => {
+        const i = TABS.findIndex(t => t.id === id);
+        return i === -1 ? 998 : i;
+    };
 
     // hex + "1a" appends ~10% alpha for a mild tint background
     const pageBgStyle: React.CSSProperties | undefined = section_bg_color
@@ -450,10 +475,10 @@ export default function CourseClientPage({ course, instructors = [], sidebarCont
             <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-12">
 
                 {/* LEFT CONTENT */}
-                <div className="space-y-12">
+                <div className="flex flex-col gap-12">
 
                     {/* OVERVIEW */}
-                    {te.overview !== false && <section id="overview" className="border-b border-gray-100 pb-8">
+                    {te.overview !== false && <section id="overview" style={{ order: sectionOrder("overview") }} className="border-b border-gray-100 pb-8">
                         <h2 className="text-2xl font-black text-[#1a202c] mb-5">Course Overview</h2>
                         {description ? (
                             <div
@@ -487,7 +512,7 @@ export default function CourseClientPage({ course, instructors = [], sidebarCont
 
                     {/* TRAINING DATES */}
                     {te.training_dates !== false && batches && batches.length > 0 && (
-                        <section id="training-dates" className="space-y-6">
+                        <section id="training-dates" style={{ order: sectionOrder("training-dates") }} className="space-y-6">
                             <h2 className="text-2xl font-black text-[#1a202c]">Training Dates</h2>
                             <div className="space-y-6">
                                 {batches.map((batch, i) => {
@@ -515,7 +540,7 @@ export default function CourseClientPage({ course, instructors = [], sidebarCont
                                             </div>
                                             <div className="p-6 md:p-8 flex-1 flex flex-col gap-4">
                                                 <h3 className="text-xl md:text-2xl font-black text-[var(--primary)] uppercase tracking-wide">
-                                                    {title} TRAINING
+                                                    {title}
                                                 </h3>
                                                 <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-[15px] text-[#1a202c]">
                                                     <div className="flex items-center gap-2">
@@ -580,7 +605,7 @@ export default function CourseClientPage({ course, instructors = [], sidebarCont
                     )}
 
                     {/* KEY FEATURES */}
-                    {te.key_features !== false && <section id="key-features" className="border-b border-gray-100 pb-8">
+                    {te.key_features !== false && <section id="key-features" style={{ order: sectionOrder("key-features") }} className="border-b border-gray-100 pb-8">
                         <h2 className="text-2xl font-black text-[#1a202c] mb-2">Key Features</h2>
                         <p className="text-gray-500 text-sm mb-6">What you&apos;ll gain from this program</p>
                         {features && features.length > 0 ? (
@@ -598,7 +623,7 @@ export default function CourseClientPage({ course, instructors = [], sidebarCont
                     </section>}
 
                     {/* CURRICULUM */}
-                    {te.curriculum !== false && <section id="curriculum" className="border-b border-gray-100 pb-8">
+                    {te.curriculum !== false && <section id="curriculum" style={{ order: sectionOrder("curriculum") }} className="border-b border-gray-100 pb-8">
                         <h2 className="text-2xl font-black text-[#1a202c] mb-2">Course Curriculum</h2>
                         <p className="text-gray-500 text-sm mb-6">Detailed breakdown of what&apos;s covered</p>
                         {curriculum && Array.isArray(curriculum) && curriculum.length > 0 ? (
@@ -619,14 +644,39 @@ export default function CourseClientPage({ course, instructors = [], sidebarCont
                                             }
                                         </button>
                                         {openCurriculum === idx && (
-                                            <ul className="px-4 py-3 space-y-2 border-t border-gray-100">
-                                                {module.lessons && module.lessons.map((lesson: string, li: number) => (
-                                                    <li key={li} className="flex items-start gap-2.5 text-sm text-gray-600">
-                                                        <CheckCircle2 size={15} className="text-[var(--primary)] shrink-0 mt-0.5" />
-                                                        {lesson}
-                                                    </li>
+                                            <div className="px-4 py-3 space-y-4 border-t border-gray-100">
+                                                {/* Module-level points */}
+                                                {module.lessons && module.lessons.length > 0 && (
+                                                    <ul className="space-y-2">
+                                                        {module.lessons.map((lesson: string, li: number) => (
+                                                            <li key={li} className="flex items-start gap-2.5 text-sm text-gray-600">
+                                                                <CheckCircle2 size={15} className="text-[var(--primary)] shrink-0 mt-0.5" />
+                                                                {lesson}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                )}
+
+                                                {/* Sub-modules */}
+                                                {module.submodules && module.submodules.map((sub, sIdx: number) => (
+                                                    <div key={sIdx} className="pl-2 border-l-2 border-gray-100">
+                                                        <div className="flex items-center gap-2 mb-2">
+                                                            <span className="text-xs font-black text-[var(--primary)] shrink-0">{idx + 1}.{sIdx + 1}</span>
+                                                            <span className="font-bold text-sm text-[#1a202c]">{sub.title}</span>
+                                                        </div>
+                                                        {sub.lessons && sub.lessons.length > 0 && (
+                                                            <ul className="space-y-2 pl-2">
+                                                                {sub.lessons.map((lesson: string, li: number) => (
+                                                                    <li key={li} className="flex items-start gap-2.5 text-sm text-gray-600">
+                                                                        <CheckCircle2 size={15} className="text-[var(--primary)] shrink-0 mt-0.5" />
+                                                                        {lesson}
+                                                                    </li>
+                                                                ))}
+                                                            </ul>
+                                                        )}
+                                                    </div>
                                                 ))}
-                                            </ul>
+                                            </div>
                                         )}
                                     </div>
                                 ))}
@@ -637,7 +687,7 @@ export default function CourseClientPage({ course, instructors = [], sidebarCont
                     </section>}
 
                     {/* ELIGIBILITY */}
-                    {te.eligibility !== false && <section id="eligibility" className="border-b border-gray-100 pb-8">
+                    {te.eligibility !== false && <section id="eligibility" style={{ order: sectionOrder("eligibility") }} className="border-b border-gray-100 pb-8">
                         <h2 className="text-2xl font-black text-[#1a202c] mb-2">Eligibility & Prerequisites</h2>
                         <p className="text-gray-500 text-sm mb-6">Make sure you&apos;re prepared before enrolling</p>
                         {requirements ? (
@@ -663,7 +713,7 @@ export default function CourseClientPage({ course, instructors = [], sidebarCont
                     </section>}
 
                     {/* FAQ */}
-                    {te.faq !== false && <section id="faq" className="border-b border-gray-100 pb-8">
+                    {te.faq !== false && <section id="faq" style={{ order: sectionOrder("faq") }} className="border-b border-gray-100 pb-8">
                         <h2 className="text-2xl font-black text-[#1a202c] mb-6">Frequently Asked Questions</h2>
                         {faq && faq.length > 0 ? faq.map((item, i) => (
                             <div key={i} className="border-b border-gray-100">
@@ -701,7 +751,7 @@ export default function CourseClientPage({ course, instructors = [], sidebarCont
 
                     {/* INSTRUCTORS */}
                     {te.instructors !== false && instructors.length > 0 && (
-                        <section id="instructors" className="border-b border-gray-100 pb-8">
+                        <section id="instructors" style={{ order: sectionOrder("instructors") }} className="border-b border-gray-100 pb-8">
                             <h2 className="text-2xl font-black text-[#1a202c] mb-2">Meet Your Instructors</h2>
                             <p className="text-gray-500 text-sm mb-6">Learn from industry experts with real-world experience</p>
                             <InstructorCarousel instructors={instructors} />
@@ -710,7 +760,7 @@ export default function CourseClientPage({ course, instructors = [], sidebarCont
 
                     {/* VIDEOS */}
                     {te.videos !== false && videos && videos.length > 0 && (
-                        <section id="videos" className="pb-8">
+                        <section id="videos" style={{ order: sectionOrder("videos") }} className="pb-8">
                             <div className="flex items-center gap-3 mb-2">
                                 <Youtube size={22} className="text-red-500" />
                                 <h2 className="text-2xl font-black text-[#1a202c]">Course Videos</h2>
@@ -720,8 +770,36 @@ export default function CourseClientPage({ course, instructors = [], sidebarCont
                         </section>
                     )}
 
+                    {/* CUSTOM TABS — admin-defined tabs with rich content */}
+                    {customTabs.map(ct => (
+                        <section
+                            key={ct.id}
+                            id={`custom-${ct.id}`}
+                            style={{ order: sectionOrder(`custom-${ct.id}`) }}
+                            className="border-b border-gray-100 pb-8"
+                        >
+                            <h2 className="text-2xl font-black text-[#1a202c] mb-5">{ct.label}</h2>
+                            <div
+                                className="max-w-none text-gray-700 text-[16px] leading-[1.8]
+                                [&_ul]:list-disc [&_ul]:ml-6 [&_ul]:mb-4
+                                [&_ol]:list-decimal [&_ol]:ml-6 [&_ol]:mb-4
+                                [&_li]:mb-1.5
+                                [&_p]:mb-4 last:[&_p]:mb-0
+                                [&_a]:text-[var(--primary)] [&_a]:underline
+                                [&_h2]:text-xl [&_h2]:font-bold [&_h2]:mt-6 [&_h2]:mb-3
+                                [&_h3]:text-lg [&_h3]:font-bold [&_h3]:mt-4 [&_h3]:mb-2
+                                [&_strong]:font-bold
+                                [&_table]:w-full [&_table]:border-collapse [&_table]:mb-4 [&_table]:text-sm
+                                [&_th]:border [&_th]:border-gray-300 [&_th]:bg-gray-50 [&_th]:px-4 [&_th]:py-2.5 [&_th]:text-left [&_th]:font-bold [&_th]:text-gray-800
+                                [&_td]:border [&_td]:border-gray-200 [&_td]:px-4 [&_td]:py-2.5 [&_td]:align-top [&_td]:text-gray-700
+                                [&_tr:nth-child(even)_td]:bg-gray-50/60"
+                                dangerouslySetInnerHTML={{ __html: sanitize(ct.content) }}
+                            />
+                        </section>
+                    ))}
+
                     {/* Mobile Enquiry Form — shown only on mobile, at bottom of content */}
-                    <div className="lg:hidden">
+                    <div className="lg:hidden" style={{ order: 999 }}>
                         <EnquiryFormBlock courseTitle={title} />
                     </div>
                 </div>

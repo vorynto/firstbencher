@@ -22,6 +22,8 @@ CREATE TABLE IF NOT EXISTS courses (
   duration TEXT,
   category TEXT,
   curriculum JSONB DEFAULT '[]',
+  custom_tabs JSONB DEFAULT '[]',   -- admin-defined tabs: [{ id, label, content(html) }]
+  tab_order JSONB DEFAULT '[]',     -- ordered tab ids (built-in + custom) for the detail page
   tags TEXT[] DEFAULT '{}',
   rating DECIMAL(3, 1) DEFAULT 5.0,
   features JSONB DEFAULT '[]',
