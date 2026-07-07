@@ -14,7 +14,9 @@ type HeroContent = {
     stat2_value: string;
     stat2_label: string;
     hero_image_url: string;
-    popular_categories: string;
+    popular_categories_list: Array<{ name: string; emoji: string }>;
+    trusted_count?: string;
+    trusted_label?: string;
     reviewer_avatar?: string;
     clock_icon?: string;
     thumbs_up_icon?: string;
@@ -35,7 +37,9 @@ const defaults: HeroContent = {
     stat2_value: "405+",
     stat2_label: "Expert Courses",
     hero_image_url: "",
-    popular_categories: "Accounting,Business,Development,Marketing,Meditation",
+    popular_categories_list: [],
+    trusted_count: "10,000+",
+    trusted_label: "students",
     corporate_clients: [
         { name: "Mahindra", logo_url: "https://logo.clearbit.com/mahindra.com", _id: "1" },
         { name: "Ford", logo_url: "https://logo.clearbit.com/ford.com", _id: "2" },
@@ -51,15 +55,22 @@ export default async function HeroSection() {
 
     try {
         const supabase = await createServerSupabaseClient();
-        const { data } = await supabase
-            .from("pages_content")
-            .select("content")
-            .eq("page_name", "home_hero")
-            .maybeSingle();
+        const [{ data }, { data: catData }] = await Promise.all([
+            supabase.from("pages_content").select("content").eq("page_name", "home_hero").maybeSingle(),
+            supabase.from("pages_content").select("content").eq("page_name", "course_categories").maybeSingle(),
+        ]);
 
         if (data?.content) {
             content = { ...defaults, ...(data.content as Partial<HeroContent>) };
         }
+
+        // Popular Categories row is driven by the managed "course_categories" list
+        // (admin/courses → Manage Categories), filtered to entries with show_in_homepage.
+        const managedCategories: Array<{ name: string; emoji: string; show_in_homepage?: boolean }> =
+            (catData?.content as any)?.categories || [];
+        content.popular_categories_list = managedCategories
+            .filter(c => c.show_in_homepage !== false && c.name)
+            .map(c => ({ name: c.name, emoji: c.emoji || "" }));
     } catch {
         // Use defaults on any error
     }

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/page-seo";
 import HeroSection from "@/components/home/Hero";
 import PopularCourses from "@/components/home/PopularCourses";
 import AboutSection from "@/components/home/AboutSection";
@@ -11,18 +12,14 @@ import { JsonLd } from "@/components/JsonLd";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://firstbencher.com";
 
-export const metadata: Metadata = {
-    title: "First Bencher | Expert Training in Project Management, AI & Technology",
-    description:
-        "Join 10,000+ certified professionals. Industry-recognized training in PMP, PRINCE2, AI, Machine Learning, Agile, and more. Enroll today.",
-    alternates: { canonical: SITE_URL },
-    openGraph: {
-        url: SITE_URL,
+export async function generateMetadata(): Promise<Metadata> {
+    return buildPageMetadata("home", {
         title: "First Bencher | Expert Training in Project Management, AI & Technology",
         description:
-            "Industry-recognized training in PMP, AI, Machine Learning, Agile, and more. Join 10,000+ certified professionals.",
-    },
-};
+            "Join 10,000+ certified professionals. Industry-recognized training in PMP, PRINCE2, AI, Machine Learning, Agile, and more. Enroll today.",
+        path: "",
+    });
+}
 
 export default async function Home() {
   const supabase = await createClient();

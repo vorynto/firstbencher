@@ -62,7 +62,6 @@ type Course = {
 const ALL_TABS = [
     { id: "overview",       label: "Overview",        key: "overview" },
     { id: "training-dates", label: "Training Dates",  key: "training_dates" },
-    { id: "key-features",   label: "Key Features",    key: "key_features" },
     { id: "curriculum",     label: "Curriculum",      key: "curriculum" },
     { id: "eligibility",    label: "Eligibility",     key: "eligibility" },
     { id: "faq",            label: "FAQs",            key: "faq" },
@@ -603,24 +602,6 @@ export default function CourseClientPage({ course, instructors = [], sidebarCont
                             </div>
                         </section>
                     )}
-
-                    {/* KEY FEATURES */}
-                    {te.key_features !== false && <section id="key-features" style={{ order: sectionOrder("key-features") }} className="border-b border-gray-100 pb-8">
-                        <h2 className="text-2xl font-black text-[#1a202c] mb-2">Key Features</h2>
-                        <p className="text-gray-500 text-sm mb-6">What you&apos;ll gain from this program</p>
-                        {features && features.length > 0 ? (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                {features.map((feat, i) => (
-                                    <div key={i} className="flex items-start gap-3">
-                                        <CheckCircle2 className="text-green-500 shrink-0 mt-0.5" size={18} />
-                                        <span className="text-gray-700 text-sm leading-snug">{feat}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        ) : (
-                            <p className="text-gray-500 italic">No specific features listed yet.</p>
-                        )}
-                    </section>}
 
                     {/* CURRICULUM */}
                     {te.curriculum !== false && <section id="curriculum" style={{ order: sectionOrder("curriculum") }} className="border-b border-gray-100 pb-8">

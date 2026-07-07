@@ -233,7 +233,7 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
             <header className="relative z-50 w-full min-h-[118px]">
                 {/* ── Top Bar ── */}
                 <div className="bg-[var(--primary)] text-white/80 h-[42px]">
-                    <div className="container mx-auto px-6 lg:px-12 flex items-center h-full text-[13px] font-medium tracking-wide">
+                    <div className="container mx-auto px-6 lg:px-12 flex items-center justify-between h-full text-[13px] font-medium tracking-wide">
                         {/* Email + Phone — desktop only */}
                         <div className="hidden md:flex items-center gap-6 shrink-0">
                             <a href={`mailto:${topBar.email}`} className="flex items-center gap-2 hover:text-white transition-colors">
@@ -246,9 +246,9 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
                                 {topBar.phone}
                             </a>
                         </div>
-                        {/* Offer — centered on mobile, right-aligned on desktop */}
+                        {/* Offer — last column, centered on mobile, pinned to the end on desktop */}
                         {topBar.offer && (
-                            <div className="flex-1 flex items-center justify-center md:justify-end">
+                            <div className="flex items-center justify-center w-full md:w-auto shrink-0">
                                 <span className="text-white font-medium text-[13px] text-center md:text-right leading-tight">
                                     {topBar.offer}
                                 </span>
@@ -348,18 +348,20 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
                                     </Link>
 
                                     {link.hasDropdown && openDropdown === link.name && (
-                                        <div className="absolute top-full left-0 mt-1 bg-white rounded-xl shadow-xl border border-gray-100 py-2 min-w-[220px] z-50">
-                                            {link.subLinks && link.subLinks.length > 0 ? (
-                                                link.subLinks.map((sub, i) => (
-                                                    <Link key={i} href={sub.href} className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-primary/5 hover:text-[var(--primary)] font-medium transition-colors">
-                                                        {sub.name}
+                                        <div className="absolute top-full left-0 pt-1 z-50">
+                                            <div className="bg-white rounded-xl shadow-xl border border-gray-100 py-2 min-w-[220px]">
+                                                {link.subLinks && link.subLinks.length > 0 ? (
+                                                    link.subLinks.map((sub, i) => (
+                                                        <Link key={i} href={sub.href} className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-primary/5 hover:text-[var(--primary)] font-medium transition-colors">
+                                                            {sub.name}
+                                                        </Link>
+                                                    ))
+                                                ) : (
+                                                    <Link href={link.href === "/courses" ? "/courses" : link.href} className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-primary/5 hover:text-[var(--primary)] font-medium transition-colors">
+                                                        {link.href === "/courses" ? "All Courses" : `${link.name} Overview`}
                                                     </Link>
-                                                ))
-                                            ) : (
-                                                <Link href={link.href === "/courses" ? "/courses" : link.href} className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-primary/5 hover:text-[var(--primary)] font-medium transition-colors">
-                                                    {link.href === "/courses" ? "All Courses" : `${link.name} Overview`}
-                                                </Link>
-                                            )}
+                                                )}
+                                            </div>
                                         </div>
                                     )}
                                 </div>

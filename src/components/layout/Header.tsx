@@ -79,9 +79,11 @@ export default async function Header() {
         const pathname = headersList.get("x-next-pathname") || "/";
         const headerKey = await resolveHeaderKey(pathname);
 
-        const [headerRes, globalRes] = await Promise.all([
+        const [headerRes, globalRes, categoriesRes, coursesRes] = await Promise.all([
             supabaseAdmin.from("pages_content").select("content").eq("page_name", headerKey).maybeSingle(),
             supabaseAdmin.from("pages_content").select("content").eq("page_name", "global_settings").maybeSingle(),
+            supabaseAdmin.from("pages_content").select("content").eq("page_name", "course_categories").maybeSingle(),
+            supabaseAdmin.from("courses").select("category").eq("active", true),
         ]);
 
         if (headerRes.data?.content) {
@@ -91,6 +93,19 @@ export default async function Header() {
             const gs = globalRes.data.content as Record<string, unknown>;
             if (typeof gs.logo_header === "string") content.logo_header = gs.logo_header;
         }
+
+        // Category dropdown is driven by the managed "course_categories" list (admin/courses → Manage Categories),
+        // filtered to entries with show_in_header, with counts computed live from active courses.
+        const managedCategories: Array<{ name: string; emoji: string; show_in_header?: boolean }> =
+            (categoriesRes.data?.content as any)?.categories || [];
+        const counts = new Map<string, number>();
+        for (const c of (coursesRes.data || []) as Array<{ category: string | null }>) {
+            if (!c.category) continue;
+            counts.set(c.category, (counts.get(c.category) || 0) + 1);
+        }
+        content.nav_categories = managedCategories
+            .filter(c => c.show_in_header !== false && c.name)
+            .map(c => ({ name: c.name, emoji: c.emoji || "📚", count: counts.get(c.name) || 0 }));
     } catch {
         // fall through to defaults
     }

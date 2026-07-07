@@ -52,11 +52,11 @@ export default function StatsCTAClient({ content }: { content: StatsCTAContent }
             />
 
             <div className="container mx-auto">
-                <div className="flex flex-col lg:flex-row items-center">
-                    
+                <div className="flex flex-col xl:flex-row items-center">
+
                     {/* Stats List */}
-                    <div className="w-full lg:flex-1 px-4 sm:px-6" style={{ paddingTop: py, paddingBottom: py }}>
-                        <div className="grid grid-cols-3 gap-4 sm:gap-12 lg:gap-8 max-w-4xl">
+                    <div className="w-full xl:flex-1 px-4 sm:px-6 xl:pr-16 2xl:pr-24" style={{ paddingTop: py, paddingBottom: py }}>
+                        <div className="grid grid-cols-3 gap-4 sm:gap-12 lg:gap-8 max-w-4xl xl:max-w-3xl">
                             {/* Stat 1 */}
                             <div className="text-center">
                                 <div className="text-4xl sm:text-6xl lg:text-7xl font-black mb-1 sm:mb-2 opacity-100"
@@ -92,8 +92,8 @@ export default function StatsCTAClient({ content }: { content: StatsCTAContent }
                         </div>
                     </div>
 
-                    {/* Image Area - hidden on mobile, absolute on desktop */}
-                    <div className="hidden lg:flex absolute right-0 top-1/2 -translate-y-1/2 lg:w-[45%] justify-end items-center pointer-events-none" style={{ height: imgH }}>
+                    {/* Image Area - hidden below xl, absolute on wide desktop */}
+                    <div className="hidden xl:flex absolute right-0 top-1/2 -translate-y-1/2 xl:w-[38%] justify-end items-center pointer-events-none" style={{ height: imgH }}>
                         <div className="relative w-full h-full p-0.5 lg:rounded-l-full overflow-hidden group pointer-events-auto">
                             <Image 
                                 src={content.image_url} 
@@ -111,7 +111,7 @@ export default function StatsCTAClient({ content }: { content: StatsCTAContent }
                                             onClick={() => setIsModalOpen(true)}
                                             className="relative w-14 h-14 bg-white/30 backdrop-blur-sm rounded-full flex items-center justify-center text-white border-2 border-white/50 hover:scale-110 transition-transform group"
                                         >
-                                            <div className="w-11 h-11 bg-white rounded-full flex items-center justify-center shadow-xl" style={{ color: strokeColor }}>
+                                            <div className="w-11 h-11 bg-white rounded-full flex items-center justify-center shadow-xl" style={{ color: "var(--primary)" }}>
                                                 <Play fill="currentColor" size={16} className="ml-0.5" />
                                             </div>
                                         </button>

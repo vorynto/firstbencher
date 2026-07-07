@@ -18,6 +18,14 @@ type Instructor = {
     profile_image_url: string;
 };
 
+type CourseCategory = {
+    id: string;
+    name: string;
+    emoji: string;
+    show_in_header: boolean;
+    show_in_homepage: boolean;
+};
+
 type Course = {
     id: string;
     title: string;
@@ -68,7 +76,6 @@ const defaultTabsEnabled = {
 const BUILT_IN_TAB_DEFS: { id: string; label: string; key: keyof typeof defaultTabsEnabled }[] = [
     { id: "overview",       label: "Overview",       key: "overview" },
     { id: "training-dates", label: "Training Dates", key: "training_dates" },
-    { id: "key-features",   label: "Key Features",   key: "key_features" },
     { id: "curriculum",     label: "Curriculum",     key: "curriculum" },
     { id: "eligibility",    label: "Eligibility",    key: "eligibility" },
     { id: "faq",            label: "FAQs",           key: "faq" },
@@ -152,11 +159,12 @@ export default function CoursesPage() {
     const [courses, setCourses] = useState<Course[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
-    const [view, setView] = useState<"list" | "form" | "tags">("list");
+    const [view, setView] = useState<"list" | "form" | "tags" | "categories">("list");
     const [editorData, setEditorData] = useState<Partial<Course>>(defaultCourse);
     const [seoData, setSeoData] = useState<CourseSeoData>(defaultCourseSeo);
     const [newKw, setNewKw] = useState("");
     const [predefinedTags, setPredefinedTags] = useState<string[]>([]);
+    const [categories, setCategories] = useState<CourseCategory[]>([]);
     const [allInstructors, setAllInstructors] = useState<Instructor[]>([]);
     const [saving, setSaving] = useState(false);
     const [toast, setToast] = useState<{ type: "success" | "error"; msg: string } | null>(null);
@@ -172,8 +180,15 @@ export default function CoursesPage() {
             const { data } = await supabase.from("instructors").select("id,name,qualification,experience,profile_image_url").eq("active", true).order("name");
             if (data) setAllInstructors(data);
         };
+        const fetchCategories = async () => {
+            const { data } = await supabase.from("pages_content").select("content").eq("page_name", "course_categories").single();
+            if (data?.content && typeof data.content === 'object' && 'categories' in data.content && Array.isArray(data.content.categories)) {
+                setCategories(data.content.categories as CourseCategory[]);
+            }
+        };
         fetchTags();
         fetchInstructors();
+        fetchCategories();
         if (view === "list") fetchCourses();
     }, [view]);
 
@@ -280,6 +295,9 @@ export default function CoursesPage() {
                 </div>
                 {view === "list" ? (
                     <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                        <button onClick={() => setView("categories")} className="bg-white border border-gray-200 text-gray-700 px-5 py-2.5 rounded-xl font-bold flex items-center gap-2 hover:bg-gray-50 transition-colors shadow-sm text-sm">
+                            Manage Categories
+                        </button>
                         <button onClick={() => setView("tags")} className="bg-white border border-gray-200 text-gray-700 px-5 py-2.5 rounded-xl font-bold flex items-center gap-2 hover:bg-gray-50 transition-colors shadow-sm text-sm">
                             Manage Tags
                         </button>
@@ -359,6 +377,7 @@ export default function CoursesPage() {
                     editorData={editorData}
                     setEditorData={setEditorData}
                     predefinedTags={predefinedTags}
+                    categories={categories}
                     allInstructors={allInstructors}
                     saving={saving}
                     saveCourse={saveCourse}
@@ -383,6 +402,25 @@ export default function CoursesPage() {
                         else showToast("success", "Tags saved successfully!");
                     }} disabled={saving} className="bg-[var(--primary)] text-white px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[var(--primary-dark)] mt-4">
                         {saving ? <Loader2 className="animate-spin" size={18} /> : "Save Tags"}
+                    </button>
+                </div>
+            )}
+
+            {view === "categories" && (
+                <div className="bg-white p-6 rounded-2xl border border-gray-200 flex flex-col gap-5 max-w-3xl">
+                    <div className="border-b border-gray-100 pb-2">
+                        <h2 className="text-xl font-bold">Manage Course Categories</h2>
+                        <p className="text-xs text-gray-500 mt-1">These populate the Category dropdown in the course form. Toggle "Header" / "Homepage" to control where each category is shown on the site.</p>
+                    </div>
+                    <CategoryBuilder data={categories} onChange={setCategories} />
+                    <button onClick={async () => {
+                        setSaving(true);
+                        const { error } = await supabase.from("pages_content").upsert({ page_name: "course_categories", content: { categories } }, { onConflict: "page_name" });
+                        setSaving(false);
+                        if (error) showToast("error", "Failed to save categories");
+                        else showToast("success", "Categories saved successfully!");
+                    }} disabled={saving} className="bg-[var(--primary)] text-white px-6 py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[var(--primary-dark)] mt-4">
+                        {saving ? <Loader2 className="animate-spin" size={18} /> : "Save Categories"}
                     </button>
                 </div>
             )}
@@ -452,12 +490,13 @@ function AccordionSection({ title, isOpen, onToggle, tabKey, tabEnabled, onTabTo
 // ── FormView ────────────────────────────────────────────────────
 
 function FormView({
-    editorData, setEditorData, predefinedTags, allInstructors, saving, saveCourse,
+    editorData, setEditorData, predefinedTags, categories, allInstructors, saving, saveCourse,
     seoData, setSeoData, newKw, setNewKw,
 }: {
     editorData: Partial<Course>;
     setEditorData: (d: Partial<Course>) => void;
     predefinedTags: string[];
+    categories: CourseCategory[];
     allInstructors: Instructor[];
     saving: boolean;
     saveCourse: () => void;
@@ -495,6 +534,14 @@ function FormView({
                     <Field label="Short Description" value={editorData.short_description || ""} onChange={v => setEditorData({ ...editorData, short_description: v })} type="textarea" placeholder="A brief one-liner for the card view..." rows={2} />
                 </AccordionSection>
 
+                {/* Key Features — shown at the top of the course hero, not a frontend tab */}
+                <AccordionSection
+                    title="Key Features" isOpen={openSections.has("features")} onToggle={() => toggle("features")}
+                    badge={editorData.features?.length ? `${editorData.features.length} items` : undefined}
+                >
+                    <ArrayBuilder label="Feature Points" data={editorData.features || []} onChange={arr => setEditorData({ ...editorData, features: arr })} placeholder="e.g. 35+ Hours of Video Content" />
+                </AccordionSection>
+
                 {/* Overview */}
                 <AccordionSection
                     title="Overview / Full Description" isOpen={openSections.has("overview")} onToggle={() => toggle("overview")}
@@ -506,15 +553,6 @@ function FormView({
                             <RichTextEditor value={editorData.description || ""} onChange={v => setEditorData({ ...editorData, description: v })} />
                         </div>
                     </div>
-                </AccordionSection>
-
-                {/* Key Features */}
-                <AccordionSection
-                    title="Key Features" isOpen={openSections.has("features")} onToggle={() => toggle("features")}
-                    tabKey="key_features" tabEnabled={tabs.key_features} onTabToggle={() => setTab("key_features")}
-                    badge={editorData.features?.length ? `${editorData.features.length} items` : undefined}
-                >
-                    <ArrayBuilder label="Feature Points" data={editorData.features || []} onChange={arr => setEditorData({ ...editorData, features: arr })} placeholder="e.g. 35+ Hours of Video Content" />
                 </AccordionSection>
 
                 {/* Eligibility */}
@@ -665,7 +703,6 @@ function FormView({
                     {([
                         ["overview", "Overview"],
                         ["training_dates", "Training Dates"],
-                        ["key_features", "Key Features"],
                         ["curriculum", "Curriculum"],
                         ["eligibility", "Eligibility"],
                         ["faq", "FAQs"],
@@ -741,7 +778,25 @@ function FormView({
                 <section className="bg-white p-6 rounded-2xl border border-gray-200 flex flex-col gap-5">
                     <h2 className="text-base font-bold border-b border-gray-100 pb-2">Details</h2>
                     <Field label="Duration" value={editorData.duration || ""} onChange={v => setEditorData({ ...editorData, duration: v })} placeholder="e.g. 5 Weeks" />
-                    <Field label="Category" value={editorData.category || ""} onChange={v => setEditorData({ ...editorData, category: v })} />
+                    <div className="space-y-1.5 flex-1 w-full">
+                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">Category</label>
+                        <select
+                            value={editorData.category || ""}
+                            onChange={e => setEditorData({ ...editorData, category: e.target.value })}
+                            className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-white focus:ring-2 focus:ring-[var(--primary)]/20 focus:border-[var(--primary)] outline-none text-sm"
+                        >
+                            <option value="">— Select category —</option>
+                            {categories.map(c => (
+                                <option key={c.id} value={c.name}>{c.emoji} {c.name}</option>
+                            ))}
+                            {editorData.category && !categories.some(c => c.name === editorData.category) && (
+                                <option value={editorData.category}>{editorData.category} (not in list)</option>
+                            )}
+                        </select>
+                        {categories.length === 0 && (
+                            <p className="text-[10px] text-gray-400 italic">No categories defined yet — use "Manage Categories" on the courses list page.</p>
+                        )}
+                    </div>
                     <Field label="Rating (1–5)" type="number" value={editorData.rating?.toString() || "5"} onChange={v => setEditorData({ ...editorData, rating: parseFloat(v) })} />
                     <Field label="Enrolled Students Count" type="number" value={editorData.review_count?.toString() || "0"} onChange={v => setEditorData({ ...editorData, review_count: parseInt(v) })} placeholder="e.g. 12500" />
                     <p className="text-[10px] text-gray-400 italic -mt-3">Shown in the hero trust bar as &quot;X+ Students Enrolled &amp; Rated&quot;.</p>
@@ -844,6 +899,61 @@ function ArrayBuilder({ label, data, onChange, placeholder }: { label: string, d
                 <input type="text" value={newItem} onChange={e => setNewItem(e.target.value)} onKeyDown={e => e.key === "Enter" && addItem()} placeholder={placeholder} className="flex-1 w-full px-3 py-2 text-sm border border-gray-200 rounded-lg outline-none focus:border-[var(--primary)]" />
                 <button onClick={addItem} className="px-3 py-2 bg-gray-100 text-gray-700 text-sm font-bold rounded-lg border border-gray-200 hover:bg-gray-200">Add</button>
             </div>
+        </div>
+    );
+}
+
+function CategoryBuilder({ data, onChange }: { data: CourseCategory[]; onChange: (arr: CourseCategory[]) => void }) {
+    const update = (idx: number, patch: Partial<CourseCategory>) => {
+        const next = [...data];
+        next[idx] = { ...next[idx], ...patch };
+        onChange(next);
+    };
+    const addCategory = () => {
+        onChange([...data, { id: Math.random().toString(36).slice(2), name: "", emoji: "📚", show_in_header: true, show_in_homepage: true }]);
+    };
+    return (
+        <div className="space-y-3">
+            <div className="space-y-2">
+                {data.map((cat, idx) => (
+                    <div key={cat.id} className="flex flex-wrap gap-2 items-center bg-gray-50 p-3 rounded-xl border border-gray-200">
+                        <input
+                            type="text"
+                            value={cat.emoji}
+                            onChange={e => update(idx, { emoji: e.target.value })}
+                            placeholder="📋"
+                            title="Emoji"
+                            className="w-12 px-2 py-1.5 rounded-lg border border-gray-200 text-sm outline-none focus:border-[var(--primary)] text-center"
+                        />
+                        <input
+                            type="text"
+                            value={cat.name}
+                            onChange={e => update(idx, { name: e.target.value })}
+                            placeholder="Category name"
+                            className="flex-1 min-w-[160px] px-3 py-1.5 rounded-lg border border-gray-200 text-sm outline-none focus:border-[var(--primary)]"
+                        />
+                        <button
+                            type="button"
+                            onClick={() => update(idx, { show_in_header: !cat.show_in_header })}
+                            className={cn("flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-colors", cat.show_in_header ? "bg-primary-tint border-red-200 text-[var(--primary)]" : "bg-white border-gray-200 text-gray-400")}
+                        >
+                            {cat.show_in_header ? <ToggleRight size={16} /> : <ToggleLeft size={16} />} Header
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => update(idx, { show_in_homepage: !cat.show_in_homepage })}
+                            className={cn("flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-colors", cat.show_in_homepage ? "bg-primary-tint border-red-200 text-[var(--primary)]" : "bg-white border-gray-200 text-gray-400")}
+                        >
+                            {cat.show_in_homepage ? <ToggleRight size={16} /> : <ToggleLeft size={16} />} Homepage
+                        </button>
+                        <button onClick={() => onChange(data.filter((_, i) => i !== idx))} className="text-red-400 hover:text-red-600 p-1"><Trash2 size={16} /></button>
+                    </div>
+                ))}
+                {data.length === 0 && <p className="text-xs text-gray-400 italic">No categories yet — add one below.</p>}
+            </div>
+            <button type="button" onClick={addCategory} className="w-full py-2.5 border-2 border-dashed border-gray-300 rounded-xl text-sm font-bold text-gray-500 hover:border-[var(--primary)] hover:text-[var(--primary)] flex items-center justify-center gap-2">
+                <Plus size={16} /> Add Category
+            </button>
         </div>
     );
 }

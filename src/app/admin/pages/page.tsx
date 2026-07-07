@@ -104,6 +104,8 @@ function HomeHeroEditor({ content, onChange }: { content: ContentMap; onChange: 
             <Field label="Stat 1 — Label" value={s("stat1_label")} onChange={v => u("stat1_label", v)} placeholder="Success Students" />
             <Field label="Stat 2 — Value" value={s("stat2_value")} onChange={v => u("stat2_value", v)} placeholder="405+" />
             <Field label="Stat 2 — Label" value={s("stat2_label")} onChange={v => u("stat2_label", v)} placeholder="Expert Courses" />
+            <Field label="Trusted By — Count" value={s("trusted_count")} onChange={v => u("trusted_count", v)} placeholder="10,000+" />
+            <Field label="Trusted By — Label" value={s("trusted_label")} onChange={v => u("trusted_label", v)} placeholder="students" />
             <div className="md:col-span-2">
                 <ImageUploadField label="Hero Image Upload (Boy)" value={s("hero_image_url")} onChange={v => u("hero_image_url", v)} />
             </div>
@@ -116,9 +118,9 @@ function HomeHeroEditor({ content, onChange }: { content: ContentMap; onChange: 
                 <ImageUploadField label="Clock Icon (Bottom Left)" value={s("clock_icon")} onChange={v => u("clock_icon", v)} />
                 <ImageUploadField label="Thumbs Up Icon (Bottom Right)" value={s("thumbs_up_icon")} onChange={v => u("thumbs_up_icon", v)} />
             </div>
-            <div className="md:col-span-2">
-                <Field label="Popular Tags (comma-separated)" value={s("popular_categories")} onChange={v => u("popular_categories", v)} placeholder="Accounting,Business,Development" />
-            </div>
+            <p className="md:col-span-2 text-[10px] text-gray-400 italic -mt-2">
+                Popular categories are managed from Courses → Manage Categories (toggle "Homepage" per category).
+            </p>
 
             <p className="md:col-span-2 text-xs font-black uppercase tracking-widest text-muted-foreground mt-6 border-b border-border pb-2">Corporate Clients Logos</p>
             <div className="md:col-span-2 space-y-4">

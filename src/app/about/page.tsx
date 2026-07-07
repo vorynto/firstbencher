@@ -2,6 +2,17 @@ import { createServerSupabaseClient } from "@/lib/supabase-server";
 import Image from "next/image";
 import Link from "next/link";
 import { Award, Linkedin, ExternalLink, Users } from "lucide-react";
+import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/page-seo";
+
+export async function generateMetadata(): Promise<Metadata> {
+    return buildPageMetadata("about", {
+        title: "About Us | First Bencher",
+        description:
+            "First Bencher is a global leader in training and consulting for Project Management, AI, Machine Learning, and professional certifications.",
+        path: "/about",
+    });
+}
 
 type AboutIntro = { title: string; subtitle: string; description: string; image_url: string; founded_year: string; students_count: string; courses_count: string; countries_count: string; };
 type AboutVision = { headline: string; vision_title: string; vision_text: string; mission_title: string; mission_text: string; };

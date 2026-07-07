@@ -5,6 +5,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Award } from "lucide-react";
 import { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/page-seo";
 
 type CustomSection = {
     id: string;
@@ -44,11 +45,12 @@ async function getCustomPage(slug: string) {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
     const { slug } = await params;
     const content = await getCustomPage(slug);
-    
-    return {
+
+    return buildPageMetadata(`custom_page:${slug}`, {
         title: content?.hero?.title || "Page Details",
         description: content?.hero?.subtitle || "Learn more on First Bencher.",
-    };
+        path: `/${slug}`,
+    });
 }
 
 export default async function DynamicCustomPage({ params }: { params: Promise<{ slug: string }> }) {

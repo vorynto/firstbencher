@@ -31,7 +31,9 @@ type HeroContent = {
     stat2_value: string;
     stat2_label: string;
     hero_image_url: string;
-    popular_categories: string;
+    popular_categories_list: Array<{ name: string; emoji: string }>;
+    trusted_count?: string;
+    trusted_label?: string;
     student_avatar_1?: string;
     student_avatar_2?: string;
     reviewer_avatar?: string;
@@ -85,9 +87,6 @@ async function searchCourses(query: string, category: string): Promise<Course[]>
 export default function HeroClient({ content }: { content: HeroContent }) {
     const h = content;
     const { openEnquiry } = useEnquiry();
-    const popularTags = h.popular_categories
-        ? h.popular_categories.split(",").map((s) => s.trim()).filter(Boolean)
-        : [];
 
     const [query, setQuery] = useState("");
     const [category, setCategory] = useState("All Categories");
@@ -187,7 +186,7 @@ export default function HeroClient({ content }: { content: HeroContent }) {
                                 </div>
                                 <div>
                                     <div className="flex gap-0.5">{[1, 2, 3, 4, 5].map(i => <Star key={i} size={11} className="text-yellow-400 fill-yellow-400" />)}</div>
-                                    <p className="text-xs text-gray-500">Trusted by <strong className="text-gray-800">10,000+</strong> students</p>
+                                    <p className="text-xs text-gray-500">Trusted by <strong className="text-gray-800">{h.trusted_count || "10,000+"}</strong> {h.trusted_label || "students"}</p>
                                 </div>
                             </div>
                         </div>
@@ -371,22 +370,18 @@ export default function HeroClient({ content }: { content: HeroContent }) {
                     </div>
 
                     {/* Popular Categories Row */}
-                    {h.popular_categories && (
+                    {h.popular_categories_list && h.popular_categories_list.length > 0 && (
                         <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
                             <span className="text-[13px] font-semibold text-[#64748B] mr-1">Popular category:</span>
-                            {h.popular_categories.split(',').map((cat: string, index: number) => {
-                                const trimmed = cat.trim();
-                                if (!trimmed) return null;
-                                return (
-                                    <Link
-                                        key={index}
-                                        href={`/courses?cat=${slugify(trimmed)}`}
-                                        className="bg-white hover:bg-[var(--primary)] hover:text-white text-[#64748B] px-5 py-2 rounded-lg text-[13px] font-semibold transition-colors border border-gray-200 shadow-sm"
-                                    >
-                                        {trimmed}
-                                    </Link>
-                                );
-                            })}
+                            {h.popular_categories_list.map((cat) => (
+                                <Link
+                                    key={cat.name}
+                                    href={`/courses?cat=${slugify(cat.name)}`}
+                                    className="bg-white hover:bg-[var(--primary)] hover:text-white text-[#64748B] px-5 py-2 rounded-lg text-[13px] font-semibold transition-colors border border-gray-200 shadow-sm"
+                                >
+                                    {cat.emoji ? `${cat.emoji} ` : ""}{cat.name}
+                                </Link>
+                            ))}
                         </div>
                     )}
                 </div>

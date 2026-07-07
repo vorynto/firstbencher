@@ -18,7 +18,6 @@ export const defaultContents: Record<string, unknown> = {
         stat2_value: "405+",
         stat2_label: "Expert Courses",
         hero_image_url: "",
-        popular_categories: "Accounting,Business,Development,Marketing,Meditation",
     },
     home_stats: {
         stat1_value: "10,000+",

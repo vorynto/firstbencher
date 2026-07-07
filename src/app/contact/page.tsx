@@ -1,6 +1,17 @@
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { Mail, Phone, MapPin, Clock } from "lucide-react";
 import ContactForm from "./ContactForm";
+import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/page-seo";
+
+export async function generateMetadata(): Promise<Metadata> {
+    return buildPageMetadata("contact", {
+        title: "Contact Us | First Bencher",
+        description:
+            "Get in touch with First Bencher. Have a question or want to enroll? Our team is here to help you.",
+        path: "/contact",
+    });
+}
 
 type ContactHeader = { title: string; subtitle: string; office_hours: string; };
 type Branch = { office_name: string; address: string };
