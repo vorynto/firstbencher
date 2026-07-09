@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
 import { cn } from "@/lib/utils";
+import Button from "@/components/ui/Button";
 
 // Server component Supabase client
 const supabase = createClient(
@@ -129,6 +130,10 @@ export default async function PopularCourses() {
                         );
                     })}
                 </div>
+
+                <Button href="/courses" variant="outline" size="lg" className="mt-12">
+                    View All Courses
+                </Button>
             </div>
         </section>
     );

@@ -236,10 +236,6 @@ export default function HeroClient({ content }: { content: HeroContent }) {
                     {/* ════════ RIGHT — HERO IMAGE ════════ */}
                     <div className="lg:flex-[1] relative flex justify-center lg:justify-end items-end min-h-[260px] sm:min-h-[380px] lg:min-h-[500px] lg:mt-0 mt-6 w-full max-w-[500px] mx-auto lg:ml-auto pb-4">
 
-                        {/* Decorative plus signs */}
-                        <div className="absolute top-24 right-16 w-3 h-3 text-[var(--primary)] font-bold text-xl z-0">+</div>
-                        <div className="absolute bottom-32 left-8 w-3 h-3 text-[var(--primary)] font-bold text-xl z-0">+</div>
-
                         {/* Hero image */}
                         <div className="relative z-10 w-full flex justify-center h-full items-end pb-8">
                             {h.hero_image_url ? (

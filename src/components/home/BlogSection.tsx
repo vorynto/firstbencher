@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Calendar, User, ArrowRight } from "lucide-react";
 import Button from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
@@ -49,7 +50,7 @@ export default function BlogSection({ blogs }: BlogSectionProps) {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
                     {blogs.map((blog) => (
-                        <div key={blog.id} className="group bg-white rounded-[32px] overflow-hidden border border-gray-100 hover:shadow-2xl hover:shadow-red-900/5 transition-all duration-500 flex flex-col h-full">
+                        <Link key={blog.id} href={`/blog/${blog.slug}`} className="group bg-white rounded-[32px] overflow-hidden border border-gray-100 hover:shadow-2xl hover:shadow-red-900/5 transition-all duration-500 flex flex-col h-full">
                             {/* Image Container */}
                             <div className="relative h-64 overflow-hidden">
                                 {blog.image_url ? (
@@ -97,17 +98,13 @@ export default function BlogSection({ blogs }: BlogSectionProps) {
                                 </p>
 
                                 <div className="mt-auto">
-                                    <Button
-                                        variant="ghost"
-                                        href={`/blog/${blog.slug}`}
-                                        className="group/btn p-0 hover:bg-transparent text-[var(--primary)] flex items-center gap-2 font-black text-xs uppercase tracking-widest"
-                                    >
+                                    <span className="inline-flex items-center gap-2 text-[var(--primary)] font-black text-xs uppercase tracking-widest">
                                         Keep Reading
-                                        <ArrowRight size={16} className="group-hover/btn:translate-x-1 transition-transform" />
-                                    </Button>
+                                        <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                                    </span>
                                 </div>
                             </div>
-                        </div>
+                        </Link>
                     ))}
                 </div>
 

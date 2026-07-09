@@ -493,28 +493,77 @@ function CustomPageEditor({ content, onChange }: { content: ContentMap; onChange
                                                 >
                                                     <option value="text">Rich Text</option>
                                                     <option value="image">Image</option>
+                                                    <option value="button">Button</option>
                                                 </select>
                                             </div>
 
                                             {col.type === "text" ? (
-                                                <RichTextEditor 
-                                                    value={col.content || ""} 
+                                                <RichTextEditor
+                                                    value={col.content || ""}
                                                     onChange={v => {
                                                         const nextCols = [...sec.columns];
                                                         nextCols[cIdx] = { ...nextCols[cIdx], content: v };
                                                         updateSection(sIdx, { ...sec, columns: nextCols });
                                                     }}
                                                 />
-                                            ) : (
-                                                <ImageUploadField 
-                                                    label="Column Image" 
-                                                    value={col.image_url || ""} 
+                                            ) : col.type === "image" ? (
+                                                <ImageUploadField
+                                                    label="Column Image"
+                                                    value={col.image_url || ""}
                                                     onChange={v => {
                                                         const nextCols = [...sec.columns];
                                                         nextCols[cIdx] = { ...nextCols[cIdx], image_url: v };
                                                         updateSection(sIdx, { ...sec, columns: nextCols });
                                                     }}
                                                 />
+                                            ) : (
+                                                <div className="space-y-3">
+                                                    <Field
+                                                        label="Button Text"
+                                                        value={col.button_text || ""}
+                                                        onChange={v => {
+                                                            const nextCols = [...sec.columns];
+                                                            nextCols[cIdx] = { ...nextCols[cIdx], button_text: v };
+                                                            updateSection(sIdx, { ...sec, columns: nextCols });
+                                                        }}
+                                                        placeholder="Learn More"
+                                                    />
+                                                    <Field
+                                                        label="Button Link"
+                                                        value={col.button_href || ""}
+                                                        onChange={v => {
+                                                            const nextCols = [...sec.columns];
+                                                            nextCols[cIdx] = { ...nextCols[cIdx], button_href: v };
+                                                            updateSection(sIdx, { ...sec, columns: nextCols });
+                                                        }}
+                                                        placeholder="/courses or https://example.com"
+                                                    />
+                                                    <div>
+                                                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Style</label>
+                                                        <div className="flex gap-2">
+                                                            {[
+                                                                { id: "primary", label: "Solid" },
+                                                                { id: "outline", label: "Outline" },
+                                                            ].map(opt => (
+                                                                <button
+                                                                    key={opt.id}
+                                                                    type="button"
+                                                                    onClick={() => {
+                                                                        const nextCols = [...sec.columns];
+                                                                        nextCols[cIdx] = { ...nextCols[cIdx], button_style: opt.id };
+                                                                        updateSection(sIdx, { ...sec, columns: nextCols });
+                                                                    }}
+                                                                    className={cn(
+                                                                        "px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all",
+                                                                        (col.button_style || "primary") === opt.id ? "bg-primary text-white" : "bg-white border border-border text-muted-foreground hover:bg-accent"
+                                                                    )}
+                                                                >
+                                                                    {opt.label}
+                                                                </button>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             )}
                                         </div>
                                     ))}

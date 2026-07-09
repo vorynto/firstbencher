@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Search, Calendar, User, ArrowRight } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import Button from "@/components/ui/Button";
 import { Blog } from "@/components/home/BlogSection";
 
@@ -43,8 +44,9 @@ export default function BlogListingClient({ initialBlogs }: { initialBlogs: Blog
                 {filtered.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
                         {filtered.map(blog => (
-                            <div
+                            <Link
                                 key={blog.id}
+                                href={`/blog/${blog.slug}`}
                                 className="group flex flex-col h-full bg-white rounded-[40px] border border-gray-100/80 hover:border-red-100 hover:shadow-[0_20px_60px_-15px_rgba(166,3,3,0.08)] transition-all duration-500 overflow-hidden"
                             >
                                 <div className="relative h-72 overflow-hidden">
@@ -92,22 +94,18 @@ export default function BlogListingClient({ initialBlogs }: { initialBlogs: Blog
                                     </p>
 
                                     <div className="mt-auto pt-6 border-t border-gray-50">
-                                        <Button
-                                            variant="ghost"
-                                            href={`/blog/${blog.slug}`}
-                                            className="group/btn p-0 h-auto hover:bg-transparent text-[var(--primary)] flex items-center justify-between w-full font-black text-xs uppercase tracking-widest"
-                                        >
+                                        <span className="flex items-center justify-between w-full text-[var(--primary)] font-black text-xs uppercase tracking-widest">
                                             <span className="flex items-center gap-2">
                                                 Dive Deeper
                                                 <ArrowRight
                                                     size={16}
-                                                    className="group-hover/btn:translate-x-1 transition-transform"
+                                                    className="group-hover:translate-x-1 transition-transform"
                                                 />
                                             </span>
-                                        </Button>
+                                        </span>
                                     </div>
                                 </div>
-                            </div>
+                            </Link>
                         ))}
                     </div>
                 ) : (

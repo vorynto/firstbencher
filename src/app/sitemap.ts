@@ -17,6 +17,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         { url: `${SITE_URL}/about`,             lastModified: now, changeFrequency: "monthly", priority: 0.8 },
         { url: `${SITE_URL}/courses`,           lastModified: now, changeFrequency: "daily",   priority: 0.9 },
         { url: `${SITE_URL}/blog`,              lastModified: now, changeFrequency: "daily",   priority: 0.8 },
+        { url: `${SITE_URL}/guest-blogging`,    lastModified: now, changeFrequency: "monthly", priority: 0.4 },
         { url: `${SITE_URL}/workshops`,         lastModified: now, changeFrequency: "weekly",  priority: 0.7 },
         { url: `${SITE_URL}/career`,            lastModified: now, changeFrequency: "weekly",  priority: 0.7 },
         { url: `${SITE_URL}/contact`,           lastModified: now, changeFrequency: "monthly", priority: 0.6 },
@@ -30,7 +31,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         { data: jobs },
     ] = await Promise.all([
         supabase.from("courses").select("slug, created_at").eq("active", true),
-        supabase.from("blogs").select("slug, published_at"),
+        supabase.from("blogs").select("slug, published_at").eq("status", "approved"),
         supabase.from("events").select("title, created_at"),
         supabase.from("jobs").select("title, created_at").eq("active", true),
     ]);

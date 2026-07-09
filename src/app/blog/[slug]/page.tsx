@@ -23,7 +23,7 @@ const supabaseAdmin = createServiceClient(
 export const revalidate = 86400;
 
 export async function generateStaticParams() {
-    const { data } = await supabaseAdmin.from("blogs").select("slug");
+    const { data } = await supabaseAdmin.from("blogs").select("slug").eq("status", "approved");
     return (data || []).map(b => ({ slug: b.slug }));
 }
 
@@ -37,6 +37,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         .from("blogs")
         .select("id, title, excerpt, image_url")
         .eq("slug", slug)
+        .eq("status", "approved")
         .single();
 
     if (!blog) return { title: "Blog Post | First Bencher" };
@@ -84,6 +85,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
         .from("blogs")
         .select("*")
         .eq("slug", slug)
+        .eq("status", "approved")
         .single();
 
     if (!blog) {
@@ -94,6 +96,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
     const { data: recentPosts } = await supabase
         .from("blogs")
         .select("title, slug, published_at, image_url")
+        .eq("status", "approved")
         .neq("slug", slug)
         .order("published_at", { ascending: false })
         .limit(4);

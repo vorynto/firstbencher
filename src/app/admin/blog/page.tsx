@@ -134,6 +134,7 @@ export default function BlogManagementPage() {
         const { data, error } = await supabase
             .from("blogs")
             .select("*")
+            .eq("status", "approved")
             .order("published_at", { ascending: false });
         
         if (!error && data) setBlogs(data);

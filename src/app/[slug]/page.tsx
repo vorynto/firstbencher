@@ -1,6 +1,7 @@
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 import { sanitize } from "@/lib/sanitize";
 import PageHero from "@/components/ui/PageHero";
+import Button from "@/components/ui/Button";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Award } from "lucide-react";
@@ -11,9 +12,12 @@ type CustomSection = {
     id: string;
     layout: "1-col" | "2-col";
     columns: Array<{
-        type: "text" | "image";
+        type: "text" | "image" | "button";
         content?: string; // Rich text HTML
         image_url?: string;
+        button_text?: string;
+        button_href?: string;
+        button_style?: "primary" | "outline";
     }>;
 };
 
@@ -106,11 +110,11 @@ export default async function DynamicCustomPage({ params }: { params: Promise<{ 
                                                     }}
                                                 />
                                             </div>
-                                        ) : (
+                                        ) : col.type === "image" ? (
                                             <div className="w-full relative rounded-[32px] overflow-hidden shadow-2xl group transition-transform duration-500 hover:scale-[1.02]">
                                                 {col.image_url ? (
-                                                    <Image 
-                                                        src={col.image_url} 
+                                                    <Image
+                                                        src={col.image_url}
                                                         alt="Page content"
                                                         width={1200}
                                                         height={800}
@@ -121,6 +125,16 @@ export default async function DynamicCustomPage({ params }: { params: Promise<{ 
                                                         No image selected
                                                     </div>
                                                 )}
+                                            </div>
+                                        ) : (
+                                            <div className="flex">
+                                                <Button
+                                                    href={col.button_href || "#"}
+                                                    variant={col.button_style === "outline" ? "outline" : "primary"}
+                                                    size="lg"
+                                                >
+                                                    {col.button_text || "Learn More"}
+                                                </Button>
                                             </div>
                                         )}
                                     </div>

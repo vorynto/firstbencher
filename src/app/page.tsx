@@ -36,6 +36,7 @@ export default async function Home() {
   const { data: blogs } = await supabase
     .from("blogs")
     .select("id, title, slug, excerpt, author, image_url, published_at")
+    .eq("status", "approved")
     .order("published_at", { ascending: false })
     .limit(3);
 
