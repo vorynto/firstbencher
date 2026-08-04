@@ -96,9 +96,10 @@ const SIDEBAR_DEFAULTS: SidebarContent = {
     ],
 };
 
-export default function CourseClientPage({ course, instructors = [], sidebarContent = {} }: { course: Course; instructors?: Instructor[]; sidebarContent?: Record<string, unknown> }) {
+export default function CourseClientPage({ course, instructors = [], sidebarContent = {}, trustBarContent = {} }: { course: Course; instructors?: Instructor[]; sidebarContent?: Record<string, unknown>; trustBarContent?: Record<string, unknown> }) {
     // Merge DB content with defaults so missing keys always fall back
     const sb: SidebarContent = { ...SIDEBAR_DEFAULTS, ...(sidebarContent as SidebarContent) };
+    const trustAvatars = trustBarContent as { avatar_1?: string; avatar_2?: string; avatar_3?: string; avatar_4?: string; avatar_5?: string };
     const supabase = createClient();
     const { openEnquiry } = useEnquiry();
 
@@ -383,10 +384,10 @@ export default function CourseClientPage({ course, instructors = [], sidebarCont
                     {/* Col 1 — Reviews */}
                     <div className="flex items-center gap-4">
                         <div className="flex -space-x-2.5">
-                            {[1, 2, 3, 4, 5].map(i => (
+                            {[trustAvatars.avatar_1, trustAvatars.avatar_2, trustAvatars.avatar_3, trustAvatars.avatar_4, trustAvatars.avatar_5].map((avatar, i) => (
                                 <img
                                     key={i}
-                                    src={`https://i.pravatar.cc/40?u=course-review-${i}`}
+                                    src={avatar || `https://i.pravatar.cc/40?u=course-review-${i + 1}`}
                                     alt=""
                                     className="w-9 h-9 rounded-full border-2 border-white object-cover"
                                 />

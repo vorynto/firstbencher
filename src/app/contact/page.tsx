@@ -14,7 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 type ContactHeader = { title: string; subtitle: string; office_hours: string; };
-type Branch = { office_name: string; address: string };
+type Branch = { office_name: string; address: string }; // office_name = branch city
 type ContactDetails = { email: string; phone: string; address: string; map_embed_url: string; branches?: Branch[]; };
 
 const defaultHeader: ContactHeader = {
@@ -117,16 +117,14 @@ export default async function ContactPage() {
                             <h2 className="text-3xl font-black text-gray-900 mb-2">Our Branch Offices</h2>
                             <p className="text-gray-500 text-sm">Visit us at any of our locations.</p>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {details.branches.map((branch, i) => (
                                 <div key={i} className="bg-white rounded-2xl border border-gray-100 p-6 hover:border-primary/20 hover:shadow-md transition-all">
-                                    <div className="flex items-center gap-3 mb-4">
-                                        <div className="w-11 h-11 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center shrink-0">
-                                            <MapPin size={20} />
-                                        </div>
-                                        <h3 className="text-lg font-black text-gray-900 leading-tight">{branch.office_name}</h3>
+                                    <h3 className="text-lg font-black text-gray-900 leading-tight mb-3">{branch.office_name}</h3>
+                                    <div className="flex items-start gap-2">
+                                        <MapPin size={18} className="text-orange-600 shrink-0 mt-0.5" />
+                                        <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-line">{branch.address}</p>
                                     </div>
-                                    <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-line">{branch.address}</p>
                                 </div>
                             ))}
                         </div>

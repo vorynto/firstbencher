@@ -114,8 +114,8 @@ export default async function CourseDetailPage({
     let instructors: Instructor[] = [];
     const instructorIds: string[] = course.instructor_ids || [];
 
-    // Fetch instructors + sidebar content in parallel
-    const [instructorResult, sidebarResult] = await Promise.all([
+    // Fetch instructors + sidebar content + trust bar content in parallel
+    const [instructorResult, sidebarResult, trustBarResult] = await Promise.all([
         instructorIds.length > 0
             ? supabase
                 .from("instructors")
@@ -128,6 +128,11 @@ export default async function CourseDetailPage({
             .select("content")
             .eq("page_name", "course_sidebar")
             .single(),
+        supabase
+            .from("pages_content")
+            .select("content")
+            .eq("page_name", "course_trust_bar")
+            .maybeSingle(),
     ]);
 
     if (instructorResult.data) {
@@ -137,6 +142,7 @@ export default async function CourseDetailPage({
     }
 
     const sidebarContent = (sidebarResult.data?.content ?? {}) as Record<string, unknown>;
+    const trustBarContent = (trustBarResult.data?.content ?? {}) as Record<string, unknown>;
 
     const courseUrl = `${SITE_URL}/courses/${slug}`;
     // FAQPage JSON-LD (only when FAQs are present)
@@ -197,7 +203,7 @@ export default async function CourseDetailPage({
         <>
             <JsonLd data={courseJsonLd} />
             {faqJsonLd && <JsonLd data={faqJsonLd} />}
-            <CourseClientPage course={course} instructors={instructors} sidebarContent={sidebarContent} />
+            <CourseClientPage course={course} instructors={instructors} sidebarContent={sidebarContent} trustBarContent={trustBarContent} />
         </>
     );
 }

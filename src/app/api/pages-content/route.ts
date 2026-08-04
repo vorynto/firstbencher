@@ -18,6 +18,9 @@ export const defaultContents: Record<string, unknown> = {
         stat2_value: "405+",
         stat2_label: "Expert Courses",
         hero_image_url: "",
+        trust_avatar_1: "",
+        trust_avatar_2: "",
+        trust_avatar_3: "",
     },
     home_stats: {
         stat1_value: "10,000+",
@@ -183,6 +186,13 @@ export const defaultContents: Record<string, unknown> = {
             { name: "Terms and Conditions", href: "/terms" },
             { name: "Refund Policy", href: "/refund-policy" },
         ],
+    },
+    course_trust_bar: {
+        avatar_1: "",
+        avatar_2: "",
+        avatar_3: "",
+        avatar_4: "",
+        avatar_5: "",
     },
     global_settings: {
         logo_header: "",

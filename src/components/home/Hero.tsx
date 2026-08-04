@@ -17,6 +17,9 @@ type HeroContent = {
     popular_categories_list: Array<{ name: string; emoji: string }>;
     trusted_count?: string;
     trusted_label?: string;
+    trust_avatar_1?: string;
+    trust_avatar_2?: string;
+    trust_avatar_3?: string;
     reviewer_avatar?: string;
     clock_icon?: string;
     thumbs_up_icon?: string;

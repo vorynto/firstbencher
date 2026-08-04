@@ -51,6 +51,7 @@ const BASE_PAGES = [
         id: "courses", name: "Course Detail Pages", slug: "/courses", icon: GraduationCap,
         sections: [
             { id: "course_sidebar", name: "Right Sidebar (Contact & Highlights)" },
+            { id: "course_trust_bar", name: "Trust Bar (Reviewer Faces)" },
         ],
     },
 ];
@@ -109,7 +110,14 @@ function HomeHeroEditor({ content, onChange }: { content: ContentMap; onChange: 
             <div className="md:col-span-2">
                 <ImageUploadField label="Hero Image Upload (Boy)" value={s("hero_image_url")} onChange={v => u("hero_image_url", v)} />
             </div>
-            
+
+            <p className="md:col-span-2 text-xs font-black uppercase tracking-widest text-muted-foreground mt-4 border-b border-border pb-2">Trust Row Avatars (next to star rating)</p>
+            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-5 bg-accent/10 p-4 rounded-2xl border border-border">
+                <ImageUploadField label="Reviewer Face 1" value={s("trust_avatar_1")} onChange={v => u("trust_avatar_1", v)} />
+                <ImageUploadField label="Reviewer Face 2" value={s("trust_avatar_2")} onChange={v => u("trust_avatar_2", v)} />
+                <ImageUploadField label="Reviewer Face 3" value={s("trust_avatar_3")} onChange={v => u("trust_avatar_3", v)} />
+            </div>
+
             <p className="md:col-span-2 text-xs font-black uppercase tracking-widest text-muted-foreground mt-4 border-b border-border pb-2">Floating Decorative Elements</p>
             <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-5 bg-accent/10 p-4 rounded-2xl border border-border">
                 <ImageUploadField label="Success Student Avatar 1" value={s("student_avatar_1")} onChange={v => u("student_avatar_1", v)} />
@@ -701,16 +709,16 @@ function ContactDetailsEditor({ content, onChange }: { content: ContentMap; onCh
             {/* Branch Offices */}
             <div>
                 <p className="text-xs font-black uppercase tracking-widest text-muted-foreground mb-1 border-b border-border pb-2">Branch Offices</p>
-                <p className="text-xs text-muted-foreground mb-4 mt-2">Displayed in a 3-column grid below the contact section. Each card shows the office location as a heading with the full address below.</p>
+                <p className="text-xs text-muted-foreground mb-4 mt-2">Displayed in a 2-column grid below the contact section. Each card shows the branch city as a heading with the full address (with a pin icon) below.</p>
                 <div className="flex flex-col gap-4">
                     {branches.map((b, idx) => (
                         <div key={idx} className="p-4 bg-accent/20 rounded-2xl border border-border">
                             <div className="flex justify-between items-center mb-3">
-                                <p className="text-xs font-bold text-muted-foreground">Office {idx + 1}</p>
+                                <p className="text-xs font-bold text-muted-foreground">Branch {idx + 1}</p>
                                 <button onClick={() => removeBranch(idx)} className="text-red-400 hover:text-red-600 p-1 rounded-lg hover:bg-primary-tint transition-colors"><Trash2 size={14} /></button>
                             </div>
                             <div className="flex flex-col gap-3">
-                                <Field label="Office Location (Heading)" value={b.office_name} onChange={v => updateBranch(idx, "office_name", v)} placeholder="e.g. Main Office — New York" />
+                                <Field label="Branch City (Heading)" value={b.office_name} onChange={v => updateBranch(idx, "office_name", v)} placeholder="e.g. New York" />
                                 <Field label="Full Address" value={b.address} onChange={v => updateBranch(idx, "address", v)} type="textarea" rows={3} placeholder="123 Business Avenue, New York, NY 10001, USA" />
                             </div>
                         </div>
@@ -793,6 +801,26 @@ function CourseSidebarEditor({ content, onChange }: { content: ContentMap; onCha
     );
 }
 
+// ── Course Trust Bar Editor ─────────────────────────────────────
+function CourseTrustBarEditor({ content, onChange }: { content: ContentMap; onChange: (c: ContentMap) => void }) {
+    const s = (k: string) => (content[k] as string) ?? "";
+    const u = (k: string, v: string) => onChange({ ...content, [k]: v });
+    return (
+        <div>
+            <p className="text-xs text-muted-foreground mb-4">
+                Shown at the top of every course detail page, next to the star rating. Leave a face blank to keep the placeholder image.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 bg-accent/10 p-4 rounded-2xl border border-border">
+                <ImageUploadField label="Reviewer Face 1" value={s("avatar_1")} onChange={v => u("avatar_1", v)} />
+                <ImageUploadField label="Reviewer Face 2" value={s("avatar_2")} onChange={v => u("avatar_2", v)} />
+                <ImageUploadField label="Reviewer Face 3" value={s("avatar_3")} onChange={v => u("avatar_3", v)} />
+                <ImageUploadField label="Reviewer Face 4" value={s("avatar_4")} onChange={v => u("avatar_4", v)} />
+                <ImageUploadField label="Reviewer Face 5" value={s("avatar_5")} onChange={v => u("avatar_5", v)} />
+            </div>
+        </div>
+    );
+}
+
 // ── Section editor router ──────────────────────────────────────
 function SectionEditor({ sectionId, content, onChange }: { sectionId: string; content: ContentMap; onChange: (c: ContentMap) => void }) {
     if (sectionId.startsWith("custom_page:")) {
@@ -813,6 +841,7 @@ function SectionEditor({ sectionId, content, onChange }: { sectionId: string; co
         case "contact_header": return <ContactHeaderEditor content={content} onChange={onChange} />;
         case "contact_details": return <ContactDetailsEditor content={content} onChange={onChange} />;
         case "course_sidebar": return <CourseSidebarEditor content={content} onChange={onChange} />;
+        case "course_trust_bar": return <CourseTrustBarEditor content={content} onChange={onChange} />;
         default:
             return (
                 <div className="flex flex-col items-center justify-center h-64 text-center gap-3">

@@ -34,6 +34,9 @@ type HeroContent = {
     popular_categories_list: Array<{ name: string; emoji: string }>;
     trusted_count?: string;
     trusted_label?: string;
+    trust_avatar_1?: string;
+    trust_avatar_2?: string;
+    trust_avatar_3?: string;
     student_avatar_1?: string;
     student_avatar_2?: string;
     reviewer_avatar?: string;
@@ -180,8 +183,8 @@ export default function HeroClient({ content }: { content: HeroContent }) {
                             {/* Trust snippet */}
                             <div className="flex items-center gap-4">
                                 <div className="flex -space-x-2">
-                                    {[1, 2, 3].map(i => (
-                                        <Image key={i} src={`https://i.pravatar.cc/36?u=trust${i}`} alt="student" width={32} height={32} className="rounded-full border-2 border-white shadow" />
+                                    {[h.trust_avatar_1, h.trust_avatar_2, h.trust_avatar_3].map((avatar, idx) => (
+                                        <Image key={idx} src={avatar || `https://i.pravatar.cc/36?u=trust${idx + 1}`} alt="student" width={32} height={32} className="rounded-full border-2 border-white shadow aspect-square object-cover" />
                                     ))}
                                 </div>
                                 <div>
