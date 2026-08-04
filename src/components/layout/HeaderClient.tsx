@@ -55,6 +55,7 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
     const [isOpen, setIsOpen] = useState(false);
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
     const [openMobileSubMenu, setOpenMobileSubMenu] = useState<string | null>(null);
+    const [mobileTab, setMobileTab] = useState<"menu" | "categories">("menu");
     const [catOpen, setCatOpen] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
@@ -113,6 +114,7 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
         setIsOpen(false);
         setOpenDropdown(null);
         setOpenMobileSubMenu(null);
+        setMobileTab("menu");
         setCatOpen(false);
         // Add a tiny delay to ensure Next.js has completed the navigation
         const timer = setTimeout(() => {
@@ -476,14 +478,39 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
                     </button>
                 </div>
 
+                {/* Tabs */}
+                <div className="flex items-center gap-1.5 px-4 pt-3 pb-3 border-b border-gray-100 shrink-0">
+                    <button
+                        type="button"
+                        onClick={() => setMobileTab("menu")}
+                        className={cn(
+                            "flex-1 text-xs font-black uppercase tracking-widest px-3 py-2.5 rounded-lg transition-colors",
+                            mobileTab === "menu"
+                                ? "bg-accent text-[var(--primary)]"
+                                : "text-gray-400 hover:text-gray-600 hover:bg-gray-50"
+                        )}
+                    >
+                        Menu
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setMobileTab("categories")}
+                        className={cn(
+                            "flex-1 text-xs font-black uppercase tracking-widest px-3 py-2.5 rounded-lg transition-colors",
+                            mobileTab === "categories"
+                                ? "bg-accent text-[var(--primary)]"
+                                : "text-gray-400 hover:text-gray-600 hover:bg-gray-50"
+                        )}
+                    >
+                        Categories
+                    </button>
+                </div>
+
                 {/* Scrollable body */}
                 <div className="flex-1 overflow-y-auto p-4 space-y-1">
 
-                    {/* Categories */}
-                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2 pt-2 pb-2">
-                        Categories
-                    </p>
-                    <div className="grid grid-cols-2 gap-2 pb-3">
+                    {mobileTab === "categories" ? (
+                    <div className="flex flex-col gap-2">
                         {categories.map((cat) => (
                             <Link
                                 key={cat.href}
@@ -499,43 +526,45 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
                             </Link>
                         ))}
                     </div>
-
-                    {/* Nav links */}
-                    <div className="border-t border-gray-100 pt-2">
+                    ) : (
+                    <div>
                         {navLinks.map((link) => {
                             const hasSubLinks = link.hasDropdown && link.subLinks && link.subLinks.length > 0;
                             const isSubOpen = openMobileSubMenu === link.href;
                             return (
                                 <div key={link.href}>
                                     <div className="flex items-center">
-                                        <Link
-                                            href={link.href}
-                                            className={cn(
-                                                "flex-1 text-sm font-semibold px-4 py-3 rounded-lg transition-colors",
-                                                pathname === link.href
-                                                    ? "bg-accent text-[var(--primary)]"
-                                                    : "text-gray-700 hover:bg-gray-50"
-                                            )}
-                                            onClick={() => setIsOpen(false)}
-                                        >
-                                            {link.name}
-                                        </Link>
-                                        {hasSubLinks && (
+                                        {hasSubLinks ? (
                                             <button
+                                                type="button"
                                                 onClick={() => setOpenMobileSubMenu(isSubOpen ? null : link.href)}
-                                                aria-label={isSubOpen ? "Close submenu" : "Open submenu"}
+                                                aria-expanded={isSubOpen}
                                                 className={cn(
-                                                    "w-8 h-8 mr-2 rounded-full flex items-center justify-center border transition-all shrink-0",
+                                                    "flex-1 flex items-center justify-between text-sm font-semibold px-4 py-3 rounded-lg transition-colors text-left",
                                                     isSubOpen
-                                                        ? "bg-accent border-[var(--primary)]/30 text-[var(--primary)]"
-                                                        : "border-gray-200 text-gray-400 hover:border-gray-300 hover:text-gray-600"
+                                                        ? "bg-accent text-[var(--primary)]"
+                                                        : "text-gray-700 hover:bg-gray-50"
                                                 )}
                                             >
+                                                {link.name}
                                                 <ChevronDown
                                                     size={15}
-                                                    className={cn("transition-transform duration-200", isSubOpen ? "rotate-180" : "")}
+                                                    className={cn("mr-1 shrink-0 transition-transform duration-200", isSubOpen ? "rotate-180" : "")}
                                                 />
                                             </button>
+                                        ) : (
+                                            <Link
+                                                href={link.href}
+                                                className={cn(
+                                                    "flex-1 text-sm font-semibold px-4 py-3 rounded-lg transition-colors",
+                                                    pathname === link.href
+                                                        ? "bg-accent text-[var(--primary)]"
+                                                        : "text-gray-700 hover:bg-gray-50"
+                                                )}
+                                                onClick={() => setIsOpen(false)}
+                                            >
+                                                {link.name}
+                                            </Link>
                                         )}
                                     </div>
                                     {hasSubLinks && isSubOpen && (
@@ -556,6 +585,7 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
                             );
                         })}
                     </div>
+                    )}
                 </div>
 
                 {/* Auth buttons pinned to bottom */}

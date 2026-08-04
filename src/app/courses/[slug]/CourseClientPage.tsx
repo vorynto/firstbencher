@@ -252,13 +252,13 @@ export default function CourseClientPage({ course, instructors = [], sidebarCont
 
     return (
         <div
-            className={`min-h-screen text-[#1a202c] pb-16${!section_bg_color ? " bg-gray-50" : ""}`}
+            className={`min-h-screen text-[#1a202c] pb-10${!section_bg_color ? " bg-gray-50" : ""}`}
             style={pageBgStyle}
         >
 
             {/* ── HERO SECTION ─────────────────────────────────────────── */}
             <div ref={heroRef} className="bg-[#111111]">
-                <div className="max-w-375 mx-auto px-4 sm:px-10 py-14 grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-12 items-start">
+                <div className="max-w-375 mx-auto px-4 sm:px-10 py-10 grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-12 items-start">
 
                     {/* Left: Text */}
                     <div className="text-white space-y-7">
@@ -472,7 +472,7 @@ export default function CourseClientPage({ course, instructors = [], sidebarCont
             </div>
 
             {/* ── MAIN BODY ─────────────────────────────────────────────── */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-12">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-12">
 
                 {/* LEFT CONTENT */}
                 <div className="flex flex-col gap-12">
@@ -927,10 +927,12 @@ function CorporateTrainingCard({ courseTitle }: { courseTitle: string }) {
         <>
             {/* Promo card */}
             <div className="bg-[#111111] rounded-2xl p-6 text-white">
-                <div className="w-12 h-12 rounded-xl bg-[var(--primary)]/20 flex items-center justify-center mb-4">
-                    <Building2 size={24} className="text-[var(--primary)]" />
+                <div className="flex items-center gap-4 mb-4">
+                    <div className="w-12 h-12 rounded-xl bg-[var(--primary)]/20 flex items-center justify-center shrink-0">
+                        <Building2 size={24} className="text-[var(--primary)]" />
+                    </div>
+                    <h3 className="font-black text-lg leading-snug">Want Corporate Training?</h3>
                 </div>
-                <h3 className="font-black text-lg leading-snug mb-2">Want Corporate Training?</h3>
                 <p className="text-white/70 text-sm leading-relaxed mb-5">
                     Upskill your entire team with customized, instructor-led training tailored to your
                     organization&apos;s goals — flexible schedules, group discounts, and dedicated support.
