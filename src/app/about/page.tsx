@@ -94,7 +94,7 @@ export default async function AboutPage() {
             />
 
             {/* ── About Section (Matched to Home) ── */}
-            <section className="py-24 overflow-hidden">
+            <section className="py-14 overflow-hidden">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6">
                     <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
                         
@@ -186,10 +186,10 @@ export default async function AboutPage() {
             </section>
 
             {/* ── Mission & Vision Section (New) ── */}
-            <section className="py-24 bg-primary-tint/50 relative overflow-hidden">
+            <section className="py-14 bg-primary-tint/50 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-96 h-96 bg-primary-tint rounded-full blur-3xl opacity-30 -translate-y-1/2 translate-x-1/2" />
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
-                    <div className="text-center max-w-3xl mx-auto mb-16">
+                    <div className="text-center max-w-3xl mx-auto mb-10">
                         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-tint text-[var(--primary)] text-[10px] font-black uppercase tracking-widest mb-4 border border-[var(--primary)]/20">
                             <Award size={14} /> Our Core Purpose
                         </div>
@@ -232,9 +232,9 @@ export default async function AboutPage() {
 
             {/* ── Core Values ── */}
             {valuesData.values?.length > 0 && (
-                <section className="py-14 bg-gray-50/50">
+                <section className="py-10 bg-gray-50/50">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6">
-                        <div className="text-center mb-14">
+                        <div className="text-center mb-10">
                             <span className="inline-block bg-[var(--primary)]/10 text-[var(--primary)] text-xs font-black uppercase tracking-widest px-4 py-2 rounded-full mb-4">Our Values</span>
                             <h2 className="text-4xl font-black text-gray-900">What Drives Us</h2>
                         </div>
@@ -253,13 +253,13 @@ export default async function AboutPage() {
 
             {/* ── Team Section ── */}
             {team.members?.length > 0 && (
-                <section className="py-32 bg-white relative overflow-hidden">
+                <section className="py-16 bg-white relative overflow-hidden">
                     {/* Decorative Background Elements */}
                     <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary-tint/50 rounded-full blur-[100px] -z-10" />
                     <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-50/30 rounded-full blur-[120px] -z-10" />
-                    
+
                     <div className="max-w-7xl mx-auto px-4 sm:px-6">
-                        <div className="text-center max-w-3xl mx-auto mb-20">
+                        <div className="text-center max-w-3xl mx-auto mb-12">
                             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-tint text-[var(--primary)] text-[10px] font-black uppercase tracking-widest mb-6 border border-[var(--primary)]/20">
                                 <Users size={14} /> Our Visionaries
                             </div>

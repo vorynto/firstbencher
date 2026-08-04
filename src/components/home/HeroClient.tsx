@@ -135,7 +135,7 @@ export default function HeroClient({ content }: { content: HeroContent }) {
                 <div className="absolute right-0 bottom-0 w-[500px] h-[500px] bg-[#f6f2fe] rounded-full blur-[80px] translate-x-1/3 translate-y-1/3" />
             </div>
 
-            <div className="container mx-auto px-6 lg:px-12 flex-1 flex flex-col justify-center pt-2 pb-12 lg:pt-4 lg:pb-16 relative z-[20]">
+            <div className="container mx-auto px-6 lg:px-12 flex-1 flex flex-col justify-center pt-2 pb-8 lg:pt-4 lg:pb-10 relative z-[20]">
                 <div className="flex flex-col lg:flex-row items-center justify-between w-full gap-6 lg:gap-6">
 
                     {/* ════════ LEFT CONTENT ════════ */}

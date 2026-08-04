@@ -61,7 +61,7 @@ export default function AboutSection() {
     };
 
     return (
-        <section className="pt-10 pb-16 bg-white overflow-hidden">
+        <section className="pt-8 pb-10 bg-white overflow-hidden">
             <div className="max-w-7xl mx-auto px-4 sm:px-6">
                 <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
                     
@@ -152,7 +152,7 @@ export default function AboutSection() {
                         />
 
                         {/* Mission & Vision Grid */}
-                        <div className="grid sm:grid-cols-2 gap-8 mb-12 max-w-2xl">
+                        <div className="grid sm:grid-cols-2 gap-8 mb-8 max-w-2xl">
                             <div className="bg-white p-1 rounded-2xl transition-all group">
                                 <div className="flex items-start gap-4">
                                     <div className="w-12 h-12 rounded-xl bg-orange-50 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">

@@ -22,7 +22,7 @@ export default function JobDetailClient({ job }: { job: Job }) {
     const [applyOpen, setApplyOpen] = useState(false);
 
     return (
-        <section className="py-16">
+        <section className="py-10">
             <div className="max-w-4xl mx-auto px-4 sm:px-6">
                 <Link href="/career" className="inline-flex items-center gap-2 text-[var(--primary)] font-bold text-sm hover:gap-3 transition-all mb-8">
                     <ArrowLeft size={16} /> Back to Careers

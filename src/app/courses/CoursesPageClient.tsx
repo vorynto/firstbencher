@@ -246,7 +246,7 @@ export default function CoursesPageClient({
 
                 {/* ── Course Grid ── */}
                 {filteredCourses.length === 0 ? (
-                    <div className="py-16 text-center bg-white rounded-3xl border border-dashed border-gray-200">
+                    <div className="py-12 text-center bg-white rounded-3xl border border-dashed border-gray-200">
                         <div className="w-20 h-20 bg-accent rounded-full flex items-center justify-center mx-auto mb-5">
                             <Search size={32} className="text-[var(--primary)]/40" />
                         </div>

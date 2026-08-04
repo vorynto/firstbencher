@@ -65,7 +65,7 @@ export default async function ContactPage() {
             />
 
             {/* ── Contact Grid ── */}
-            <section className="py-14 bg-white">
+            <section className="py-10 bg-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
 
@@ -111,7 +111,7 @@ export default async function ContactPage() {
 
             {/* ── Branch Offices ── */}
             {details.branches && details.branches.length > 0 && (
-                <section className="py-14 bg-gray-50 border-t border-gray-100">
+                <section className="py-10 bg-gray-50 border-t border-gray-100">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6">
                         <div className="text-center mb-10">
                             <h2 className="text-3xl font-black text-gray-900 mb-2">Our Branch Offices</h2>

@@ -25,7 +25,7 @@ export default async function WorkshopsPage() {
                 subtitle="Elevate your career with our intensive, hands-on live training sessions led by industry experts."
             />
 
-            <section className="py-20">
+            <section className="py-12">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-12">
                     {workshops && workshops.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pt-8">

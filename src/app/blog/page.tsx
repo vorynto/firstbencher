@@ -33,7 +33,7 @@ export default async function BlogListingPage() {
         .order("published_at", { ascending: false });
 
     return (
-        <main className="min-h-screen bg-white pb-20">
+        <main className="min-h-screen bg-white pb-12">
             <PageHero
                 title="Latest"
                 highlightedTitle="Insights & Learning Resources"

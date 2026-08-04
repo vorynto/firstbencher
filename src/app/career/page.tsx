@@ -31,14 +31,14 @@ export default async function CareerPage() {
             />
 
             {/* Job listings */}
-            <section className="py-16">
+            <section className="py-10">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6">
                     <CareerClient jobs={jobs || []} />
                 </div>
             </section>
 
             {/* Why join us */}
-            <section className="py-16 bg-white border-t border-gray-100">
+            <section className="py-10 bg-white border-t border-gray-100">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6">
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
                         {PERKS.map(({ icon: Icon, title, desc }) => (

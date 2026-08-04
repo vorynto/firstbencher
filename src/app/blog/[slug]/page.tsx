@@ -129,7 +129,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
     return (
         <>
         <JsonLd data={articleJsonLd} />
-        <main className="min-h-screen bg-white pb-24">
+        <main className="min-h-screen bg-white pb-14">
             {/* Post Header */}
             <PageHero>
                 <div className="max-w-7xl mx-auto">
@@ -170,7 +170,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
                 </div>
             </PageHero>
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-12">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-8">
                 <div className="flex flex-col lg:flex-row gap-16">
                     {/* Main Content */}
                     <article className="lg:flex-1">
@@ -195,7 +195,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
                         />
 
                         {/* Footer / Share */}
-                        <div className="mt-16 pt-10 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center gap-6">
+                        <div className="mt-10 pt-8 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center gap-6">
                             <div className="flex items-center gap-4">
                                 <span className="text-xs font-black uppercase tracking-widest text-gray-400">Share this insight:</span>
                                 <div className="flex gap-2">

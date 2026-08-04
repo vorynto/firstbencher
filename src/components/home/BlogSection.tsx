@@ -25,13 +25,13 @@ export default function BlogSection({ blogs }: BlogSectionProps) {
     if (!blogs || blogs.length === 0) return null;
 
     return (
-        <section className="py-20 bg-white relative overflow-hidden">
+        <section className="py-12 bg-white relative overflow-hidden">
             {/* Background Decorations */}
             <div className="absolute top-0 right-0 w-96 h-96 bg-[var(--primary-tint)] opacity-50 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-50/30 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
-                <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+                <div className="flex flex-col md:flex-row justify-between items-end mb-8 gap-6">
                     <div className="max-w-2xl">
                         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-50 text-[var(--primary)] text-[10px] font-black uppercase tracking-widest mb-4 border border-red-100/50">
                             <span className="w-1.5 h-1.5 rounded-full bg-[var(--primary)] animate-pulse" />
@@ -48,7 +48,7 @@ export default function BlogSection({ blogs }: BlogSectionProps) {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
                     {blogs.map((blog) => (
                         <Link key={blog.id} href={`/blog/${blog.slug}`} className="group bg-white rounded-[32px] overflow-hidden border border-gray-100 hover:shadow-2xl hover:shadow-red-900/5 transition-all duration-500 flex flex-col h-full">
                             {/* Image Container */}

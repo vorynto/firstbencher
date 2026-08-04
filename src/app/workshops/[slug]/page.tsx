@@ -105,7 +105,7 @@ export default async function WorkshopDetailPage({ params }: Props) {
                     badgeText={workshop.category || "Workshop"}
                 />
 
-                <section className="py-20 px-8">
+                <section className="py-12 px-8">
                     <div className="max-w-4xl mx-auto space-y-12">
                         <Link href="/workshops" className="inline-flex items-center gap-2 text-primary hover:gap-3 transition-all font-bold">
                             <ArrowLeft size={20} /> Back to Workshops
