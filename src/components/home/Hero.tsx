@@ -15,6 +15,7 @@ type HeroContent = {
     stat2_label: string;
     hero_image_url: string;
     popular_categories_list: Array<{ name: string; emoji: string }>;
+    all_categories_list: Array<{ name: string; emoji: string }>;
     trusted_count?: string;
     trusted_label?: string;
     trust_avatar_1?: string;
@@ -41,6 +42,7 @@ const defaults: HeroContent = {
     stat2_label: "Expert Courses",
     hero_image_url: "",
     popular_categories_list: [],
+    all_categories_list: [],
     trusted_count: "10,000+",
     trusted_label: "students",
     corporate_clients: [
@@ -67,12 +69,16 @@ export default async function HeroSection() {
             content = { ...defaults, ...(data.content as Partial<HeroContent>) };
         }
 
-        // Popular Categories row is driven by the managed "course_categories" list
-        // (admin/courses → Manage Categories), filtered to entries with show_in_homepage.
+        // Popular Categories row + course-search dropdown are both driven by the
+        // managed "course_categories" list (admin/courses → Manage Categories).
         const managedCategories: Array<{ name: string; emoji: string; show_in_homepage?: boolean }> =
             (catData?.content as any)?.categories || [];
-        content.popular_categories_list = managedCategories
-            .filter(c => c.show_in_homepage !== false && c.name)
+        const validCategories = managedCategories.filter(c => c.name);
+        content.popular_categories_list = validCategories
+            .filter(c => c.show_in_homepage !== false)
+            .map(c => ({ name: c.name, emoji: c.emoji || "" }));
+        // Dropdown shows every admin-created category, regardless of show_in_homepage.
+        content.all_categories_list = validCategories
             .map(c => ({ name: c.name, emoji: c.emoji || "" }));
     } catch {
         // Use defaults on any error

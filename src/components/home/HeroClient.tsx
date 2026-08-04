@@ -32,6 +32,7 @@ type HeroContent = {
     stat2_label: string;
     hero_image_url: string;
     popular_categories_list: Array<{ name: string; emoji: string }>;
+    all_categories_list: Array<{ name: string; emoji: string }>;
     trusted_count?: string;
     trusted_label?: string;
     trust_avatar_1?: string;
@@ -44,18 +45,6 @@ type HeroContent = {
     thumbs_up_icon?: string;
     corporate_clients?: Array<{ name: string; logo_url: string; _id?: string }>;
 };
-
-const allCategories = [
-    "All Categories",
-    "Project Management",
-    "Program Management",
-    "Quality Management",
-    "Business Analysis",
-    "AI & Machine Learning",
-    "Supply Chain",
-    "IT Programming",
-    "Operations",
-];
 
 type Course = {
     id: string;
@@ -98,6 +87,7 @@ export default function HeroClient({ content }: { content: HeroContent }) {
     const [loading, setLoading] = useState(false);
     const [catOpen, setCatOpen] = useState(false);
     const searchRef = useRef<HTMLDivElement>(null);
+    const categoryOptions = [{ name: "All Categories", emoji: "" }, ...h.all_categories_list];
 
     useEffect(() => {
         if (query.length < 2) {
@@ -133,7 +123,7 @@ export default function HeroClient({ content }: { content: HeroContent }) {
     };
 
     return (
-        <section className="relative min-h-[500px] lg:min-h-screen flex flex-col pt-5 bg-[#F8F9FF] z-[10] overflow-x-hidden"
+        <section className="relative min-h-[500px] lg:min-h-screen flex flex-col pt-5 bg-[#F8F9FF] z-[10]"
             style={{
                 backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'40\' height=\'40\' viewBox=\'0 0 40 40\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M20 0l20 10v20L20 40 0 30V10z\' fill=\'none\' stroke=\'%23EEF0FA\' stroke-width=\'1\' opacity=\'0.8\'/%3E%3C/svg%3E")',
             }}
@@ -309,14 +299,14 @@ export default function HeroClient({ content }: { content: HeroContent }) {
 
                         {/* Category dropdown */}
                         {catOpen && (
-                            <div className="absolute top-full left-0 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 w-64 z-50">
-                                {["All Categories", "Development", "Business", "Finance", "Design", "Marketing"].map(cat => (
+                            <div className="absolute top-full left-0 mt-2 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 w-64 max-h-72 overflow-y-auto z-50">
+                                {categoryOptions.map(cat => (
                                     <button
-                                        key={cat}
-                                        onClick={() => { setCategory(cat); setCatOpen(false); }}
+                                        key={cat.name}
+                                        onClick={() => { setCategory(cat.name); setCatOpen(false); }}
                                         className="w-full text-left px-5 py-2.5 text-sm hover:bg-[#f4f6ff] transition-colors font-medium text-gray-700"
                                     >
-                                        {cat}
+                                        {cat.emoji ? `${cat.emoji} ` : ""}{cat.name}
                                     </button>
                                 ))}
                             </div>
