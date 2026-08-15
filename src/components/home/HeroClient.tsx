@@ -31,8 +31,8 @@ type HeroContent = {
     stat2_value: string;
     stat2_label: string;
     hero_image_url: string;
-    popular_categories_list: Array<{ name: string; emoji: string }>;
-    all_categories_list: Array<{ name: string; emoji: string }>;
+    popular_categories_list: Array<{ name: string; emoji: string; icon_url?: string }>;
+    all_categories_list: Array<{ name: string; emoji: string; icon_url?: string }>;
     trusted_count?: string;
     trusted_label?: string;
     trust_avatar_1?: string;
@@ -304,9 +304,15 @@ export default function HeroClient({ content }: { content: HeroContent }) {
                                     <button
                                         key={cat.name}
                                         onClick={() => { setCategory(cat.name); setCatOpen(false); }}
-                                        className="w-full text-left px-5 py-2.5 text-sm hover:bg-[#f4f6ff] transition-colors font-medium text-gray-700"
+                                        className="w-full text-left px-5 py-2.5 text-sm hover:bg-[#f4f6ff] transition-colors font-medium text-gray-700 flex items-center gap-2"
                                     >
-                                        {cat.emoji ? `${cat.emoji} ` : ""}{cat.name}
+                                        {cat.icon_url ? (
+                                            // eslint-disable-next-line @next/next/no-img-element
+                                            <img src={cat.icon_url} alt="" className="w-4 h-4 object-contain shrink-0" />
+                                        ) : cat.emoji ? (
+                                            <span>{cat.emoji}</span>
+                                        ) : null}
+                                        {cat.name}
                                     </button>
                                 ))}
                             </div>
@@ -366,9 +372,15 @@ export default function HeroClient({ content }: { content: HeroContent }) {
                                 <Link
                                     key={cat.name}
                                     href={`/courses?cat=${slugify(cat.name)}`}
-                                    className="bg-white hover:bg-[var(--primary)] hover:text-white text-[#64748B] px-5 py-2 rounded-lg text-[13px] font-semibold transition-colors border border-gray-200 shadow-sm"
+                                    className="bg-white hover:bg-[var(--primary)] hover:text-white text-[#64748B] px-5 py-2 rounded-lg text-[13px] font-semibold transition-colors border border-gray-200 shadow-sm flex items-center gap-2"
                                 >
-                                    {cat.emoji ? `${cat.emoji} ` : ""}{cat.name}
+                                    {cat.icon_url ? (
+                                        // eslint-disable-next-line @next/next/no-img-element
+                                        <img src={cat.icon_url} alt="" className="w-4 h-4 object-contain shrink-0" />
+                                    ) : cat.emoji ? (
+                                        <span>{cat.emoji}</span>
+                                    ) : null}
+                                    {cat.name}
                                 </Link>
                             ))}
                         </div>

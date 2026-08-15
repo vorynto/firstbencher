@@ -2,7 +2,7 @@ import { headers } from "next/headers";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import HeaderClient from "./HeaderClient";
 
-type NavCategory = { name: string; emoji: string; count: number };
+type NavCategory = { name: string; emoji: string; icon_url?: string; count: number };
 
 type HeaderContent = {
     email: string;
@@ -96,7 +96,7 @@ export default async function Header() {
 
         // Category dropdown is driven by the managed "course_categories" list (admin/courses → Manage Categories),
         // filtered to entries with show_in_header, with counts computed live from active courses.
-        const managedCategories: Array<{ name: string; emoji: string; show_in_header?: boolean }> =
+        const managedCategories: Array<{ name: string; emoji: string; icon_url?: string; show_in_header?: boolean }> =
             (categoriesRes.data?.content as any)?.categories || [];
         const counts = new Map<string, number>();
         for (const c of (coursesRes.data || []) as Array<{ category: string | null }>) {
@@ -105,7 +105,7 @@ export default async function Header() {
         }
         content.nav_categories = managedCategories
             .filter(c => c.show_in_header !== false && c.name)
-            .map(c => ({ name: c.name, emoji: c.emoji || "📚", count: counts.get(c.name) || 0 }));
+            .map(c => ({ name: c.name, emoji: c.emoji || "📚", icon_url: c.icon_url || "", count: counts.get(c.name) || 0 }));
     } catch {
         // fall through to defaults
     }

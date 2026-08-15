@@ -12,7 +12,7 @@ import {
 import Button from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 
-type NavCategory = { name: string; emoji: string; count: number };
+type NavCategory = { name: string; emoji: string; icon_url?: string; count: number };
 
 type TopBarContent = {
     email: string;
@@ -310,8 +310,13 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
                                                 href={cat.href}
                                                 className="flex items-center gap-4 p-4 rounded-xl border border-gray-100 hover:border-primary/30 hover:bg-primary/5 transition-all group"
                                             >
-                                                <div className="w-14 h-14 rounded-xl bg-primary/8 flex items-center justify-center text-3xl shrink-0 group-hover:scale-110 transition-transform">
-                                                    {cat.emoji}
+                                                <div className="w-14 h-14 rounded-xl bg-primary/8 flex items-center justify-center text-3xl shrink-0 overflow-hidden group-hover:scale-110 transition-transform">
+                                                    {cat.icon_url ? (
+                                                        // eslint-disable-next-line @next/next/no-img-element
+                                                        <img src={cat.icon_url} alt="" className="w-8 h-8 object-contain" />
+                                                    ) : (
+                                                        cat.emoji
+                                                    )}
                                                 </div>
                                                 <div className="min-w-0">
                                                     <p className="text-sm font-bold text-gray-900 group-hover:text-primary transition-colors leading-snug">{cat.name}</p>
@@ -518,7 +523,14 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
                                 className="flex items-center gap-2 p-3 rounded-xl bg-gray-50 hover:bg-accent hover:text-[var(--primary)] transition-all"
                                 onClick={() => setIsOpen(false)}
                             >
-                                <span className="text-xl leading-none">{cat.emoji}</span>
+                                <span className="text-xl leading-none w-6 h-6 flex items-center justify-center shrink-0">
+                                    {cat.icon_url ? (
+                                        // eslint-disable-next-line @next/next/no-img-element
+                                        <img src={cat.icon_url} alt="" className="w-5 h-5 object-contain" />
+                                    ) : (
+                                        cat.emoji
+                                    )}
+                                </span>
                                 <div className="min-w-0">
                                     <p className="text-xs font-bold text-gray-800 leading-tight truncate">{cat.name}</p>
                                     <p className="text-[10px] text-gray-400">{cat.count}+ Courses</p>

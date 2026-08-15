@@ -83,8 +83,7 @@ export default async function PopularCourses() {
         <section className="bg-accent/30 py-10">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col items-center">
                 <div className="text-center mb-10">
-                    <h2 className="text-3xl md:text-4xl font-black text-[#1a202c] mb-3">Popular Courses</h2>
-                    <p className="text-sm font-bold text-gray-700 tracking-wide uppercase">! New Learnings begin !</p>
+                    <h2 className="text-3xl md:text-4xl font-black text-[#1a202c] mb-3">Our Courses</h2>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full">

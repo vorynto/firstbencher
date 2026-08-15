@@ -5,6 +5,7 @@ import { Plus, Search, Edit2, Trash2, ArrowLeft, Loader2, ListPlus, X, CheckCirc
 import { cn } from "@/lib/utils";
 import { createClient } from "@/lib/supabase";
 import ImageUploadField from "@/components/admin/ImageUploadField";
+import IconUploadField from "@/components/admin/IconUploadField";
 import dynamic from "next/dynamic";
 
 const RichTextEditor = dynamic(() => import("@/components/admin/RichTextEditor"), { ssr: false });
@@ -21,7 +22,9 @@ type Instructor = {
 type CourseCategory = {
     id: string;
     name: string;
-    emoji: string;
+    icon_url: string;
+    /** @deprecated legacy emoji icon, kept for categories created before icon uploads existed */
+    emoji?: string;
     show_in_header: boolean;
     show_in_homepage: boolean;
 };
@@ -411,6 +414,7 @@ export default function CoursesPage() {
                     <div className="border-b border-gray-100 pb-2">
                         <h2 className="text-xl font-bold">Manage Course Categories</h2>
                         <p className="text-xs text-gray-500 mt-1">These populate the Category dropdown in the course form. Toggle "Header" / "Homepage" to control where each category is shown on the site.</p>
+                        <p className="text-xs text-gray-500 mt-1">Click the square to upload a category icon — any image size works, it&apos;s automatically shown small on the site.</p>
                     </div>
                     <CategoryBuilder data={categories} onChange={setCategories} />
                     <button onClick={async () => {
@@ -787,7 +791,7 @@ function FormView({
                         >
                             <option value="">— Select category —</option>
                             {categories.map(c => (
-                                <option key={c.id} value={c.name}>{c.emoji} {c.name}</option>
+                                <option key={c.id} value={c.name}>{c.name}</option>
                             ))}
                             {editorData.category && !categories.some(c => c.name === editorData.category) && (
                                 <option value={editorData.category}>{editorData.category} (not in list)</option>
@@ -910,21 +914,14 @@ function CategoryBuilder({ data, onChange }: { data: CourseCategory[]; onChange:
         onChange(next);
     };
     const addCategory = () => {
-        onChange([...data, { id: Math.random().toString(36).slice(2), name: "", emoji: "📚", show_in_header: true, show_in_homepage: true }]);
+        onChange([...data, { id: Math.random().toString(36).slice(2), name: "", icon_url: "", show_in_header: true, show_in_homepage: true }]);
     };
     return (
         <div className="space-y-3">
             <div className="space-y-2">
                 {data.map((cat, idx) => (
                     <div key={cat.id} className="flex flex-wrap gap-2 items-center bg-gray-50 p-3 rounded-xl border border-gray-200">
-                        <input
-                            type="text"
-                            value={cat.emoji}
-                            onChange={e => update(idx, { emoji: e.target.value })}
-                            placeholder="📋"
-                            title="Emoji"
-                            className="w-12 px-2 py-1.5 rounded-lg border border-gray-200 text-sm outline-none focus:border-[var(--primary)] text-center"
-                        />
+                        <IconUploadField value={cat.icon_url || ""} onChange={v => update(idx, { icon_url: v })} />
                         <input
                             type="text"
                             value={cat.name}
