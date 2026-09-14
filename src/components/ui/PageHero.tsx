@@ -21,8 +21,8 @@ export default function PageHero({
     children
 }: PageHeroProps) {
     return (
-        <div className="relative py-9 overflow-hidden" style={{ background: "linear-gradient(135deg, var(--primary-tint) 0%, color-mix(in srgb, var(--primary) 10%, white) 50%, var(--primary-tint) 100%)" }}>
-            <div className="absolute inset-0 pointer-events-none">
+        <div className="relative py-9" style={{ background: "linear-gradient(135deg, var(--primary-tint) 0%, color-mix(in srgb, var(--primary) 10%, white) 50%, var(--primary-tint) 100%)" }}>
+            <div className="absolute inset-0 pointer-events-none overflow-hidden">
                 <div className="absolute top-0 left-0 w-80 h-80 bg-[var(--primary)]/5 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
                 <div className="absolute bottom-0 right-0 w-64 h-64 bg-[var(--primary)]/5 rounded-full blur-3xl translate-x-1/3 translate-y-1/3" />
             </div>
