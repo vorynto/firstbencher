@@ -56,11 +56,11 @@ export default async function SuccessStoriesPage() {
                         )}
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div className="columns-1 md:columns-2 lg:columns-3 gap-8">
                         {stories.map((story) => (
-                            <div key={story.id} className="bg-white rounded-3xl p-8 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all flex flex-col gap-5">
+                            <div key={story.id} className="mb-8 break-inside-avoid bg-white rounded-3xl p-8 border border-gray-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all flex flex-col gap-5">
 
-                                {/* Profile image + name / course / company */}
+                                {/* Profile image + name / designation / company */}
                                 <div className="flex items-center gap-4">
                                     {story.image_url ? (
                                         <img
@@ -75,7 +75,7 @@ export default async function SuccessStoriesPage() {
                                     )}
                                     <div>
                                         <h4 className="font-black text-gray-900 text-lg leading-tight">{story.student_name}</h4>
-                                        {story.course_name && <p className="text-sm font-semibold text-[var(--primary)] mt-0.5">{story.course_name}</p>}
+                                        {story.designation && <p className="text-sm font-semibold text-[var(--primary)] mt-0.5">{story.designation}</p>}
                                         {story.company_name && <p className="text-sm text-gray-500">{story.company_name}</p>}
                                     </div>
                                 </div>

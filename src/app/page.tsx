@@ -27,7 +27,7 @@ export default async function Home() {
   // Fetch Success Stories
   const { data: stories } = await supabase
     .from("success_stories")
-    .select("id, student_name, course_name, company_name, rating, message, image_url")
+    .select("id, student_name, designation, company_name, rating, message, image_url")
     .eq("is_approved", true)
     .order("created_at", { ascending: false })
     .limit(6);

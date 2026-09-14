@@ -47,6 +47,7 @@ export async function POST(req: NextRequest) {
         const payload = {
             student_name,
             course_name,
+            designation: (body.designation || "").toString().trim(),
             company_name: (body.company_name || "").toString().trim(),
             linkedin_url: (body.linkedin_url || "").toString().trim(),
             video_url: (body.video_url || "").toString().trim(),

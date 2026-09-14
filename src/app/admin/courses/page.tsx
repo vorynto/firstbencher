@@ -65,6 +65,7 @@ type Course = {
         faq: boolean;
         instructors: boolean;
         videos: boolean;
+        testimonials: boolean;
     };
     custom_tabs?: { id: string; label: string; content: string }[];
     tab_order?: string[];
@@ -75,6 +76,7 @@ type Course = {
 const defaultTabsEnabled = {
     overview: true, training_dates: true, key_features: true,
     curriculum: true, eligibility: true, faq: true, instructors: true, videos: true,
+    testimonials: true,
 };
 
 // Built-in tabs. `id` (hyphenated) matches the section DOM id / tab id on the
@@ -87,6 +89,7 @@ const BUILT_IN_TAB_DEFS: { id: string; label: string; key: keyof typeof defaultT
     { id: "faq",            label: "FAQs",           key: "faq" },
     { id: "instructors",    label: "Instructors",    key: "instructors" },
     { id: "videos",         label: "Videos",         key: "videos" },
+    { id: "testimonials",   label: "Testimonials",   key: "testimonials" },
 ];
 
 const defaultCourse: Partial<Course> = {
@@ -716,6 +719,18 @@ function FormView({
                         data={editorData.videos || []}
                         onChange={arr => setEditorData({ ...editorData, videos: arr })}
                     />
+                </AccordionSection>
+
+                {/* Testimonials — auto-populated from approved Success Stories whose Course matches this course's title */}
+                <AccordionSection
+                    title="Testimonials" isOpen={openSections.has("testimonials")} onToggle={() => toggle("testimonials")}
+                    tabKey="testimonials" tabEnabled={tabs.testimonials} onTabToggle={() => setTab("testimonials")}
+                >
+                    <p className="text-sm text-gray-500 italic">
+                        Shows a slider of approved Success Stories where the &quot;Course&quot; field matches this course&apos;s title —
+                        no content to author here. Manage the stories themselves under{" "}
+                        <Link href="/admin/success-stories" className="text-[var(--primary)] font-bold underline">Success Stories</Link>.
+                    </p>
                 </AccordionSection>
 
                 {/* Custom Tabs */}

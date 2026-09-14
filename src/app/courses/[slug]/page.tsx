@@ -114,8 +114,8 @@ export default async function CourseDetailPage({
     let instructors: Instructor[] = [];
     const instructorIds: string[] = course.instructor_ids || [];
 
-    // Fetch instructors + sidebar content + trust bar content in parallel
-    const [instructorResult, sidebarResult, trustBarResult] = await Promise.all([
+    // Fetch instructors + sidebar content + trust bar content + matching testimonials in parallel
+    const [instructorResult, sidebarResult, trustBarResult, testimonialsResult] = await Promise.all([
         instructorIds.length > 0
             ? supabase
                 .from("instructors")
@@ -133,6 +133,13 @@ export default async function CourseDetailPage({
             .select("content")
             .eq("page_name", "course_trust_bar")
             .maybeSingle(),
+        // Success stories are mapped to a course by matching course_name (admin/feedback
+        // pick it from a dropdown of real course titles) to this course's title.
+        supabase
+            .from("success_stories")
+            .select("id, student_name, designation, company_name, rating, message, image_url")
+            .eq("is_approved", true)
+            .ilike("course_name", course.title),
     ]);
 
     if (instructorResult.data) {
@@ -143,6 +150,7 @@ export default async function CourseDetailPage({
 
     const sidebarContent = (sidebarResult.data?.content ?? {}) as Record<string, unknown>;
     const trustBarContent = (trustBarResult.data?.content ?? {}) as Record<string, unknown>;
+    const testimonials = testimonialsResult.data || [];
 
     const courseUrl = `${SITE_URL}/courses/${slug}`;
     // FAQPage JSON-LD (only when FAQs are present)
@@ -203,7 +211,7 @@ export default async function CourseDetailPage({
         <>
             <JsonLd data={courseJsonLd} />
             {faqJsonLd && <JsonLd data={faqJsonLd} />}
-            <CourseClientPage course={course} instructors={instructors} sidebarContent={sidebarContent} trustBarContent={trustBarContent} />
+            <CourseClientPage course={course} instructors={instructors} sidebarContent={sidebarContent} trustBarContent={trustBarContent} testimonials={testimonials} />
         </>
     );
 }

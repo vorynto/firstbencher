@@ -13,6 +13,7 @@ type Story = {
     id: string;
     student_name: string;
     course_name: string;
+    designation: string;
     company_name: string;
     message: string;
     image_url: string;
@@ -27,6 +28,7 @@ type Story = {
 const defaultStory: Partial<Story> = {
     student_name: "",
     course_name: "",
+    designation: "",
     company_name: "",
     message: "",
     image_url: "",
@@ -41,6 +43,7 @@ type Tab = "pending" | "approved";
 
 export default function AdminSuccessStoriesPage() {
     const [stories, setStories] = useState<Story[]>([]);
+    const [courseTitles, setCourseTitles] = useState<string[]>([]);
     const [loading, setLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
     const [currentStory, setCurrentStory] = useState<Partial<Story>>(defaultStory);
@@ -62,7 +65,12 @@ export default function AdminSuccessStoriesPage() {
         setLoading(false);
     };
 
-    useEffect(() => { fetchStories(); }, []);
+    useEffect(() => {
+        fetchStories();
+        supabase.from("courses").select("title").eq("active", true).order("title").then(({ data }) => {
+            if (data) setCourseTitles(data.map(c => c.title));
+        });
+    }, []);
 
     const pending = useMemo(() => stories.filter(s => !s.is_approved), [stories]);
     const approved = useMemo(() => stories.filter(s => s.is_approved), [stories]);
@@ -148,10 +156,27 @@ export default function AdminSuccessStoriesPage() {
                     </div>
                     <div className="p-8 grid grid-cols-1 lg:grid-cols-3 gap-10">
                         <div className="lg:col-span-2 space-y-6">
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Course</label>
+                                <select
+                                    value={currentStory.course_name ?? ""}
+                                    onChange={e => setCurrentStory({ ...currentStory, course_name: e.target.value })}
+                                    className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-[var(--primary)] focus:ring-4 focus:ring-[var(--primary)]/20 transition-all outline-none"
+                                >
+                                    <option value="">— Select a course —</option>
+                                    {courseTitles.map(title => (
+                                        <option key={title} value={title}>{title}</option>
+                                    ))}
+                                    {currentStory.course_name && !courseTitles.includes(currentStory.course_name) && (
+                                        <option value={currentStory.course_name}>{currentStory.course_name} (not in list)</option>
+                                    )}
+                                </select>
+                                <p className="text-xs text-gray-400">Determines which course detail page this testimonial appears on.</p>
+                            </div>
                             <div className="grid grid-cols-2 gap-6">
                                 {[
                                     { label: "Student Name *", key: "student_name", type: "text" },
-                                    { label: "Course Name", key: "course_name", type: "text" },
+                                    { label: "Designation", key: "designation", type: "text" },
                                     { label: "Company Name", key: "company_name", type: "text" },
                                     { label: "Rating (1-5)", key: "rating", type: "number" },
                                 ].map(({ label, key, type }) => (
@@ -308,8 +333,9 @@ export default function AdminSuccessStoriesPage() {
                                         )}
                                         <div className="min-w-[160px]">
                                             <p className="font-black text-gray-900 text-base">{story.student_name}</p>
-                                            {story.course_name && <p className="text-xs text-[var(--primary)] font-bold mt-0.5">{story.course_name}</p>}
+                                            {story.designation && <p className="text-xs text-[var(--primary)] font-bold mt-0.5">{story.designation}</p>}
                                             {story.company_name && <p className="text-xs text-gray-500 mt-0.5">{story.company_name}</p>}
+                                            {story.course_name && <p className="text-xs text-gray-400 mt-0.5">Course: {story.course_name}</p>}
                                             <div className="flex mt-2">
                                                 {[...Array(5)].map((_, i) => (
                                                     <Star key={i} size={12} className={i < (story.rating || 5) ? "fill-yellow-400 text-yellow-400" : "text-gray-200"} />

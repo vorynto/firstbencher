@@ -10,14 +10,24 @@ import Button from "@/components/ui/Button";
 interface SuccessStory {
     id: string;
     student_name: string;
-    course_name: string;
+    designation?: string;
     company_name?: string;
     rating: number;
     message: string;
     image_url?: string;
 }
 
-export default function SuccessStoriesSlider({ stories }: { stories: SuccessStory[] }) {
+export default function SuccessStoriesSlider({
+    stories,
+    heading = <>Real People. <span className="text-[var(--primary)]">Real Success.</span></>,
+    subheading = "Hear from our students who have transformed their careers and achieved their dreams through our professional training programs.",
+    showCta = true,
+}: {
+    stories: SuccessStory[];
+    heading?: React.ReactNode;
+    subheading?: string;
+    showCta?: boolean;
+}) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isPaused, setIsPaused] = useState(false);
 
@@ -49,10 +59,10 @@ export default function SuccessStoriesSlider({ stories }: { stories: SuccessStor
             <div className="max-w-7xl mx-auto px-4 sm:px-6">
                 <div className="text-center mb-2">
                     <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-gray-900 mb-1 tracking-tight">
-                        Real People. <span className="text-[var(--primary)]">Real Success.</span>
+                        {heading}
                     </h2>
                     <p className="text-gray-500 max-w-2xl mx-auto text-lg leading-relaxed font-medium">
-                        Hear from our students who have transformed their careers and achieved their dreams through our professional training programs.
+                        {subheading}
                     </p>
                 </div>
 
@@ -102,7 +112,7 @@ export default function SuccessStoriesSlider({ stories }: { stories: SuccessStor
                                             </div>
                                             <div className="min-w-0">
                                                 <h4 className="text-xl font-black text-gray-900 truncate leading-tight">{story.student_name}</h4>
-                                                <p className="text-[var(--primary)] font-bold text-sm tracking-wide uppercase mt-0.5 truncate">{story.course_name}</p>
+                                                {story.designation && <p className="text-[var(--primary)] font-bold text-sm tracking-wide uppercase mt-0.5 truncate">{story.designation}</p>}
                                                 {story.company_name && <p className="text-gray-400 text-xs font-semibold mt-1 truncate">{story.company_name}</p>}
                                             </div>
                                         </div>
@@ -143,14 +153,16 @@ export default function SuccessStoriesSlider({ stories }: { stories: SuccessStor
                     </div>
                 </div>
 
-                <div className="mt-2 text-center">
-                    <Button 
-                        href="/success-stories" 
-                        className="px-10 py-4 uppercase tracking-widest group"
-                    >
-                        View Wall of Fame <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform ml-2" />
-                    </Button>
-                </div>
+                {showCta && (
+                    <div className="mt-2 text-center">
+                        <Button
+                            href="/success-stories"
+                            className="px-10 py-4 uppercase tracking-widest group"
+                        >
+                            View Wall of Fame <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform ml-2" />
+                        </Button>
+                    </div>
+                )}
             </div>
             
         </section>

@@ -26,5 +26,11 @@ export default async function FeedbackPage() {
         redirect("/login?error=disabled");
     }
 
-    return <FeedbackForm prefillName={profile?.full_name || ""} />;
+    const { data: courses } = await supabase
+        .from("courses")
+        .select("title")
+        .eq("active", true)
+        .order("title");
+
+    return <FeedbackForm prefillName={profile?.full_name || ""} courses={(courses || []).map(c => c.title)} />;
 }

@@ -13,8 +13,19 @@ import { createClient } from "@/lib/supabase";
 import { useEnquiry } from "@/components/EnquiryModal";
 import { useCountry } from "@/components/CountryProvider";
 import CountrySwitcher from "@/components/ui/CountrySwitcher";
+import SuccessStoriesSlider from "@/components/home/SuccessStoriesSlider";
 import { sanitize } from "@/lib/sanitize";
 import type { CountryPrice } from "@/lib/countries";
+
+type SuccessStory = {
+    id: string;
+    student_name: string;
+    designation?: string;
+    company_name?: string;
+    rating: number;
+    message: string;
+    image_url?: string;
+};
 
 type Instructor = {
     id: string;
@@ -56,6 +67,7 @@ type Course = {
         faq?: boolean;
         instructors?: boolean;
         videos?: boolean;
+        testimonials?: boolean;
     };
     custom_tabs?: { id: string; label: string; content: string }[];
     tab_order?: string[];
@@ -100,7 +112,7 @@ const SIDEBAR_DEFAULTS: SidebarContent = {
     ],
 };
 
-export default function CourseClientPage({ course, instructors = [], sidebarContent = {}, trustBarContent = {} }: { course: Course; instructors?: Instructor[]; sidebarContent?: Record<string, unknown>; trustBarContent?: Record<string, unknown> }) {
+export default function CourseClientPage({ course, instructors = [], sidebarContent = {}, trustBarContent = {}, testimonials = [] }: { course: Course; instructors?: Instructor[]; sidebarContent?: Record<string, unknown>; trustBarContent?: Record<string, unknown>; testimonials?: SuccessStory[] }) {
     // Merge DB content with defaults so missing keys always fall back
     const sb: SidebarContent = { ...SIDEBAR_DEFAULTS, ...(sidebarContent as SidebarContent) };
     const trustAvatars = trustBarContent as { avatar_1?: string; avatar_2?: string; avatar_3?: string; avatar_4?: string; avatar_5?: string };
@@ -232,6 +244,9 @@ export default function CourseClientPage({ course, instructors = [], sidebarCont
     const allTabEntries: { id: string; label: string; custom?: boolean; content?: string }[] = [
         ...ALL_TABS.filter(t => te[t.key as keyof typeof te] !== false),
         ...customTabs.map(ct => ({ id: `custom-${ct.id}`, label: ct.label, custom: true, content: ct.content })),
+        // Always last by default (after custom tabs too) — only appears when
+        // enabled AND there are approved stories mapped to this course.
+        ...(te.testimonials !== false && testimonials.length > 0 ? [{ id: "testimonials", label: "Testimonials" }] : []),
     ];
     const tabOrder = course.tab_order || [];
     const rank = (id: string) => {
@@ -783,6 +798,17 @@ export default function CourseClientPage({ course, instructors = [], sidebarCont
                             />
                         </section>
                     ))}
+
+                    {/* TESTIMONIALS — success stories mapped to this course by title, shown last by default */}
+                    {te.testimonials !== false && testimonials.length > 0 && (
+                        <section id="testimonials" style={{ order: sectionOrder("testimonials") }} className="-mx-4 sm:-mx-6 lg:mx-0">
+                            <SuccessStoriesSlider
+                                stories={testimonials}
+                                heading={<>What Our <span className="text-[var(--primary)]">Students Say</span></>}
+                                subheading={`Hear from students who completed ${title}.`}
+                            />
+                        </section>
+                    )}
 
                     {/* Mobile Enquiry Form — shown only on mobile, at bottom of content */}
                     <div className="lg:hidden flex flex-col gap-6" style={{ order: 999 }}>

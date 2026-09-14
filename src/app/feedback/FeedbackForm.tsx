@@ -7,9 +7,10 @@ import ImageUploadField from "@/components/admin/ImageUploadField";
 
 type Props = {
     prefillName?: string;
+    courses?: string[];
 };
 
-export default function FeedbackForm({ prefillName = "" }: Props) {
+export default function FeedbackForm({ prefillName = "", courses = [] }: Props) {
     const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
     const [errorMsg, setErrorMsg] = useState("");
     const [rating, setRating] = useState(5);
@@ -19,6 +20,7 @@ export default function FeedbackForm({ prefillName = "" }: Props) {
     const [form, setForm] = useState({
         student_name: prefillName,
         course_name: "",
+        designation: "",
         company_name: "",
         linkedin_url: "",
         video_url: "",
@@ -110,25 +112,39 @@ export default function FeedbackForm({ prefillName = "" }: Props) {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-bold text-gray-700 mb-1">Course Taken <span className="text-red-500">*</span></label>
-                                    <input
+                                    <select
                                         required
-                                        type="text"
                                         value={form.course_name}
                                         onChange={e => setForm({ ...form, course_name: e.target.value })}
                                         className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[var(--primary)] focus:ring-2 focus:ring-red-100 transition-all outline-none bg-gray-50 focus:bg-white"
-                                        placeholder="e.g. PMP Certification"
-                                    />
+                                    >
+                                        <option value="">— Select a course —</option>
+                                        {courses.map(title => (
+                                            <option key={title} value={title}>{title}</option>
+                                        ))}
+                                    </select>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-bold text-gray-700 mb-1">Current Company <span className="text-gray-400 font-normal">(Optional)</span></label>
+                                    <label className="block text-sm font-bold text-gray-700 mb-1">Your Designation <span className="text-gray-400 font-normal">(Optional)</span></label>
                                     <input
                                         type="text"
-                                        value={form.company_name}
-                                        onChange={e => setForm({ ...form, company_name: e.target.value })}
+                                        value={form.designation}
+                                        onChange={e => setForm({ ...form, designation: e.target.value })}
                                         className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[var(--primary)] focus:ring-2 focus:ring-red-100 transition-all outline-none bg-gray-50 focus:bg-white"
-                                        placeholder="e.g. Google, Amazon"
+                                        placeholder="e.g. Senior Project Manager"
                                     />
                                 </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 mb-1">Current Company <span className="text-gray-400 font-normal">(Optional)</span></label>
+                                <input
+                                    type="text"
+                                    value={form.company_name}
+                                    onChange={e => setForm({ ...form, company_name: e.target.value })}
+                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[var(--primary)] focus:ring-2 focus:ring-red-100 transition-all outline-none bg-gray-50 focus:bg-white"
+                                    placeholder="e.g. Google, Amazon"
+                                />
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
