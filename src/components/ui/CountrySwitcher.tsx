@@ -39,7 +39,7 @@ export default function CountrySwitcher({ className, theme = "dark" }: { classNa
             </button>
 
             {open && (
-                <div className="absolute right-0 top-full mt-2 bg-white rounded-xl shadow-2xl border border-gray-100 py-2 w-56 max-h-72 overflow-y-auto z-50 text-left">
+                <div className="absolute right-0 top-full mt-2 bg-white rounded-xl shadow-2xl border border-gray-100 py-2 w-56 max-h-72 overflow-y-auto z-[60] text-left">
                     {countries.map(c => (
                         <button
                             key={c.code}
