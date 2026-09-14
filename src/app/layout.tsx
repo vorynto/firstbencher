@@ -7,6 +7,7 @@ import Footer from "@/components/layout/Footer";
 import GlobalCtaBar from "@/components/ui/GlobalCtaBar";
 import GlobalSettingsProvider from "@/components/layout/GlobalSettingsProvider";
 import { EnquiryProvider } from "@/components/EnquiryModal";
+import { CountryProvider } from "@/components/CountryProvider";
 import { JsonLd } from "@/components/JsonLd";
 import { unstable_cache } from "next/cache";
 import { supabaseAdmin } from "@/lib/supabase-admin";
@@ -198,11 +199,13 @@ export default async function RootLayout({
                 <JsonLd data={organizationJsonLd} />
                 <JsonLd data={websiteJsonLd} />
                 <GlobalSettingsProvider>
-                    <EnquiryProvider>
-                        <ConditionalLayout header={<Header />} footer={<Footer />} floatingContact={<GlobalCtaBar />}>
-                            {children}
-                        </ConditionalLayout>
-                    </EnquiryProvider>
+                    <CountryProvider>
+                        <EnquiryProvider>
+                            <ConditionalLayout header={<Header />} footer={<Footer />} floatingContact={<GlobalCtaBar />}>
+                                {children}
+                            </ConditionalLayout>
+                        </EnquiryProvider>
+                    </CountryProvider>
                 </GlobalSettingsProvider>
             </body>
         </html>

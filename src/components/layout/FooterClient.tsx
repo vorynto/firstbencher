@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { Mail, Phone, Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
+import CountrySwitcher from "@/components/ui/CountrySwitcher";
 
 type FooterContent = {
     tagline: string;
@@ -114,10 +115,11 @@ export default function FooterClient({ content }: { content: FooterContent }) {
                 </div>
 
                 {/* Copyright */}
-                <div className="border-t border-white/10 pt-8 flex justify-center items-center">
+                <div className="border-t border-white/10 pt-8 flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-4">
                     <p className="text-gray-200 text-xs text-center">
                         {copyrightText}
                     </p>
+                    <CountrySwitcher />
                 </div>
             </div>
         </footer>

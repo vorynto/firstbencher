@@ -194,6 +194,10 @@ export const defaultContents: Record<string, unknown> = {
         avatar_4: "",
         avatar_5: "",
     },
+    payment_settings: {
+        countries: [],
+        ccavenue_enabled: false,
+    },
     global_settings: {
         logo_header: "",
         logo_footer: "",

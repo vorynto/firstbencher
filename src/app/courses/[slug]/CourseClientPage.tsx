@@ -11,7 +11,10 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase";
 import { useEnquiry } from "@/components/EnquiryModal";
+import { useCountry } from "@/components/CountryProvider";
+import CountrySwitcher from "@/components/ui/CountrySwitcher";
 import { sanitize } from "@/lib/sanitize";
+import type { CountryPrice } from "@/lib/countries";
 
 type Instructor = {
     id: string;
@@ -57,6 +60,7 @@ type Course = {
     custom_tabs?: { id: string; label: string; content: string }[];
     tab_order?: string[];
     section_bg_color?: string | null;
+    country_prices?: CountryPrice[];
 };
 
 const ALL_TABS = [
@@ -781,13 +785,17 @@ export default function CourseClientPage({ course, instructors = [], sidebarCont
                     ))}
 
                     {/* Mobile Enquiry Form — shown only on mobile, at bottom of content */}
-                    <div className="lg:hidden" style={{ order: 999 }}>
+                    <div className="lg:hidden flex flex-col gap-6" style={{ order: 999 }}>
+                        <PricingCard countryPrices={course.country_prices} courseTitle={title} />
                         <EnquiryFormBlock courseTitle={title} />
                     </div>
                 </div>
 
                 {/* RIGHT SIDEBAR */}
                 <div className="hidden lg:block">
+                    {/* Pricing — reacts to the visitor's selected country/currency */}
+                    <PricingCard countryPrices={course.country_prices} courseTitle={title} />
+
                     {/* Have Questions? — static (scrolls with page) */}
                     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4 mb-6">
                         <h3 className="font-black text-lg text-[#1a202c]">{sb.contact_title}</h3>
@@ -858,6 +866,54 @@ function StarRating({ rating, size = 14 }: { rating: number; size?: number }) {
                     </div>
                 );
             })}
+        </div>
+    );
+}
+
+// ── PricingCard ──────────────────────────────────────────────────
+// Shows the course's price for the visitor's currently selected country
+// (auto-detected, or switched via the header/footer/this card's dropdown).
+// Renders nothing until countries are configured in Settings → Payments.
+
+function PricingCard({ countryPrices, courseTitle }: { countryPrices?: CountryPrice[]; courseTitle: string }) {
+    const { countries, selectedCountry, ccavenueEnabled, getDisplayPrice, loading } = useCountry();
+    const { openEnquiry } = useEnquiry();
+
+    if (loading || countries.length === 0 || !selectedCountry) return null;
+
+    const display = getDisplayPrice(countryPrices);
+
+    return (
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4 mb-6">
+            <div className="flex items-center justify-between gap-3">
+                <h3 className="font-black text-lg text-[#1a202c]">Course Fee</h3>
+                <CountrySwitcher theme="light" />
+            </div>
+
+            {display ? (
+                <div>
+                    <p className="text-3xl font-black text-[var(--primary)]">{display.formatted}</p>
+                    <p className="text-xs text-gray-400 mt-1">Priced in {selectedCountry.currency_code} for {selectedCountry.name}</p>
+                </div>
+            ) : (
+                <p className="text-gray-500 text-sm">Contact us for pricing in {selectedCountry.name}.</p>
+            )}
+
+            {ccavenueEnabled && display ? (
+                <button
+                    onClick={() => openEnquiry(`Buy Now — ${courseTitle} (${display.formatted} ${selectedCountry.currency_code})`)}
+                    className="w-full bg-[var(--primary)] text-white py-3 rounded-xl font-bold text-sm hover:bg-[var(--primary-dark)] transition-colors"
+                >
+                    Buy Now
+                </button>
+            ) : (
+                <button
+                    onClick={() => openEnquiry(`Enroll Now — ${courseTitle}`)}
+                    className="w-full bg-white border border-[var(--primary)] text-[var(--primary)] py-3 rounded-xl font-bold text-sm hover:bg-accent transition-colors"
+                >
+                    Enroll Now
+                </button>
+            )}
         </div>
     );
 }

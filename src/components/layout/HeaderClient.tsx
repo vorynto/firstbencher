@@ -10,6 +10,7 @@ import {
     Mail, Phone
 } from "lucide-react";
 import Button from "@/components/ui/Button";
+import CountrySwitcher from "@/components/ui/CountrySwitcher";
 import { cn } from "@/lib/utils";
 
 type NavCategory = { name: string; emoji: string; icon_url?: string; count: number };
@@ -247,6 +248,8 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
                                 <Phone size={14} className="text-white/60 shrink-0" />
                                 {topBar.phone}
                             </a>
+                            <span className="w-px h-4 bg-white/20" />
+                            <CountrySwitcher />
                         </div>
                         {/* Offer — last column, centered on mobile, pinned to the end on desktop */}
                         {topBar.offer && (

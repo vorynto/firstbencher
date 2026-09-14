@@ -4,11 +4,12 @@ import React, { useState, useEffect } from "react";
 import {
     Save, Loader2, Image as ImageIcon, Palette, Type, MousePointer2,
     AlertCircle, CheckCircle2, PanelTop, PanelBottom, Plus, Trash2, GripVertical,
-    Code2
+    Code2, CreditCard, Globe
 } from "lucide-react";
 import { Reorder } from "framer-motion";
 import ImageUploadField from "@/components/admin/ImageUploadField";
 import { cn } from "@/lib/utils";
+import { Country, PaymentSettings, DEFAULT_PAYMENT_SETTINGS } from "@/lib/countries";
 
 // ── Types ──────────────────────────────────────────────────────
 type GlobalSettings = {
@@ -56,11 +57,12 @@ export default function SettingsPage() {
     const [header, setHeader] = useState<Record<string, any>>({});
     const [footer, setFooter] = useState<Record<string, any>>({});
     const [customCode, setCustomCode] = useState<CustomCode>(defaultCustomCode);
+    const [payments, setPayments] = useState<PaymentSettings>(DEFAULT_PAYMENT_SETTINGS);
 
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [statusMenu, setStatusMenu] = useState<{ type: 'success' | 'error', msg: string } | null>(null);
-    const [activeTab, setActiveTab] = useState<"branding" | "colors" | "typography" | "buttons" | "header" | "footer" | "custom_code">("branding");
+    const [activeTab, setActiveTab] = useState<"branding" | "colors" | "typography" | "buttons" | "header" | "footer" | "custom_code" | "payments">("branding");
 
     useEffect(() => {
         fetchAllSettings();
@@ -77,11 +79,12 @@ export default function SettingsPage() {
 
     const fetchAllSettings = async () => {
         try {
-            const [gRes, hRes, fRes, cRes] = await Promise.all([
+            const [gRes, hRes, fRes, cRes, pRes] = await Promise.all([
                 fetch("/api/pages-content?page=global_settings"),
                 fetch("/api/pages-content?page=site_header"),
                 fetch("/api/pages-content?page=site_footer"),
                 fetch("/api/pages-content?page=custom_code"),
+                fetch("/api/pages-content?page=payment_settings"),
             ]);
 
             if (gRes.ok) {
@@ -111,6 +114,12 @@ export default function SettingsPage() {
                     setCustomCode(prev => ({ ...prev, ...data.content }));
                 }
             }
+            if (pRes.ok) {
+                const data = await pRes.json();
+                if (data.content && Object.keys(data.content).length > 0) {
+                    setPayments(prev => ({ ...prev, ...data.content }));
+                }
+            }
         } catch (err) {
             console.error("Failed to fetch settings:", err);
         } finally {
@@ -128,6 +137,7 @@ export default function SettingsPage() {
                 fetch("/api/pages-content", { method: "PUT", headers, body: JSON.stringify({ page_name: "site_header", content: header }) }),
                 fetch("/api/pages-content", { method: "PUT", headers, body: JSON.stringify({ page_name: "site_footer", content: footer }) }),
                 fetch("/api/pages-content", { method: "PUT", headers, body: JSON.stringify({ page_name: "custom_code", content: customCode }) }),
+                fetch("/api/pages-content", { method: "PUT", headers, body: JSON.stringify({ page_name: "payment_settings", content: payments }) }),
             ];
 
             const results = await Promise.all(reqs);
@@ -161,6 +171,7 @@ export default function SettingsPage() {
         { id: "buttons", label: "Buttons", icon: MousePointer2 },
         { id: "header", label: "Header Config", icon: PanelTop },
         { id: "footer", label: "Footer Config", icon: PanelBottom },
+        { id: "payments", label: "Payments", icon: CreditCard },
         { id: "custom_code", label: "Custom Code", icon: Code2 },
     ] as const;
 
@@ -508,6 +519,46 @@ export default function SettingsPage() {
                             </div>
                         </div>
                     )}
+                    {/* PAYMENTS TAB */}
+                    {activeTab === "payments" && (
+                        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                            <div>
+                                <h3 className="text-lg font-bold text-gray-900 mb-1">Payment Gateway</h3>
+                                <p className="text-sm text-gray-500 mb-6">
+                                    Turn on CC Avenue once you&apos;re ready to accept online payments. While it&apos;s off, course pages use the existing Enroll / Enquiry flow instead of a Buy Now button.
+                                </p>
+                                <div className="bg-gray-50 rounded-xl p-5 border border-gray-100 flex items-center justify-between gap-4">
+                                    <div>
+                                        <p className="font-bold text-gray-900 text-sm">CC Avenue Checkout</p>
+                                        <p className="text-xs text-gray-500 mt-1">
+                                            Shows a &quot;Buy Now&quot; button on course pages, priced in the visitor&apos;s selected country/currency.
+                                        </p>
+                                    </div>
+                                    <label className="flex items-center gap-2 text-sm font-semibold text-gray-700 shrink-0">
+                                        <input
+                                            type="checkbox"
+                                            checked={payments.ccavenue_enabled}
+                                            onChange={e => setPayments(prev => ({ ...prev, ccavenue_enabled: e.target.checked }))}
+                                            className="w-4 h-4 rounded text-[var(--primary)]"
+                                        />
+                                        Enabled
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h3 className="text-lg font-bold text-gray-900 mb-1">Countries &amp; Currencies</h3>
+                                <p className="text-sm text-gray-500 mb-6">
+                                    Countries added here appear as price fields on every course, and as the switcher in the header, footer, and course pages.
+                                </p>
+                                <CountryListBuilder
+                                    countries={payments.countries}
+                                    onChange={list => setPayments(prev => ({ ...prev, countries: list }))}
+                                />
+                            </div>
+                        </div>
+                    )}
+
                     {/* CUSTOM CODE TAB */}
                     {activeTab === "custom_code" && (
                         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
@@ -604,6 +655,77 @@ function ColorPicker({ configKey, label, value, onChange }: { configKey: keyof G
                 <input type="color" value={value || "#000000"} onChange={(e) => onChange(configKey, e.target.value)} className="w-10 h-10 rounded cursor-pointer border-0 p-0" />
                 <input type="text" value={value} onChange={(e) => onChange(configKey, e.target.value)} className="flex-1 outline-none text-sm font-mono text-gray-600 uppercase" maxLength={7} />
             </div>
+        </div>
+    );
+}
+
+function CountryListBuilder({ countries, onChange }: { countries: Country[]; onChange: (list: Country[]) => void }) {
+    const update = (idx: number, key: keyof Country, value: string) => {
+        const next = countries.map((c, i) => (i === idx ? { ...c, [key]: value } : c));
+        onChange(next);
+    };
+    const remove = (idx: number) => onChange(countries.filter((_, i) => i !== idx));
+    const add = () => onChange([...countries, { code: "", name: "", currency_code: "", currency_symbol: "" }]);
+
+    return (
+        <div className="flex flex-col gap-3">
+            {countries.map((c, idx) => (
+                <div key={idx} className="flex flex-col md:flex-row gap-3 items-end p-4 bg-white rounded-xl border border-gray-200 shadow-sm">
+                    <div className="flex-1 w-full">
+                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Country Name</label>
+                        <input
+                            type="text"
+                            value={c.name}
+                            onChange={e => update(idx, "name", e.target.value)}
+                            placeholder="India"
+                            className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-white focus:ring-2 focus:ring-[var(--primary)]/20 focus:border-[var(--primary)] outline-none text-sm"
+                        />
+                    </div>
+                    <div className="w-full md:w-24">
+                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Code</label>
+                        <input
+                            type="text"
+                            value={c.code}
+                            onChange={e => update(idx, "code", e.target.value.toUpperCase())}
+                            placeholder="IN"
+                            maxLength={2}
+                            className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-white focus:ring-2 focus:ring-[var(--primary)]/20 focus:border-[var(--primary)] outline-none text-sm font-mono uppercase"
+                        />
+                    </div>
+                    <div className="w-full md:w-28">
+                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Currency</label>
+                        <input
+                            type="text"
+                            value={c.currency_code}
+                            onChange={e => update(idx, "currency_code", e.target.value.toUpperCase())}
+                            placeholder="INR"
+                            maxLength={3}
+                            className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-white focus:ring-2 focus:ring-[var(--primary)]/20 focus:border-[var(--primary)] outline-none text-sm font-mono uppercase"
+                        />
+                    </div>
+                    <div className="w-full md:w-20">
+                        <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Symbol</label>
+                        <input
+                            type="text"
+                            value={c.currency_symbol}
+                            onChange={e => update(idx, "currency_symbol", e.target.value)}
+                            placeholder="₹"
+                            maxLength={3}
+                            className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-white focus:ring-2 focus:ring-[var(--primary)]/20 focus:border-[var(--primary)] outline-none text-sm text-center"
+                        />
+                    </div>
+                    <button onClick={() => remove(idx)} className="pb-2.5 text-red-400 hover:text-red-600 p-1 shrink-0"><Trash2 size={18} /></button>
+                </div>
+            ))}
+            <button
+                onClick={add}
+                className="flex items-center justify-center gap-2 py-2.5 border-2 border-dashed border-gray-300 rounded-xl text-sm font-bold text-gray-500 hover:border-[var(--primary)] hover:text-[var(--primary)]"
+            >
+                <Plus size={16} /> Add Country
+            </button>
+            {countries.length === 0 && (
+                <p className="text-xs text-gray-400 flex items-center gap-1.5"><Globe size={13} /> No countries configured yet — add one above to enable per-country pricing.</p>
+            )}
         </div>
     );
 }

@@ -7,6 +7,8 @@ import { createClient } from "@/lib/supabase";
 import ImageUploadField from "@/components/admin/ImageUploadField";
 import IconUploadField from "@/components/admin/IconUploadField";
 import dynamic from "next/dynamic";
+import Link from "next/link";
+import { Country, CountryPrice } from "@/lib/countries";
 
 const RichTextEditor = dynamic(() => import("@/components/admin/RichTextEditor"), { ssr: false });
 const TipTapEditor = dynamic(() => import("@/components/admin/TipTapEditor"), { ssr: false });
@@ -67,6 +69,7 @@ type Course = {
     custom_tabs?: { id: string; label: string; content: string }[];
     tab_order?: string[];
     section_bg_color?: string | null;
+    country_prices?: CountryPrice[];
 };
 
 const defaultTabsEnabled = {
@@ -95,6 +98,7 @@ const defaultCourse: Partial<Course> = {
     tabs_enabled: { ...defaultTabsEnabled },
     custom_tabs: [], tab_order: [],
     section_bg_color: null,
+    country_prices: [],
 };
 
 // ── SEO ──────────────────────────────────────────────────────────
@@ -169,6 +173,7 @@ export default function CoursesPage() {
     const [predefinedTags, setPredefinedTags] = useState<string[]>([]);
     const [categories, setCategories] = useState<CourseCategory[]>([]);
     const [allInstructors, setAllInstructors] = useState<Instructor[]>([]);
+    const [countries, setCountries] = useState<Country[]>([]);
     const [saving, setSaving] = useState(false);
     const [toast, setToast] = useState<{ type: "success" | "error"; msg: string } | null>(null);
 
@@ -189,9 +194,15 @@ export default function CoursesPage() {
                 setCategories(data.content.categories as CourseCategory[]);
             }
         };
+        const fetchCountries = async () => {
+            const { data } = await supabase.from("pages_content").select("content").eq("page_name", "payment_settings").single();
+            const list = (data?.content as { countries?: Country[] } | null)?.countries;
+            if (Array.isArray(list)) setCountries(list);
+        };
         fetchTags();
         fetchInstructors();
         fetchCategories();
+        fetchCountries();
         if (view === "list") fetchCourses();
     }, [view]);
 
@@ -250,6 +261,7 @@ export default function CoursesPage() {
             custom_tabs: editorData.custom_tabs || [],
             tab_order: editorData.tab_order || [],
             section_bg_color: editorData.section_bg_color || null,
+            country_prices: editorData.country_prices || [],
         };
 
         let err;
@@ -382,6 +394,7 @@ export default function CoursesPage() {
                     predefinedTags={predefinedTags}
                     categories={categories}
                     allInstructors={allInstructors}
+                    countries={countries}
                     saving={saving}
                     saveCourse={saveCourse}
                     seoData={seoData}
@@ -494,7 +507,7 @@ function AccordionSection({ title, isOpen, onToggle, tabKey, tabEnabled, onTabTo
 // ── FormView ────────────────────────────────────────────────────
 
 function FormView({
-    editorData, setEditorData, predefinedTags, categories, allInstructors, saving, saveCourse,
+    editorData, setEditorData, predefinedTags, categories, allInstructors, countries, saving, saveCourse,
     seoData, setSeoData, newKw, setNewKw,
 }: {
     editorData: Partial<Course>;
@@ -502,6 +515,7 @@ function FormView({
     predefinedTags: string[];
     categories: CourseCategory[];
     allInstructors: Instructor[];
+    countries: Country[];
     saving: boolean;
     saveCourse: () => void;
     seoData: CourseSeoData;
@@ -536,6 +550,49 @@ function FormView({
                         <Field label="URL Slug *" value={editorData.slug || ""} onChange={v => setEditorData({ ...editorData, slug: v.toLowerCase().replace(/[^a-z0-9-]/g, '-') })} placeholder="e.g. master-react" />
                     </div>
                     <Field label="Short Description" value={editorData.short_description || ""} onChange={v => setEditorData({ ...editorData, short_description: v })} type="textarea" placeholder="A brief one-liner for the card view..." rows={2} />
+                </AccordionSection>
+
+                {/* Country Pricing — shown on the course detail page, keyed to the visitor's selected country/currency */}
+                <AccordionSection
+                    title="Country Pricing" isOpen={openSections.has("pricing")} onToggle={() => toggle("pricing")}
+                    badge={editorData.country_prices?.length ? `${editorData.country_prices.length} set` : undefined}
+                >
+                    {countries.length === 0 ? (
+                        <p className="text-sm text-gray-500 italic">
+                            No countries configured yet. <Link href="/admin/settings" className="text-[var(--primary)] font-bold underline">Add countries in Settings → Payments →</Link>
+                        </p>
+                    ) : (
+                        <>
+                            <p className="text-xs text-gray-500 -mt-1">Leave a country blank to show &quot;Contact us for pricing&quot; instead of a price.</p>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                {countries.map(country => {
+                                    const existing = (editorData.country_prices || []).find(cp => cp.country_code === country.code);
+                                    return (
+                                        <div key={country.code} className="space-y-1.5">
+                                            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                                {country.name || country.code} ({country.currency_code})
+                                            </label>
+                                            <div className="relative">
+                                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">{country.currency_symbol}</span>
+                                                <input
+                                                    type="number"
+                                                    value={existing?.price ?? ""}
+                                                    onChange={e => {
+                                                        const raw = e.target.value;
+                                                        const rest: CountryPrice[] = (editorData.country_prices || []).filter(cp => cp.country_code !== country.code);
+                                                        const next = raw === "" ? rest : [...rest, { country_code: country.code, price: Number(raw) }];
+                                                        setEditorData({ ...editorData, country_prices: next });
+                                                    }}
+                                                    placeholder="Contact us for pricing"
+                                                    className="w-full pl-7 pr-3 py-2 rounded-lg border border-gray-200 bg-white focus:ring-2 focus:ring-[var(--primary)]/20 focus:border-[var(--primary)] outline-none text-sm"
+                                                />
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </>
+                    )}
                 </AccordionSection>
 
                 {/* Key Features — shown at the top of the course hero, not a frontend tab */}
