@@ -48,6 +48,7 @@ export default function AdminSuccessStoriesPage() {
     const [isEditing, setIsEditing] = useState(false);
     const [currentStory, setCurrentStory] = useState<Partial<Story>>(defaultStory);
     const [saving, setSaving] = useState(false);
+    const [saveError, setSaveError] = useState("");
     const [copied, setCopied] = useState(false);
     const [activeTab, setActiveTab] = useState<Tab>("pending");
     const [approvingId, setApprovingId] = useState<string | null>(null);
@@ -102,12 +103,20 @@ export default function AdminSuccessStoriesPage() {
             return;
         }
         setSaving(true);
+        setSaveError("");
+        let error;
         if (currentStory.id) {
-            const { error } = await supabase.from("success_stories").update(currentStory).eq("id", currentStory.id);
-            if (!error) { fetchStories(); setIsEditing(false); }
+            ({ error } = await supabase.from("success_stories").update(currentStory).eq("id", currentStory.id));
         } else {
-            const { error } = await supabase.from("success_stories").insert([currentStory]);
-            if (!error) { fetchStories(); setIsEditing(false); setActiveTab("approved"); }
+            ({ error } = await supabase.from("success_stories").insert([currentStory]));
+        }
+        if (!error) {
+            await fetchStories();
+            setIsEditing(false);
+            if (!currentStory.id) setActiveTab("approved");
+        } else {
+            console.error("Failed to save success story:", error.message);
+            setSaveError(error.message || "Failed to save. Please try again.");
         }
         setSaving(false);
     };
@@ -139,7 +148,7 @@ export default function AdminSuccessStoriesPage() {
                         {copied ? "Link Copied!" : "Copy Feedback Link"}
                     </button>
                     <button
-                        onClick={() => { setCurrentStory(defaultStory); setIsEditing(true); }}
+                        onClick={() => { setCurrentStory(defaultStory); setSaveError(""); setIsEditing(true); }}
                         className="flex items-center gap-2 bg-[#1E1E2F] hover:bg-[#2A2A40] text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-colors shadow-lg shadow-black/10"
                     >
                         <Plus size={18} /> Add Story Manually
@@ -218,6 +227,12 @@ export default function AdminSuccessStoriesPage() {
                                     className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:border-[var(--primary)] focus:ring-4 focus:ring-[var(--primary)]/20 transition-all outline-none resize-none leading-relaxed"
                                 />
                             </div>
+                            {saveError && (
+                                <div className="flex items-start gap-2 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700">
+                                    <X size={16} className="shrink-0 mt-0.5" />
+                                    <span><strong>Save failed:</strong> {saveError}</span>
+                                </div>
+                            )}
                             <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                                 <label className="flex items-center gap-3 cursor-pointer">
                                     <input
@@ -382,7 +397,7 @@ export default function AdminSuccessStoriesPage() {
                                         ) : (
                                             <>
                                                 <button
-                                                    onClick={() => { setCurrentStory(story); setIsEditing(true); }}
+                                                    onClick={() => { setCurrentStory(story); setSaveError(""); setIsEditing(true); }}
                                                     className="flex items-center gap-2 px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-bold rounded-xl transition-colors min-w-[130px] justify-center"
                                                 >
                                                     <Edit2 size={15} /> Edit

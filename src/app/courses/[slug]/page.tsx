@@ -150,6 +150,9 @@ export default async function CourseDetailPage({
 
     const sidebarContent = (sidebarResult.data?.content ?? {}) as Record<string, unknown>;
     const trustBarContent = (trustBarResult.data?.content ?? {}) as Record<string, unknown>;
+    if (testimonialsResult.error) {
+        console.error("Error fetching course testimonials:", testimonialsResult.error.message);
+    }
     const testimonials = testimonialsResult.data || [];
 
     const courseUrl = `${SITE_URL}/courses/${slug}`;

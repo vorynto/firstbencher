@@ -25,12 +25,13 @@ export default async function Home() {
   const supabase = await createClient();
   
   // Fetch Success Stories
-  const { data: stories } = await supabase
+  const { data: stories, error: storiesError } = await supabase
     .from("success_stories")
     .select("id, student_name, designation, company_name, rating, message, image_url")
     .eq("is_approved", true)
     .order("created_at", { ascending: false })
     .limit(6);
+  if (storiesError) console.error("Error fetching success stories:", storiesError.message);
 
   // Fetch Recent Blogs
   const { data: blogs } = await supabase
