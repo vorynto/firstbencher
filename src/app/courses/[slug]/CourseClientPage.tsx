@@ -13,7 +13,6 @@ import { createClient } from "@/lib/supabase";
 import { useEnquiry } from "@/components/EnquiryModal";
 import { useCountry } from "@/components/CountryProvider";
 import CountrySwitcher from "@/components/ui/CountrySwitcher";
-import SuccessStoriesSlider from "@/components/home/SuccessStoriesSlider";
 import { sanitize } from "@/lib/sanitize";
 import type { CountryPrice } from "@/lib/countries";
 
@@ -25,6 +24,7 @@ type SuccessStory = {
     rating: number;
     message: string;
     image_url?: string;
+    certificate_url?: string;
 };
 
 type Instructor = {
@@ -805,12 +805,10 @@ export default function CourseClientPage({ course, instructors = [], sidebarCont
 
                     {/* TESTIMONIALS — success stories mapped to this course by title, shown last by default */}
                     {te.testimonials !== false && testimonials.length > 0 && (
-                        <section id="testimonials" style={{ order: sectionOrder("testimonials") }} className="-mx-4 sm:-mx-6 lg:mx-0">
-                            <SuccessStoriesSlider
-                                stories={testimonials}
-                                heading={<>What Our <span className="text-[var(--primary)]">Students Say</span></>}
-                                subheading={`Hear from students who completed ${title}.`}
-                            />
+                        <section id="testimonials" style={{ order: sectionOrder("testimonials") }} className="pb-8">
+                            <h2 className="text-2xl font-black text-[#1a202c] mb-2">What Our Students Say</h2>
+                            <p className="text-gray-500 text-sm mb-6">Hear from students who completed {title}</p>
+                            <TestimonialCarousel testimonials={testimonials} />
                         </section>
                     )}
 
@@ -1387,6 +1385,165 @@ function InstructorCarousel({ instructors }: { instructors: Instructor[] }) {
                     </div>
                     <button
                         onClick={next}
+                        className="w-9 h-9 bg-white border border-gray-200 rounded-full shadow-sm flex items-center justify-center hover:bg-gray-50 transition-all"
+                    >
+                        <ChevronRight size={16} className="text-gray-600" />
+                    </button>
+                </div>
+            )}
+        </div>
+    );
+}
+
+// ── TestimonialCarousel ──────────────────────────────────────────
+// One story at a time, same layout/nav pattern as InstructorCarousel.
+
+function TestimonialCarousel({ testimonials }: { testimonials: SuccessStory[] }) {
+    const [current, setCurrent] = useState(0);
+    const [isPaused, setIsPaused] = useState(false);
+    const total = testimonials.length;
+
+    const prev = () => setCurrent(i => (i - 1 + total) % total);
+    const next = () => setCurrent(i => (i + 1) % total);
+
+    // Auto-slide every 5 s; pauses while the user hovers
+    useEffect(() => {
+        if (total <= 1 || isPaused) return;
+        const timer = setInterval(() => setCurrent(i => (i + 1) % total), 5000);
+        return () => clearInterval(timer);
+    }, [total, isPaused]);
+
+    const story = testimonials[current];
+
+    return (
+        <div
+            className="relative px-5"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+        >
+            {/* ── Prev button — left card edge, vertically centred ── */}
+            {total > 1 && (
+                <button
+                    onClick={prev}
+                    aria-label="Previous testimonial"
+                    className="absolute left-0 top-1/2 -translate-y-1/2 w-10 h-10 bg-white border border-gray-200 rounded-full shadow-md hidden md:flex items-center justify-center hover:bg-gray-50 hover:shadow-lg transition-all z-10"
+                >
+                    <ChevronLeft size={18} className="text-gray-600" />
+                </button>
+            )}
+
+            {/* ── Next button — right card edge, vertically centred ── */}
+            {total > 1 && (
+                <button
+                    onClick={next}
+                    aria-label="Next testimonial"
+                    className="absolute right-0 top-1/2 -translate-y-1/2 w-10 h-10 bg-white border border-gray-200 rounded-full shadow-md hidden md:flex items-center justify-center hover:bg-gray-50 hover:shadow-lg transition-all z-10"
+                >
+                    <ChevronRight size={18} className="text-gray-600" />
+                </button>
+            )}
+
+            {/* ── Card ── */}
+            <div className="flex flex-col md:flex-row border border-gray-200 rounded-2xl overflow-hidden bg-white shadow-sm">
+
+                {/* Left: Photo + identity */}
+                <div className="flex flex-col items-center pt-8 pb-6 px-6 bg-gray-50 md:w-64 shrink-0 border-b md:border-b-0 md:border-r border-gray-200">
+
+                    {/* Photo */}
+                    {story.image_url ? (
+                        <img
+                            src={story.image_url}
+                            alt={story.student_name}
+                            className="w-28 h-28 rounded-full object-cover shadow-md mb-4 border-4 border-white"
+                        />
+                    ) : (
+                        <div className="w-28 h-28 rounded-full bg-gradient-to-br from-[var(--primary)] to-[#c60404] flex items-center justify-center text-white font-black text-3xl shadow-md mb-4 border-4 border-white">
+                            {story.student_name.charAt(0).toUpperCase()}
+                        </div>
+                    )}
+
+                    {/* Name */}
+                    <h3 className="font-black text-[#1a202c] text-lg leading-tight text-center">{story.student_name}</h3>
+
+                    {/* Designation + company */}
+                    {story.designation && (
+                        <p className="text-gray-600 text-xs text-center leading-snug mt-1">{story.designation}</p>
+                    )}
+                    {story.company_name && (
+                        <p className="text-gray-400 text-xs text-center mt-0.5">{story.company_name}</p>
+                    )}
+
+                    {/* Star rating */}
+                    <div className="flex items-center gap-1 mt-3">
+                        {[...Array(5)].map((_, i) => (
+                            <Star key={i} size={14} className={i < (story.rating || 5) ? "text-yellow-400 fill-yellow-400" : "text-gray-200"} />
+                        ))}
+                    </div>
+
+                    {/* Dot indicators */}
+                    {total > 1 && (
+                        <div className="flex items-center gap-1.5 mt-4">
+                            {testimonials.map((_, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => setCurrent(i)}
+                                    aria-label={`Go to testimonial ${i + 1}`}
+                                    className={`h-2 rounded-full transition-all ${i === current ? "bg-[var(--primary)] w-4" : "bg-gray-300 w-2"}`}
+                                />
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                {/* Right: Message + certificate */}
+                <div className="flex-1 p-6 md:p-8">
+                    <p className="text-gray-700 text-base leading-relaxed mb-6">&ldquo;{story.message}&rdquo;</p>
+
+                    {story.certificate_url && (
+                        <div>
+                            <p className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-2 flex items-center gap-1.5">
+                                <Award size={13} className="text-[var(--primary)]" /> Course Certificate
+                            </p>
+                            <a
+                                href={story.certificate_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-block max-w-[220px] rounded-xl border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
+                            >
+                                <img
+                                    src={story.certificate_url}
+                                    alt={`${story.student_name}'s certificate`}
+                                    className="w-full h-auto object-contain bg-gray-50"
+                                />
+                            </a>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* Mobile nav — shown below card on small screens */}
+            {total > 1 && (
+                <div className="flex md:hidden items-center justify-center gap-4 mt-4">
+                    <button
+                        onClick={prev}
+                        aria-label="Previous testimonial"
+                        className="w-9 h-9 bg-white border border-gray-200 rounded-full shadow-sm flex items-center justify-center hover:bg-gray-50 transition-all"
+                    >
+                        <ChevronLeft size={16} className="text-gray-600" />
+                    </button>
+                    <div className="flex items-center gap-1.5">
+                        {testimonials.map((_, i) => (
+                            <button
+                                key={i}
+                                onClick={() => setCurrent(i)}
+                                aria-label={`Go to testimonial ${i + 1}`}
+                                className={`h-2 rounded-full transition-all ${i === current ? "bg-[var(--primary)] w-4" : "bg-gray-300 w-2"}`}
+                            />
+                        ))}
+                    </div>
+                    <button
+                        onClick={next}
+                        aria-label="Next testimonial"
                         className="w-9 h-9 bg-white border border-gray-200 rounded-full shadow-sm flex items-center justify-center hover:bg-gray-50 transition-all"
                     >
                         <ChevronRight size={16} className="text-gray-600" />

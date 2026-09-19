@@ -17,17 +17,7 @@ interface SuccessStory {
     image_url?: string;
 }
 
-export default function SuccessStoriesSlider({
-    stories,
-    heading = <>Real People. <span className="text-[var(--primary)]">Real Success.</span></>,
-    subheading = "Hear from our students who have transformed their careers and achieved their dreams through our professional training programs.",
-    showCta = true,
-}: {
-    stories: SuccessStory[];
-    heading?: React.ReactNode;
-    subheading?: string;
-    showCta?: boolean;
-}) {
+export default function SuccessStoriesSlider({ stories }: { stories: SuccessStory[] }) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isPaused, setIsPaused] = useState(false);
 
@@ -59,10 +49,10 @@ export default function SuccessStoriesSlider({
             <div className="max-w-7xl mx-auto px-4 sm:px-6">
                 <div className="text-center mb-2">
                     <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-gray-900 mb-1 tracking-tight">
-                        {heading}
+                        Real People. <span className="text-[var(--primary)]">Real Success.</span>
                     </h2>
                     <p className="text-gray-500 max-w-2xl mx-auto text-lg leading-relaxed font-medium">
-                        {subheading}
+                        Hear from our students who have transformed their careers and achieved their dreams through our professional training programs.
                     </p>
                 </div>
 
@@ -153,16 +143,14 @@ export default function SuccessStoriesSlider({
                     </div>
                 </div>
 
-                {showCta && (
-                    <div className="mt-2 text-center">
-                        <Button
-                            href="/success-stories"
-                            className="px-10 py-4 uppercase tracking-widest group"
-                        >
-                            View Wall of Fame <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform ml-2" />
-                        </Button>
-                    </div>
-                )}
+                <div className="mt-2 text-center">
+                    <Button
+                        href="/success-stories"
+                        className="px-10 py-4 uppercase tracking-widest group"
+                    >
+                        View Wall of Fame <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform ml-2" />
+                    </Button>
+                </div>
             </div>
             
         </section>

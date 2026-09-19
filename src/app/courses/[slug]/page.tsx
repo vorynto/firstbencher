@@ -137,7 +137,7 @@ export default async function CourseDetailPage({
         // pick it from a dropdown of real course titles) to this course's title.
         supabase
             .from("success_stories")
-            .select("id, student_name, designation, company_name, rating, message, image_url")
+            .select("id, student_name, designation, company_name, rating, message, image_url, certificate_url")
             .eq("is_approved", true)
             .ilike("course_name", course.title),
     ]);
