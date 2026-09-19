@@ -202,12 +202,16 @@ export default function CourseClientPage({ course, instructors = [], sidebarCont
     }, []);
 
     useEffect(() => {
-        const globalHeader = document.querySelector("header.fixed.top-0");
-        if (globalHeader instanceof HTMLElement) {
-            globalHeader.style.display = stickyNavVisible ? "none" : "block";
+        // Hide the global site header's fixed nav row once this page's own
+        // sticky tab nav takes over — both are pinned to the viewport top and
+        // the tab nav's higher z-index would otherwise render over the header,
+        // covering its nav links and category dropdown without disabling them.
+        const globalHeaderNav = document.getElementById("site-header-nav");
+        if (globalHeaderNav instanceof HTMLElement) {
+            globalHeaderNav.style.display = stickyNavVisible ? "none" : "";
         }
         return () => {
-            if (globalHeader instanceof HTMLElement) globalHeader.style.display = "block";
+            if (globalHeaderNav instanceof HTMLElement) globalHeaderNav.style.display = "";
         };
     }, [stickyNavVisible]);
 

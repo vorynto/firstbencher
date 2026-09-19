@@ -263,11 +263,13 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
                 </div>
 
                 {/* ── Main Nav Row ── */}
-                <div className={cn(
-                    "bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm z-50 transition-all duration-300 ease-in-out h-[76px]",
-                    isFixed ? "fixed top-0 left-0 right-0 w-full" : "relative",
-                    isVisible || !isFixed ? "translate-y-0" : "-translate-y-full"
-                )}>
+                <div
+                    id="site-header-nav"
+                    className={cn(
+                        "bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm z-50 transition-all duration-300 ease-in-out h-[76px]",
+                        isFixed ? "fixed top-0 left-0 right-0 w-full" : "relative",
+                        isVisible || !isFixed ? "translate-y-0" : "-translate-y-full"
+                    )}>
                     <div className="container mx-auto px-6 lg:px-12 flex items-center h-full gap-6">
 
                         {/* Logo */}
