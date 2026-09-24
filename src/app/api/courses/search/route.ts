@@ -23,11 +23,32 @@ export async function GET(req: NextRequest) {
         supabaseQuery = supabaseQuery.eq("category", category);
     }
 
-    const { data: courses, error } = await supabaseQuery.limit(8);
+    const [{ data: courses, error }, { data: activeCourses }] = await Promise.all([
+        supabaseQuery.limit(8),
+        query
+            ? supabase.from("courses").select("category").eq("active", true)
+            : Promise.resolve({ data: [] as { category: string | null }[] }),
+    ]);
 
     if (error) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json({ courses: courses || [] });
+    // Category matches — surfaced alongside course matches so a search for
+    // "AI" also links straight to the AI & Machine Learning category, not
+    // just courses whose title happens to contain the term.
+    const categories = query
+        ? Array.from(
+              new Set(
+                  (activeCourses || [])
+                      .map(c => c.category)
+                      .filter((c): c is string => !!c)
+              )
+          )
+              .filter(c => c.toLowerCase().includes(query.toLowerCase()))
+              .sort()
+              .slice(0, 5)
+        : [];
+
+    return NextResponse.json({ courses: courses || [], categories });
 }

@@ -50,30 +50,19 @@ type Course = {
     id: string;
     title: string;
     category: string;
-    price: number;
     slug: string;
-    image_url?: string; // Added for the new search results display
-    short_description?: string; // Added for the new search results display
+    image_url?: string;
+    short_description?: string;
 };
 
-async function searchCourses(query: string, category: string): Promise<Course[]> {
-    await new Promise((r) => setTimeout(r, 280));
-    const mock: Course[] = [
-        { id: "1", title: "PMP Certification Training", category: "Project Management", price: 599, slug: "pmp-training", image_url: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", short_description: "Master project management with PMP." },
-        { id: "2", title: "AI for Business Leaders", category: "AI & Machine Learning", price: 799, slug: "ai-business", image_url: "https://images.unsplash.com/photo-1555212697-c22d5b9c7a3a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", short_description: "Understand AI's impact on business." },
-        { id: "3", title: "Agile Masterclass", category: "Project Management", price: 399, slug: "agile-masterclass", image_url: "https://images.unsplash.com/photo-1557804506-669a67965ba0?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", short_description: "Become an Agile expert." },
-        { id: "4", title: "Six Sigma Green Belt", category: "Quality Management", price: 450, slug: "six-sigma", image_url: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", short_description: "Improve quality with Six Sigma." },
-        { id: "5", title: "Business Analysis Fundamentals", category: "Business Analysis", price: 349, slug: "ba-fundamentals", image_url: "https://images.unsplash.com/photo-1552664730-d307ca8849d1?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", short_description: "Foundations of business analysis." },
-        { id: "6", title: "Supply Chain Management", category: "Supply Chain", price: 499, slug: "supply-chain", image_url: "https://images.unsplash.com/photo-1589908129309-43218787091f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", short_description: "Optimize your supply chain." },
-        { id: "7", title: "Python for Data Science", category: "IT Programming", price: 299, slug: "python-ds", image_url: "https://images.unsplash.com/photo-1550439062-609e1d857245?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", short_description: "Learn Python for data analysis." },
-        { id: "8", title: "Program Management Professional (PgMP)", category: "Program Management", price: 899, slug: "pgmp-training", image_url: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", short_description: "Advanced program management skills." },
-        { id: "9", title: "Operations Management Fundamentals", category: "Operations", price: 329, slug: "operations-fundamentals", image_url: "https://images.unsplash.com/photo-1521737711867-ee171078176a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", short_description: "Core concepts of operations." },
-    ];
-    return mock.filter((c) => {
-        const matchCat = category === "All Categories" || c.category === category;
-        const matchQ = query === "" || c.title.toLowerCase().includes(query.toLowerCase());
-        return matchCat && matchQ;
-    });
+async function searchCourses(query: string, category: string): Promise<{ courses: Course[]; categories: string[] }> {
+    const params = new URLSearchParams();
+    if (query) params.set("q", query);
+    if (category !== "All Categories") params.set("cat", category);
+    const res = await fetch(`/api/courses/search?${params.toString()}`);
+    if (!res.ok) return { courses: [], categories: [] };
+    const data = await res.json();
+    return { courses: data.courses || [], categories: data.categories || [] };
 }
 
 export default function HeroClient({ content }: { content: HeroContent }) {
@@ -83,6 +72,7 @@ export default function HeroClient({ content }: { content: HeroContent }) {
     const [query, setQuery] = useState("");
     const [category, setCategory] = useState("All Categories");
     const [results, setResults] = useState<Course[]>([]);
+    const [resultCategories, setResultCategories] = useState<string[]>([]);
     const [showResults, setShowResults] = useState(false);
     const [loading, setLoading] = useState(false);
     const [catOpen, setCatOpen] = useState(false);
@@ -91,13 +81,14 @@ export default function HeroClient({ content }: { content: HeroContent }) {
 
     useEffect(() => {
         if (query.length < 2) {
-            const t0 = setTimeout(() => { setResults([]); setShowResults(false); }, 0);
+            const t0 = setTimeout(() => { setResults([]); setResultCategories([]); setShowResults(false); }, 0);
             return () => clearTimeout(t0);
         }
         const t = setTimeout(async () => {
             setLoading(true);
             const data = await searchCourses(query, category);
-            setResults(data);
+            setResults(data.courses);
+            setResultCategories(data.categories);
             setShowResults(true);
             setLoading(false);
         }, 300);
@@ -332,8 +323,22 @@ export default function HeroClient({ content }: { content: HeroContent }) {
                                         <div className="w-4 h-4 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
                                         Searching courses...
                                     </div>
-                                ) : results.length > 0 ? (
+                                ) : results.length > 0 || resultCategories.length > 0 ? (
                                     <div className="flex flex-col">
+                                        {resultCategories.length > 0 && (
+                                            <div className="px-5 pt-3 pb-2 flex flex-wrap gap-2 border-b border-gray-50">
+                                                {resultCategories.map(cat => (
+                                                    <Link
+                                                        key={cat}
+                                                        href={`/courses?cat=${slugify(cat)}`}
+                                                        onClick={() => setShowResults(false)}
+                                                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-accent border border-[var(--primary)]/20 text-[var(--primary)] text-xs font-bold hover:bg-[var(--primary)] hover:text-white transition-colors"
+                                                    >
+                                                        Category: {cat}
+                                                    </Link>
+                                                ))}
+                                            </div>
+                                        )}
                                         {results.map(course => (
                                             <Link key={course.id} href={`/courses/${course.slug}`} onClick={() => setShowResults(false)} className="px-5 py-3 hover:bg-[#f4f6ff] transition-colors flex items-center gap-4 group">
                                                 <div className="w-12 h-12 bg-gray-100 rounded-lg overflow-hidden shrink-0 border border-gray-200">

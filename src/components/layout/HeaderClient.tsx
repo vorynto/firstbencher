@@ -66,6 +66,7 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [searchResults, setSearchResults] = useState<any[]>([]);
+    const [searchCategories, setSearchCategories] = useState<string[]>([]);
     const [isSearching, setIsSearching] = useState(false);
 
     React.useEffect(() => {
@@ -91,6 +92,7 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
     React.useEffect(() => {
         if (searchQuery.length < 2) {
             setSearchResults([]);
+            setSearchCategories([]);
             return;
         }
         const timer = setTimeout(async () => {
@@ -99,6 +101,7 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
                 const res = await fetch(`/api/courses/search?q=${encodeURIComponent(searchQuery)}`);
                 const data = await res.json();
                 setSearchResults(data.courses || []);
+                setSearchCategories(data.categories || []);
             } catch (err) {
                 console.error("Search failed:", err);
             } finally {
@@ -184,12 +187,29 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
                                 )}
                             </form>
 
+                            {/* Category matches — surfaced above course results */}
+                            {searchQuery.length >= 2 && searchCategories.length > 0 && (
+                                <div className="flex flex-wrap gap-3 mb-6 animate-in fade-in slide-in-from-top-4 duration-500">
+                                    {searchCategories.map(cat => (
+                                        <Link
+                                            key={cat}
+                                            href={`/courses?cat=${slugify(cat)}`}
+                                            onClick={() => setIsSearchOpen(false)}
+                                            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent border border-[var(--primary)]/20 text-[var(--primary)] text-sm font-bold hover:bg-[var(--primary)] hover:text-white hover:border-[var(--primary)] transition-colors"
+                                        >
+                                            <LayoutGrid size={14} />
+                                            Category: {cat}
+                                        </Link>
+                                    ))}
+                                </div>
+                            )}
+
                             {/* Results */}
                             {searchQuery.length >= 2 && (
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-in fade-in slide-in-from-top-4 duration-500">
                                     {searchResults.length > 0 ? (
                                         searchResults.map((course: any) => (
-                                            <Link 
+                                            <Link
                                                 key={course.id}
                                                 href={`/courses/${course.slug}`}
                                                 className="flex items-center gap-5 p-4 rounded-2xl bg-white border border-gray-50 hover:border-[var(--primary)]/20 hover:shadow-xl hover:shadow-red-900/5 transition-all group"
@@ -209,7 +229,7 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
                                                 </div>
                                             </Link>
                                         ))
-                                    ) : !isSearching && (
+                                    ) : !isSearching && searchCategories.length === 0 && (
                                         <div className="col-span-full py-20 text-center bg-gray-50/50 rounded-3xl border-2 border-dashed border-gray-200">
                                             <p className="text-gray-400 font-bold">No results found for &quot;{searchQuery}&quot;</p>
                                         </div>

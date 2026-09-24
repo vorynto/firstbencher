@@ -44,7 +44,8 @@ export default function CoursesPageClient({
         return initialCourses.filter(course => {
             const matchesSearch =
                 course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                course.slug.toLowerCase().includes(searchTerm.toLowerCase());
+                course.slug.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                (course.category ? course.category.toLowerCase().includes(searchTerm.toLowerCase()) : false);
             const matchesCategory =
                 selectedCategory === ALL_CATEGORIES || course.category === selectedCategory;
             return matchesSearch && matchesCategory;
