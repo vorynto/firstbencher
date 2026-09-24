@@ -552,6 +552,10 @@ function FormView({
                         <Field label="Course Title *" value={editorData.title || ""} onChange={v => setEditorData({ ...editorData, title: v })} placeholder="e.g. Master React in 30 Days" />
                         <Field label="URL Slug *" value={editorData.slug || ""} onChange={v => setEditorData({ ...editorData, slug: v.toLowerCase().replace(/[^a-z0-9-]/g, '-') })} placeholder="e.g. master-react" />
                     </div>
+                    <div>
+                        <Field label="Card Header Text (Custom)" value={editorData.card_inner_text || ""} onChange={v => setEditorData({ ...editorData, card_inner_text: v })} placeholder="e.g. ADVANCED" />
+                        <p className="text-[10px] text-gray-400 mt-1 italic">If empty, defaults to the first word of the course title.</p>
+                    </div>
                     <Field label="Short Description" value={editorData.short_description || ""} onChange={v => setEditorData({ ...editorData, short_description: v })} type="textarea" placeholder="A brief one-liner for the card view..." rows={2} />
                 </AccordionSection>
 
@@ -772,34 +776,6 @@ function FormView({
                     </button>
                 </section>
 
-                {/* Tab visibility summary */}
-                <section className="bg-white p-6 rounded-2xl border border-gray-200 flex flex-col gap-3">
-                    <h2 className="text-base font-bold border-b border-gray-100 pb-2">Tab Visibility</h2>
-                    <p className="text-xs text-gray-400">Toggle tabs directly on each section above.</p>
-                    {([
-                        ["overview", "Overview"],
-                        ["training_dates", "Training Dates"],
-                        ["curriculum", "Curriculum"],
-                        ["eligibility", "Eligibility"],
-                        ["faq", "FAQs"],
-                        ["instructors", "Instructors"],
-                        ["videos", "Videos"],
-                    ] as [keyof typeof defaultTabsEnabled, string][]).map(([key, label]) => (
-                        <div key={key} className="flex items-center justify-between">
-                            <span className="text-sm text-gray-700 font-medium">{label}</span>
-                            <button
-                                type="button"
-                                onClick={() => setTab(key)}
-                                className="flex items-center gap-1.5"
-                            >
-                                {tabs[key]
-                                    ? <><ToggleRight size={20} className="text-green-500" /><span className="text-xs font-bold text-green-600">On</span></>
-                                    : <><ToggleLeft size={20} className="text-gray-300" /><span className="text-xs font-bold text-gray-400">Off</span></>}
-                            </button>
-                        </div>
-                    ))}
-                </section>
-
                 <section className="bg-white p-6 rounded-2xl border border-gray-200 flex flex-col gap-5">
                     <h2 className="text-base font-bold border-b border-gray-100 pb-2">Media</h2>
                     <ImageUploadField label="Cover Image" value={editorData.image_url || ""} onChange={v => setEditorData({ ...editorData, image_url: v })} />
@@ -878,18 +854,6 @@ function FormView({
                     <p className="text-[10px] text-gray-400 italic -mt-3">Shown in the hero trust bar as &quot;X+ Students Enrolled &amp; Rated&quot;.</p>
                 </section>
 
-                {/* ── SEO Panel ── */}
-                <CourseSeoPanel
-                    seoData={seoData}
-                    setSeoData={setSeoData}
-                    newKw={newKw}
-                    setNewKw={setNewKw}
-                    courseTitle={editorData.title || ""}
-                    courseSlug={editorData.slug || ""}
-                    courseDescription={editorData.description || ""}
-                    courseShortDescription={editorData.short_description || ""}
-                />
-
                 <section className="bg-white p-6 rounded-2xl border border-gray-200 flex flex-col gap-5">
                     <h2 className="text-base font-bold border-b border-gray-100 pb-2">Tags & Sorting</h2>
                     <div className="flex flex-col gap-2">
@@ -917,11 +881,19 @@ function FormView({
                     </div>
                     <p className="text-xs text-gray-500 italic leading-snug">Select &quot;Popular&quot; to show in the Popular Courses section on home.</p>
                     <Field label="Popular Order (Lower is first)" type="number" value={editorData.popular_order?.toString() || "0"} onChange={v => setEditorData({ ...editorData, popular_order: parseInt(v) })} />
-                    <div className="pt-2 border-t border-gray-100">
-                        <Field label="Card Header Text (Custom)" value={editorData.card_inner_text || ""} onChange={v => setEditorData({ ...editorData, card_inner_text: v })} placeholder="e.g. ADVANCED" />
-                        <p className="text-[10px] text-gray-400 mt-1 italic">If empty, defaults to the first word of the course title.</p>
-                    </div>
                 </section>
+
+                {/* ── SEO Panel — moved to bottom of sidebar ── */}
+                <CourseSeoPanel
+                    seoData={seoData}
+                    setSeoData={setSeoData}
+                    newKw={newKw}
+                    setNewKw={setNewKw}
+                    courseTitle={editorData.title || ""}
+                    courseSlug={editorData.slug || ""}
+                    courseDescription={editorData.description || ""}
+                    courseShortDescription={editorData.short_description || ""}
+                />
             </div>
         </div>
     );
