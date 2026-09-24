@@ -776,17 +776,6 @@ function FormView({
                     </button>
                 </section>
 
-                <section className="bg-white p-6 rounded-2xl border border-gray-200 flex flex-col gap-5">
-                    <h2 className="text-base font-bold border-b border-gray-100 pb-2">Media</h2>
-                    <ImageUploadField label="Cover Image" value={editorData.image_url || ""} onChange={v => setEditorData({ ...editorData, image_url: v })} />
-                    <ImageUploadField
-                        label="Accreditation / Partner Logo (shown in trust bar)"
-                        value={editorData.partner_logo_url || ""}
-                        onChange={v => setEditorData({ ...editorData, partner_logo_url: v })}
-                    />
-                    <p className="text-xs text-gray-400 -mt-2">Optional. Defaults to the PMI Authorized Training Partner badge if left empty.</p>
-                </section>
-
                 {/* Page Background Color */}
                 <section className="bg-white p-6 rounded-2xl border border-gray-200 flex flex-col gap-4">
                     <h2 className="text-base font-bold border-b border-gray-100 pb-2">Page Background Color</h2>
@@ -883,7 +872,18 @@ function FormView({
                     <Field label="Popular Order (Lower is first)" type="number" value={editorData.popular_order?.toString() || "0"} onChange={v => setEditorData({ ...editorData, popular_order: parseInt(v) })} />
                 </section>
 
-                {/* ── SEO Panel — moved to bottom of sidebar ── */}
+                <section className="bg-white p-6 rounded-2xl border border-gray-200 flex flex-col gap-5">
+                    <h2 className="text-base font-bold border-b border-gray-100 pb-2">Media</h2>
+                    <ImageUploadField label="Cover Image" value={editorData.image_url || ""} onChange={v => setEditorData({ ...editorData, image_url: v })} />
+                    <ImageUploadField
+                        label="Accreditation / Partner Logo (shown in trust bar)"
+                        value={editorData.partner_logo_url || ""}
+                        onChange={v => setEditorData({ ...editorData, partner_logo_url: v })}
+                    />
+                    <p className="text-xs text-gray-400 -mt-2">Optional. Defaults to the PMI Authorized Training Partner badge if left empty.</p>
+                </section>
+
+                {/* ── SEO Panel — always last in the sidebar ── */}
                 <CourseSeoPanel
                     seoData={seoData}
                     setSeoData={setSeoData}
