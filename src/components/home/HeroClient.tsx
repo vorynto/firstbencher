@@ -130,7 +130,7 @@ export default function HeroClient({ content }: { content: HeroContent }) {
                 <div className="flex flex-col lg:flex-row items-center justify-between w-full gap-6 lg:gap-6">
 
                     {/* ════════ LEFT CONTENT ════════ */}
-                    <div className="w-full lg:flex-[1.4] text-left max-w-[700px] relative z-10 pt-0 lg:mr-auto">
+                    <div className="w-full lg:flex-[1.4] text-left max-w-[850px] relative z-10 pt-0 lg:mr-auto">
 
                         {/* Big Headline */}
                         <h1 className="text-[28px] sm:text-4xl md:text-5xl lg:text-6xl xl:text-[72px] font-bold leading-[1.1] mb-4 lg:mb-6 text-[#1A202C] tracking-tight">
@@ -147,7 +147,7 @@ export default function HeroClient({ content }: { content: HeroContent }) {
 
                         {/* Description - Adjusted width & fixed overflow */}
                         <div
-                            className="text-[#64748B] text-[14px] sm:text-[15px] leading-relaxed mb-6 lg:mb-10 w-full max-w-none lg:max-w-[550px] break-words whitespace-normal prose prose-sm prose-gray"
+                            className="text-[#64748B] text-[14px] sm:text-[15px] leading-relaxed mb-6 lg:mb-10 w-full max-w-none lg:max-w-[700px] break-words whitespace-normal prose prose-sm prose-gray"
                             dangerouslySetInnerHTML={{ __html: sanitize(h.description) }}
                         />
 
