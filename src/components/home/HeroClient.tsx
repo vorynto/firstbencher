@@ -40,9 +40,6 @@ type HeroContent = {
     trust_avatar_3?: string;
     student_avatar_1?: string;
     student_avatar_2?: string;
-    reviewer_avatar?: string;
-    clock_icon?: string;
-    thumbs_up_icon?: string;
     corporate_clients?: Array<{ name: string; logo_url: string; _id?: string }>;
 };
 
@@ -133,10 +130,9 @@ export default function HeroClient({ content }: { content: HeroContent }) {
                     <div className="w-full lg:flex-[1.4] text-left max-w-[850px] relative z-10 pt-0 lg:mr-auto">
 
                         {/* Big Headline */}
-                        <h1 className="text-[28px] sm:text-4xl md:text-5xl lg:text-6xl xl:text-[72px] font-bold leading-[1.1] mb-4 lg:mb-6 text-[#1A202C] tracking-tight">
+                        <h1 className="text-[26px] sm:text-[34px] md:text-[44px] lg:text-[54px] xl:text-[64px] font-bold leading-[1.1] mb-4 lg:mb-6 text-[#1A202C] tracking-tight">
                             {h.title_line1 && <>{h.title_line1} <br /></>}
-                            {h.title_line2}
-                            <br />
+                            {h.title_line2 && <>{h.title_line2}<br /></>}
                             <span className="text-[var(--primary)] relative inline-block mt-2 font-black">
                                 {h.title_highlight}
                                 <svg className="absolute -bottom-4 left-0 w-[55%] rotate-2 opacity-80" height="15" viewBox="0 0 300 15" preserveAspectRatio="none">

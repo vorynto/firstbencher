@@ -118,13 +118,10 @@ function HomeHeroEditor({ content, onChange }: { content: ContentMap; onChange: 
                 <ImageUploadField label="Reviewer Face 3" value={s("trust_avatar_3")} onChange={v => u("trust_avatar_3", v)} />
             </div>
 
-            <p className="md:col-span-2 text-xs font-black uppercase tracking-widest text-muted-foreground mt-4 border-b border-border pb-2">Floating Decorative Elements</p>
+            <p className="md:col-span-2 text-xs font-black uppercase tracking-widest text-muted-foreground mt-4 border-b border-border pb-2">Success Students Badge Avatars</p>
             <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-5 bg-accent/10 p-4 rounded-2xl border border-border">
                 <ImageUploadField label="Success Student Avatar 1" value={s("student_avatar_1")} onChange={v => u("student_avatar_1", v)} />
                 <ImageUploadField label="Success Student Avatar 2" value={s("student_avatar_2")} onChange={v => u("student_avatar_2", v)} />
-                <ImageUploadField label="Reviewer Avatar (Udemy card)" value={s("reviewer_avatar")} onChange={v => u("reviewer_avatar", v)} />
-                <ImageUploadField label="Clock Icon (Bottom Left)" value={s("clock_icon")} onChange={v => u("clock_icon", v)} />
-                <ImageUploadField label="Thumbs Up Icon (Bottom Right)" value={s("thumbs_up_icon")} onChange={v => u("thumbs_up_icon", v)} />
             </div>
             <p className="md:col-span-2 text-[10px] text-gray-400 italic -mt-2">
                 Popular categories are managed from Courses → Manage Categories (toggle "Homepage" per category).

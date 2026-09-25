@@ -21,9 +21,6 @@ type HeroContent = {
     trust_avatar_1?: string;
     trust_avatar_2?: string;
     trust_avatar_3?: string;
-    reviewer_avatar?: string;
-    clock_icon?: string;
-    thumbs_up_icon?: string;
     corporate_clients?: Array<{ name: string; logo_url: string; _id?: string }>;
 };
 
