@@ -1,5 +1,6 @@
 import { headers } from "next/headers";
 import { supabaseAdmin } from "@/lib/supabase-admin";
+import { withLastGoodFallback } from "@/lib/last-good-cache";
 import HeaderClient from "./HeaderClient";
 
 type NavCategory = { name: string; emoji: string; icon_url?: string; count: number };
@@ -73,41 +74,48 @@ async function resolveHeaderKey(pathname: string): Promise<string> {
 }
 
 export default async function Header() {
-    let content: HeaderContent = defaults;
-    try {
-        const headersList = await headers();
-        const pathname = headersList.get("x-next-pathname") || "/";
-        const headerKey = await resolveHeaderKey(pathname);
+    const headersList = await headers();
+    const pathname = headersList.get("x-next-pathname") || "/";
+    const headerKey = await resolveHeaderKey(pathname);
 
-        const [headerRes, globalRes, categoriesRes, coursesRes] = await Promise.all([
-            supabaseAdmin.from("pages_content").select("content").eq("page_name", headerKey).maybeSingle(),
-            supabaseAdmin.from("pages_content").select("content").eq("page_name", "global_settings").maybeSingle(),
-            supabaseAdmin.from("pages_content").select("content").eq("page_name", "course_categories").maybeSingle(),
-            supabaseAdmin.from("courses").select("category").eq("active", true),
-        ]);
+    // A transient fetch failure falls back to whatever content last loaded
+    // successfully for this header variant (via withLastGoodFallback)
+    // instead of the hardcoded placeholder defaults.
+    const content = await withLastGoodFallback(
+        `header:${headerKey}`,
+        async () => {
+            const [headerRes, globalRes, categoriesRes, coursesRes] = await Promise.all([
+                supabaseAdmin.from("pages_content").select("content").eq("page_name", headerKey).maybeSingle(),
+                supabaseAdmin.from("pages_content").select("content").eq("page_name", "global_settings").maybeSingle(),
+                supabaseAdmin.from("pages_content").select("content").eq("page_name", "course_categories").maybeSingle(),
+                supabaseAdmin.from("courses").select("category").eq("active", true),
+            ]);
 
-        if (headerRes.data?.content) {
-            content = { ...defaults, ...(headerRes.data.content as Partial<HeaderContent>) };
-        }
-        if (globalRes.data?.content) {
-            const gs = globalRes.data.content as Record<string, unknown>;
-            if (typeof gs.logo_header === "string") content.logo_header = gs.logo_header;
-        }
+            const content: HeaderContent = headerRes.data?.content
+                ? { ...defaults, ...(headerRes.data.content as Partial<HeaderContent>) }
+                : { ...defaults };
 
-        // Category dropdown is driven by the managed "course_categories" list (admin/courses → Manage Categories),
-        // filtered to entries with show_in_header, with counts computed live from active courses.
-        const managedCategories: Array<{ name: string; emoji: string; icon_url?: string; show_in_header?: boolean }> =
-            (categoriesRes.data?.content as any)?.categories || [];
-        const counts = new Map<string, number>();
-        for (const c of (coursesRes.data || []) as Array<{ category: string | null }>) {
-            if (!c.category) continue;
-            counts.set(c.category, (counts.get(c.category) || 0) + 1);
-        }
-        content.nav_categories = managedCategories
-            .filter(c => c.show_in_header !== false && c.name)
-            .map(c => ({ name: c.name, emoji: c.emoji || "📚", icon_url: c.icon_url || "", count: counts.get(c.name) || 0 }));
-    } catch {
-        // fall through to defaults
-    }
+            if (globalRes.data?.content) {
+                const gs = globalRes.data.content as Record<string, unknown>;
+                if (typeof gs.logo_header === "string") content.logo_header = gs.logo_header;
+            }
+
+            // Category dropdown is driven by the managed "course_categories" list (admin/courses → Manage Categories),
+            // filtered to entries with show_in_header, with counts computed live from active courses.
+            const managedCategories: Array<{ name: string; emoji: string; icon_url?: string; show_in_header?: boolean }> =
+                (categoriesRes.data?.content as any)?.categories || [];
+            const counts = new Map<string, number>();
+            for (const c of (coursesRes.data || []) as Array<{ category: string | null }>) {
+                if (!c.category) continue;
+                counts.set(c.category, (counts.get(c.category) || 0) + 1);
+            }
+            content.nav_categories = managedCategories
+                .filter(c => c.show_in_header !== false && c.name)
+                .map(c => ({ name: c.name, emoji: c.emoji || "📚", icon_url: c.icon_url || "", count: counts.get(c.name) || 0 }));
+            return content;
+        },
+        defaults
+    );
+
     return <HeaderClient topBar={content} />;
 }

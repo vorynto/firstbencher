@@ -1,4 +1,5 @@
 import { createServerSupabaseClient } from "@/lib/supabase-server";
+import { withLastGoodFallback } from "@/lib/last-good-cache";
 import HeroClient from "./HeroClient";
 
 type HeroContent = {
@@ -53,33 +54,37 @@ const defaults: HeroContent = {
 };
 
 export default async function HeroSection() {
-    let content: HeroContent = defaults;
+    // A transient fetch failure falls back to whatever content last loaded
+    // successfully (via withLastGoodFallback) instead of the hardcoded
+    // placeholder defaults.
+    const content = await withLastGoodFallback(
+        "home_hero",
+        async () => {
+            const supabase = await createServerSupabaseClient();
+            const [{ data }, { data: catData }] = await Promise.all([
+                supabase.from("pages_content").select("content").eq("page_name", "home_hero").maybeSingle(),
+                supabase.from("pages_content").select("content").eq("page_name", "course_categories").maybeSingle(),
+            ]);
 
-    try {
-        const supabase = await createServerSupabaseClient();
-        const [{ data }, { data: catData }] = await Promise.all([
-            supabase.from("pages_content").select("content").eq("page_name", "home_hero").maybeSingle(),
-            supabase.from("pages_content").select("content").eq("page_name", "course_categories").maybeSingle(),
-        ]);
+            const content: HeroContent = data?.content
+                ? { ...defaults, ...(data.content as Partial<HeroContent>) }
+                : { ...defaults };
 
-        if (data?.content) {
-            content = { ...defaults, ...(data.content as Partial<HeroContent>) };
-        }
-
-        // Popular Categories row + course-search dropdown are both driven by the
-        // managed "course_categories" list (admin/courses → Manage Categories).
-        const managedCategories: Array<{ name: string; emoji: string; icon_url?: string; show_in_homepage?: boolean }> =
-            (catData?.content as any)?.categories || [];
-        const validCategories = managedCategories.filter(c => c.name);
-        content.popular_categories_list = validCategories
-            .filter(c => c.show_in_homepage !== false)
-            .map(c => ({ name: c.name, emoji: c.emoji || "", icon_url: c.icon_url || "" }));
-        // Dropdown shows every admin-created category, regardless of show_in_homepage.
-        content.all_categories_list = validCategories
-            .map(c => ({ name: c.name, emoji: c.emoji || "", icon_url: c.icon_url || "" }));
-    } catch {
-        // Use defaults on any error
-    }
+            // Popular Categories row + course-search dropdown are both driven by the
+            // managed "course_categories" list (admin/courses → Manage Categories).
+            const managedCategories: Array<{ name: string; emoji: string; icon_url?: string; show_in_homepage?: boolean }> =
+                (catData?.content as any)?.categories || [];
+            const validCategories = managedCategories.filter(c => c.name);
+            content.popular_categories_list = validCategories
+                .filter(c => c.show_in_homepage !== false)
+                .map(c => ({ name: c.name, emoji: c.emoji || "", icon_url: c.icon_url || "" }));
+            // Dropdown shows every admin-created category, regardless of show_in_homepage.
+            content.all_categories_list = validCategories
+                .map(c => ({ name: c.name, emoji: c.emoji || "", icon_url: c.icon_url || "" }));
+            return content;
+        },
+        defaults
+    );
 
     return <HeroClient content={content} />;
 }

@@ -11,43 +11,55 @@ import { CountryProvider } from "@/components/CountryProvider";
 import { JsonLd } from "@/components/JsonLd";
 import { unstable_cache } from "next/cache";
 import { supabaseAdmin } from "@/lib/supabase-admin";
+import { withLastGoodFallback } from "@/lib/last-good-cache";
 import CustomCodeInjector from "@/components/layout/CustomCodeInjector";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://firstbencher.com";
 
-// Cached fetch — re-validates every 60 seconds so new scripts go live quickly
+// Cached fetch — re-validates every 60 seconds so new scripts go live quickly.
+// A transient read failure falls back to whatever was last successfully
+// loaded (via withLastGoodFallback) rather than going blank.
 const getCustomCode = unstable_cache(
-    async () => {
-        const { data, error } = await supabaseAdmin
-            .from("pages_content")
-            .select("content")
-            .eq("page_name", "custom_code")
-            .maybeSingle();
-        if (error) throw error; // don't cache a failed read
-        return {
-            header_code: (data?.content?.header_code as string) || "",
-            body_code: (data?.content?.body_code as string) || "",
-        };
-    },
+    async () =>
+        withLastGoodFallback(
+            "custom_code",
+            async () => {
+                const { data, error } = await supabaseAdmin
+                    .from("pages_content")
+                    .select("content")
+                    .eq("page_name", "custom_code")
+                    .maybeSingle();
+                if (error) throw error;
+                return {
+                    header_code: (data?.content?.header_code as string) || "",
+                    body_code: (data?.content?.body_code as string) || "",
+                };
+            },
+            { header_code: "", body_code: "" }
+        ),
     ["custom_code"],
     { revalidate: 60 }
 );
 
 // Cached fetch of global settings — injected as inline <style> so CSS variables
-// are correct on the very first paint, eliminating the red flash before JS loads.
+// are correct on the very first paint. A transient DB blip now falls back to
+// the last successfully loaded settings (via withLastGoodFallback) instead of
+// painting the whole site with the hardcoded default (red) theme.
 const getGlobalSettings = unstable_cache(
-    async () => {
-        const { data, error } = await supabaseAdmin
-            .from("pages_content")
-            .select("content")
-            .eq("page_name", "global_settings")
-            .maybeSingle();
-        // Throw on a real read error so the failure isn't cached for 60s —
-        // otherwise a transient DB blip would paint the whole site with the
-        // default (red) theme until the cache expired.
-        if (error) throw error;
-        return (data?.content ?? {}) as Record<string, string>;
-    },
+    async () =>
+        withLastGoodFallback(
+            "global_settings",
+            async () => {
+                const { data, error } = await supabaseAdmin
+                    .from("pages_content")
+                    .select("content")
+                    .eq("page_name", "global_settings")
+                    .maybeSingle();
+                if (error) throw error;
+                return (data?.content ?? {}) as Record<string, string>;
+            },
+            {} as Record<string, string>
+        ),
     ["global_settings_layout"],
     { revalidate: 60 }
 );

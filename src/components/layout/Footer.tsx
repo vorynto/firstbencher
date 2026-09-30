@@ -1,5 +1,6 @@
 import { headers } from "next/headers";
 import { supabaseAdmin } from "@/lib/supabase-admin";
+import { withLastGoodFallback } from "@/lib/last-good-cache";
 import FooterClient from "./FooterClient";
 
 type FooterContent = {
@@ -75,26 +76,33 @@ async function resolveFooterKey(pathname: string): Promise<string> {
 }
 
 export default async function Footer() {
-    let content: FooterContent = defaults;
-    try {
-        const headersList = await headers();
-        const pathname = headersList.get("x-next-pathname") || "/";
-        const footerKey = await resolveFooterKey(pathname);
+    const headersList = await headers();
+    const pathname = headersList.get("x-next-pathname") || "/";
+    const footerKey = await resolveFooterKey(pathname);
 
-        const [footerRes, globalRes] = await Promise.all([
-            supabaseAdmin.from("pages_content").select("content").eq("page_name", footerKey).maybeSingle(),
-            supabaseAdmin.from("pages_content").select("content").eq("page_name", "global_settings").maybeSingle(),
-        ]);
+    // A transient fetch failure falls back to whatever content last loaded
+    // successfully for this footer variant (via withLastGoodFallback)
+    // instead of the hardcoded placeholder defaults.
+    const content = await withLastGoodFallback(
+        `footer:${footerKey}`,
+        async () => {
+            const [footerRes, globalRes] = await Promise.all([
+                supabaseAdmin.from("pages_content").select("content").eq("page_name", footerKey).maybeSingle(),
+                supabaseAdmin.from("pages_content").select("content").eq("page_name", "global_settings").maybeSingle(),
+            ]);
 
-        if (footerRes.data?.content) {
-            content = { ...defaults, ...(footerRes.data.content as Partial<FooterContent>) };
-        }
-        if (globalRes.data?.content) {
-            const gs = globalRes.data.content as Record<string, unknown>;
-            if (typeof gs.logo_footer === "string") content.logo_footer = gs.logo_footer;
-        }
-    } catch {
-        // fall through to defaults
-    }
+            const content: FooterContent = footerRes.data?.content
+                ? { ...defaults, ...(footerRes.data.content as Partial<FooterContent>) }
+                : { ...defaults };
+
+            if (globalRes.data?.content) {
+                const gs = globalRes.data.content as Record<string, unknown>;
+                if (typeof gs.logo_footer === "string") content.logo_footer = gs.logo_footer;
+            }
+            return content;
+        },
+        defaults
+    );
+
     return <FooterClient content={content} />;
 }
