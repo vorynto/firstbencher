@@ -50,6 +50,18 @@ const defaultCustomCode: CustomCode = {
     body_code: "",
 };
 
+type CcavenueCredentials = {
+    merchant_id: string;
+    access_code: string;
+    working_key: string;
+};
+
+const defaultCcavenueCredentials: CcavenueCredentials = {
+    merchant_id: "",
+    access_code: "",
+    working_key: "",
+};
+
 // ── Settings Page ──────────────────────────────────────────────
 export default function SettingsPage() {
     // State
@@ -58,6 +70,7 @@ export default function SettingsPage() {
     const [footer, setFooter] = useState<Record<string, any>>({});
     const [customCode, setCustomCode] = useState<CustomCode>(defaultCustomCode);
     const [payments, setPayments] = useState<PaymentSettings>(DEFAULT_PAYMENT_SETTINGS);
+    const [ccavenueCreds, setCcavenueCreds] = useState<CcavenueCredentials>(defaultCcavenueCredentials);
 
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -79,12 +92,13 @@ export default function SettingsPage() {
 
     const fetchAllSettings = async () => {
         try {
-            const [gRes, hRes, fRes, cRes, pRes] = await Promise.all([
+            const [gRes, hRes, fRes, cRes, pRes, ccRes] = await Promise.all([
                 fetch("/api/pages-content?page=global_settings"),
                 fetch("/api/pages-content?page=site_header"),
                 fetch("/api/pages-content?page=site_footer"),
                 fetch("/api/pages-content?page=custom_code"),
                 fetch("/api/pages-content?page=payment_settings"),
+                fetch("/api/pages-content?page=ccavenue_credentials"),
             ]);
 
             if (gRes.ok) {
@@ -120,6 +134,12 @@ export default function SettingsPage() {
                     setPayments(prev => ({ ...prev, ...data.content }));
                 }
             }
+            if (ccRes.ok) {
+                const data = await ccRes.json();
+                if (data.content && Object.keys(data.content).length > 0) {
+                    setCcavenueCreds(prev => ({ ...prev, ...data.content }));
+                }
+            }
         } catch (err) {
             console.error("Failed to fetch settings:", err);
         } finally {
@@ -138,6 +158,7 @@ export default function SettingsPage() {
                 fetch("/api/pages-content", { method: "PUT", headers, body: JSON.stringify({ page_name: "site_footer", content: footer }) }),
                 fetch("/api/pages-content", { method: "PUT", headers, body: JSON.stringify({ page_name: "custom_code", content: customCode }) }),
                 fetch("/api/pages-content", { method: "PUT", headers, body: JSON.stringify({ page_name: "payment_settings", content: payments }) }),
+                fetch("/api/pages-content", { method: "PUT", headers, body: JSON.stringify({ page_name: "ccavenue_credentials", content: ccavenueCreds }) }),
             ];
 
             const results = await Promise.all(reqs);
@@ -544,6 +565,40 @@ export default function SettingsPage() {
                                         Enabled
                                     </label>
                                 </div>
+                            </div>
+
+                            <div>
+                                <h3 className="text-lg font-bold text-gray-900 mb-1">CC Avenue Credentials</h3>
+                                <p className="text-sm text-gray-500 mb-6">
+                                    From your CC Avenue merchant dashboard. These are never sent to visitors&apos; browsers — only used server-side to start and verify payments.
+                                </p>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <Field
+                                        label="Merchant ID"
+                                        value={ccavenueCreds.merchant_id}
+                                        onChange={v => setCcavenueCreds(prev => ({ ...prev, merchant_id: v }))}
+                                        placeholder="e.g. 123456"
+                                    />
+                                    <Field
+                                        label="Access Code"
+                                        value={ccavenueCreds.access_code}
+                                        onChange={v => setCcavenueCreds(prev => ({ ...prev, access_code: v }))}
+                                        placeholder="e.g. AVXP00LG73CH74PXHC"
+                                    />
+                                    <Field
+                                        label="Working Key"
+                                        type="password"
+                                        value={ccavenueCreds.working_key}
+                                        onChange={v => setCcavenueCreds(prev => ({ ...prev, working_key: v }))}
+                                        placeholder="32-character working key"
+                                    />
+                                </div>
+                                {payments.ccavenue_enabled && (!ccavenueCreds.merchant_id || !ccavenueCreds.access_code || !ccavenueCreds.working_key) && (
+                                    <div className="mt-4 flex items-center gap-2 text-xs font-semibold text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+                                        <AlertCircle size={14} className="shrink-0" />
+                                        CC Avenue is enabled but credentials are incomplete — checkout will fail until all three fields are filled in.
+                                    </div>
+                                )}
                             </div>
 
                             <div>

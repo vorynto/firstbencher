@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { useRouter, usePathname } from "next/navigation";
 import {
     Phone, Mail, CheckCircle2, Star, Clock,
     Users, Award, ChevronDown, ChevronUp,
@@ -814,7 +815,7 @@ export default function CourseClientPage({ course, instructors = [], sidebarCont
 
                     {/* Mobile Enquiry Form — shown only on mobile, at bottom of content */}
                     <div className="lg:hidden flex flex-col gap-6" style={{ order: 999 }}>
-                        <PricingCard countryPrices={course.country_prices} courseTitle={title} />
+                        <PricingCard countryPrices={course.country_prices} courseTitle={title} courseId={course.id} />
                         <EnquiryFormBlock courseTitle={title} />
                     </div>
                 </div>
@@ -822,7 +823,7 @@ export default function CourseClientPage({ course, instructors = [], sidebarCont
                 {/* RIGHT SIDEBAR */}
                 <div className="hidden lg:block">
                     {/* Pricing — reacts to the visitor's selected country/currency */}
-                    <PricingCard countryPrices={course.country_prices} courseTitle={title} />
+                    <PricingCard countryPrices={course.country_prices} courseTitle={title} courseId={course.id} />
 
                     {/* Have Questions? — static (scrolls with page) */}
                     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4 mb-6">
@@ -903,13 +904,55 @@ function StarRating({ rating, size = 14 }: { rating: number; size?: number }) {
 // (auto-detected, or switched via the header/footer/this card's dropdown).
 // Renders nothing until countries are configured in Settings → Payments.
 
-function PricingCard({ countryPrices, courseTitle }: { countryPrices?: CountryPrice[]; courseTitle: string }) {
+function PricingCard({ countryPrices, courseTitle, courseId }: { countryPrices?: CountryPrice[]; courseTitle: string; courseId: string }) {
     const { countries, selectedCountry, ccavenueEnabled, getDisplayPrice, loading } = useCountry();
     const { openEnquiry } = useEnquiry();
+    const router = useRouter();
+    const pathname = usePathname();
+    const [buying, setBuying] = useState(false);
+    const [buyError, setBuyError] = useState("");
 
     if (loading || countries.length === 0 || !selectedCountry) return null;
 
     const display = getDisplayPrice(countryPrices);
+
+    const handleBuyNow = async () => {
+        setBuyError("");
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+            router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
+            return;
+        }
+
+        setBuying(true);
+        try {
+            const res = await fetch("/api/payments/ccavenue/initiate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ courseId, countryCode: selectedCountry!.code }),
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Could not start checkout.");
+
+            const form = document.createElement("form");
+            form.method = "POST";
+            form.action = data.actionUrl;
+            form.style.display = "none";
+            for (const [name, value] of [["encRequest", data.encRequest], ["access_code", data.accessCode], ["command", "initiateTransaction"]]) {
+                const input = document.createElement("input");
+                input.type = "hidden";
+                input.name = name;
+                input.value = value;
+                form.appendChild(input);
+            }
+            document.body.appendChild(form);
+            form.submit();
+        } catch (err) {
+            setBuyError(err instanceof Error ? err.message : "Could not start checkout.");
+            setBuying(false);
+        }
+    };
 
     return (
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4 mb-6">
@@ -927,12 +970,16 @@ function PricingCard({ countryPrices, courseTitle }: { countryPrices?: CountryPr
                 <p className="text-gray-500 text-sm">Contact us for pricing in {selectedCountry.name}.</p>
             )}
 
+            {buyError && <p className="text-xs text-red-500 font-semibold">{buyError}</p>}
+
             {ccavenueEnabled && display ? (
                 <button
-                    onClick={() => openEnquiry(`Buy Now — ${courseTitle} (${display.formatted} ${selectedCountry.currency_code})`)}
-                    className="w-full bg-[var(--primary)] text-white py-3 rounded-xl font-bold text-sm hover:bg-[var(--primary-dark)] transition-colors"
+                    onClick={handleBuyNow}
+                    disabled={buying}
+                    className="w-full bg-[var(--primary)] text-white py-3 rounded-xl font-bold text-sm hover:bg-[var(--primary-dark)] transition-colors disabled:opacity-70 flex items-center justify-center gap-2"
                 >
-                    Buy Now
+                    {buying && <Loader2 size={16} className="animate-spin" />}
+                    {buying ? "Redirecting to payment..." : "Buy Now"}
                 </button>
             ) : (
                 <button

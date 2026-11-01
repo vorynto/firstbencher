@@ -1,15 +1,16 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
     Search, Menu, X, ShoppingCart, User,
     ChevronDown, LayoutGrid, Star, Clock,
-    Mail, Phone
+    Mail, Phone, LayoutDashboard
 } from "lucide-react";
 import Button from "@/components/ui/Button";
+import { createClient } from "@/lib/supabase";
 import CountrySwitcher from "@/components/ui/CountrySwitcher";
 import { cn } from "@/lib/utils";
 
@@ -60,7 +61,17 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
     const [catOpen, setCatOpen] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const pathname = usePathname();
+
+    useEffect(() => {
+        const supabase = createClient();
+        supabase.auth.getUser().then(({ data }) => setIsLoggedIn(!!data.user));
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            setIsLoggedIn(!!session?.user);
+        });
+        return () => subscription.unsubscribe();
+    }, []);
 
     // Search state
     const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -426,21 +437,30 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
 
                             {/* Auth Buttons */}
                             {topBar.auth_buttons_active !== false && (
-                                <>
-                                    <Button 
-                                        variant="ghost"
-                                        href={topBar.login_href || "/login"} 
-                                        className="text-sm font-bold text-gray-700 hover:text-[var(--primary)] px-4 py-2"
+                                isLoggedIn ? (
+                                    <Button
+                                        href="/portal"
+                                        className="text-[13px] font-bold px-6 py-2.5 rounded shadow-md flex items-center gap-2"
                                     >
-                                        {topBar.login_text || "Login"}
+                                        <LayoutDashboard size={15} /> My Portal
                                     </Button>
-                                    <Button 
-                                        href={topBar.register_href || "/register"} 
-                                        className="text-[13px] font-bold px-6 py-2.5 rounded shadow-md"
-                                    >
-                                        {topBar.register_text || "Register"}
-                                    </Button>
-                                </>
+                                ) : (
+                                    <>
+                                        <Button
+                                            variant="ghost"
+                                            href={topBar.login_href || "/login"}
+                                            className="text-sm font-bold text-gray-700 hover:text-[var(--primary)] px-4 py-2"
+                                        >
+                                            {topBar.login_text || "Login"}
+                                        </Button>
+                                        <Button
+                                            href={topBar.register_href || "/register"}
+                                            className="text-[13px] font-bold px-6 py-2.5 rounded shadow-md"
+                                        >
+                                            {topBar.register_text || "Register"}
+                                        </Button>
+                                    </>
+                                )
                             )}
                         </div>
 
@@ -628,21 +648,33 @@ export default function HeaderClient({ topBar }: { topBar: TopBarContent }) {
                 {/* Auth buttons pinned to bottom */}
                 {topBar.auth_buttons_active !== false && (
                     <div className="shrink-0 p-4 border-t border-gray-100 flex flex-col gap-2.5">
-                        <Button
-                            variant="outline"
-                            href={topBar.login_href || "/login"}
-                            className="w-full text-sm font-bold rounded-lg py-3"
-                            onClick={() => setIsOpen(false)}
-                        >
-                            {topBar.login_text || "Login"}
-                        </Button>
-                        <Button
-                            href={topBar.register_href || "/register"}
-                            className="w-full text-sm font-bold rounded-lg py-3"
-                            onClick={() => setIsOpen(false)}
-                        >
-                            {topBar.register_text || "Register"}
-                        </Button>
+                        {isLoggedIn ? (
+                            <Button
+                                href="/portal"
+                                className="w-full text-sm font-bold rounded-lg py-3 flex items-center justify-center gap-2"
+                                onClick={() => setIsOpen(false)}
+                            >
+                                <LayoutDashboard size={16} /> My Portal
+                            </Button>
+                        ) : (
+                            <>
+                                <Button
+                                    variant="outline"
+                                    href={topBar.login_href || "/login"}
+                                    className="w-full text-sm font-bold rounded-lg py-3"
+                                    onClick={() => setIsOpen(false)}
+                                >
+                                    {topBar.login_text || "Login"}
+                                </Button>
+                                <Button
+                                    href={topBar.register_href || "/register"}
+                                    className="w-full text-sm font-bold rounded-lg py-3"
+                                    onClick={() => setIsOpen(false)}
+                                >
+                                    {topBar.register_text || "Register"}
+                                </Button>
+                            </>
+                        )}
                     </div>
                 )}
             </div>

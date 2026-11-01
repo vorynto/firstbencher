@@ -7,7 +7,7 @@ const NEW_STORAGE_HOST = process.env.NEXT_PUBLIC_SUPABASE_URL
   : "db.firstbencher.com";
 
 // Routes that require a logged-in, active user account
-const USER_PROTECTED_PATHS = ["/feedback"];
+const USER_PROTECTED_PATHS = ["/feedback", "/portal"];
 
 export async function proxy(request: NextRequest) {
   // Rewrite Next.js image optimization requests that still use the old storage domain

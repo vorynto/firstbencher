@@ -2,6 +2,27 @@ import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 
+// Logged-in users only: fetch the current user's own submitted stories
+// (any approval status), for the student portal's "Success Stories" page.
+export async function GET() {
+    const supabase = await createServerSupabaseClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { data, error } = await supabaseAdmin
+        .from("success_stories")
+        .select("id, course_name, message, rating, is_approved, created_at")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+
+    if (error) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+    return NextResponse.json({ stories: data || [] });
+}
+
 // Logged-in users only: submit a success story. Auth is verified server-side
 // from the session cookie. The insert uses the service-role client so it isn't
 // blocked by RLS; the row is always created unapproved and must be approved by
@@ -56,6 +77,7 @@ export async function POST(req: NextRequest) {
             image_url: body.image_url || null,
             certificate_url: body.certificate_url || null,
             is_approved: false, // admin must approve before it appears on the site
+            user_id: user.id, // derived from the session, never trusted from the client
         };
 
         const { error } = await supabaseAdmin.from("success_stories").insert([payload]);

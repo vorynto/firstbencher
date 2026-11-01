@@ -213,11 +213,30 @@ export const defaultContents: Record<string, unknown> = {
     }
 };
 
+// Keys never served by the public, unauthenticated branch below — they hold
+// secrets (CC Avenue's working key) and must only reach an admin session.
+const ADMIN_ONLY_KEYS = new Set(["ccavenue_credentials"]);
+
 // GET /api/pages-content?page=home_hero   → returns content object for that key
 // GET /api/pages-content                  → returns all page_name rows
 export async function GET(req: NextRequest) {
     const supabase = await createServerSupabaseClient();
     const pageName = req.nextUrl.searchParams.get("page");
+
+    if (pageName && ADMIN_ONLY_KEYS.has(pageName)) {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+        const { data: adminRow } = await supabase
+            .from("admin_users")
+            .select("id")
+            .eq("id", user.id)
+            .single();
+        if (!adminRow) {
+            return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+        }
+    }
 
     if (pageName) {
         const { data, error } = await supabase
@@ -234,7 +253,9 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ content });
     }
 
-    // Return all rows
+    // Return all rows (minus admin-only / secret-holding keys — this branch
+    // has no auth check, since it's also used as the public "list everything"
+    // fallback)
     const { data, error } = await supabase
         .from("pages_content")
         .select("page_name, content, updated_at");
@@ -242,7 +263,7 @@ export async function GET(req: NextRequest) {
     if (error) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
-    return NextResponse.json({ rows: data });
+    return NextResponse.json({ rows: (data || []).filter(r => !ADMIN_ONLY_KEYS.has(r.page_name)) });
 }
 
 // PUT /api/pages-content   body: { page_name: string, content: object }
