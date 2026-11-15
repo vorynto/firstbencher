@@ -85,7 +85,12 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "This course isn't priced for your country yet." }, { status: 400 });
         }
 
-        const creds = (credsRow?.content || {}) as { merchant_id?: string; access_code?: string; working_key?: string };
+        const rawCreds = (credsRow?.content || {}) as { merchant_id?: string; access_code?: string; working_key?: string };
+        const creds = {
+            merchant_id: (rawCreds.merchant_id || "").trim(),
+            access_code: (rawCreds.access_code || "").trim(),
+            working_key: (rawCreds.working_key || "").trim(),
+        };
         if (!creds.merchant_id || !creds.access_code || !creds.working_key) {
             return NextResponse.json({ error: "Online payment isn't configured yet. Please contact support." }, { status: 500 });
         }

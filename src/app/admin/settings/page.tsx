@@ -158,7 +158,11 @@ export default function SettingsPage() {
                 fetch("/api/pages-content", { method: "PUT", headers, body: JSON.stringify({ page_name: "site_footer", content: footer }) }),
                 fetch("/api/pages-content", { method: "PUT", headers, body: JSON.stringify({ page_name: "custom_code", content: customCode }) }),
                 fetch("/api/pages-content", { method: "PUT", headers, body: JSON.stringify({ page_name: "payment_settings", content: payments }) }),
-                fetch("/api/pages-content", { method: "PUT", headers, body: JSON.stringify({ page_name: "ccavenue_credentials", content: ccavenueCreds }) }),
+                fetch("/api/pages-content", { method: "PUT", headers, body: JSON.stringify({ page_name: "ccavenue_credentials", content: {
+                    merchant_id: ccavenueCreds.merchant_id.trim(),
+                    access_code: ccavenueCreds.access_code.trim(),
+                    working_key: ccavenueCreds.working_key.trim(),
+                } }) }),
             ];
 
             const results = await Promise.all(reqs);
