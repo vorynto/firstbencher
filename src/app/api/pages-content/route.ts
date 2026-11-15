@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 // Default content for every page-section key.
 // Used as fallback when a row doesn't exist yet in the DB.
-export const defaultContents: Record<string, unknown> = {
+const defaultContents: Record<string, unknown> = {
     home_hero: {
         badge: "💡 Our Online Training",
         title_line1: "Our Expert Training",
