@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { useRouter, usePathname } from "next/navigation";
 import {
     Phone, Mail, CheckCircle2, Star, Clock,
     Users, Award, ChevronDown, ChevronUp,
@@ -904,33 +903,34 @@ function StarRating({ rating, size = 14 }: { rating: number; size?: number }) {
 // (auto-detected, or switched via the header/footer/this card's dropdown).
 // Renders nothing until countries are configured in Settings → Payments.
 
+const guestCheckoutDefaults = { fullName: "", email: "", phone: "" };
+
 function PricingCard({ countryPrices, courseTitle, courseId }: { countryPrices?: CountryPrice[]; courseTitle: string; courseId: string }) {
     const { countries, selectedCountry, ccavenueEnabled, getDisplayPrice, loading } = useCountry();
     const { openEnquiry } = useEnquiry();
-    const router = useRouter();
-    const pathname = usePathname();
     const [buying, setBuying] = useState(false);
     const [buyError, setBuyError] = useState("");
+    const [showGuestForm, setShowGuestForm] = useState(false);
+    const [guestForm, setGuestForm] = useState(guestCheckoutDefaults);
 
     if (loading || countries.length === 0 || !selectedCountry) return null;
 
     const display = getDisplayPrice(countryPrices);
 
-    const handleBuyNow = async () => {
+    const startCheckout = async (guestInfo?: typeof guestCheckoutDefaults) => {
         setBuyError("");
-        const supabase = createClient();
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) {
-            router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
-            return;
-        }
-
         setBuying(true);
         try {
             const res = await fetch("/api/payments/ccavenue/initiate", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ courseId, countryCode: selectedCountry!.code }),
+                body: JSON.stringify({
+                    courseId,
+                    countryCode: selectedCountry!.code,
+                    ...(guestInfo
+                        ? { fullName: guestInfo.fullName, email: guestInfo.email, phone: guestInfo.phone }
+                        : {}),
+                }),
             });
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || "Could not start checkout.");
@@ -954,6 +954,28 @@ function PricingCard({ countryPrices, courseTitle, courseId }: { countryPrices?:
         }
     };
 
+    const handleBuyNow = async () => {
+        setBuyError("");
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+            setGuestForm(guestCheckoutDefaults);
+            setShowGuestForm(true);
+            return;
+        }
+        startCheckout();
+    };
+
+    const handleGuestSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!guestForm.fullName.trim() || !guestForm.email.trim() || !guestForm.phone.trim()) {
+            setBuyError("Please fill in all fields.");
+            return;
+        }
+        setShowGuestForm(false);
+        startCheckout(guestForm);
+    };
+
     return (
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-4 mb-6">
             <div className="flex items-center justify-between gap-3">
@@ -970,7 +992,7 @@ function PricingCard({ countryPrices, courseTitle, courseId }: { countryPrices?:
                 <p className="text-gray-500 text-sm">Contact us for pricing in {selectedCountry.name}.</p>
             )}
 
-            {buyError && <p className="text-xs text-red-500 font-semibold">{buyError}</p>}
+            {buyError && !showGuestForm && <p className="text-xs text-red-500 font-semibold">{buyError}</p>}
 
             {ccavenueEnabled && display ? (
                 <button
@@ -988,6 +1010,77 @@ function PricingCard({ countryPrices, courseTitle, courseId }: { countryPrices?:
                 >
                     Enroll Now
                 </button>
+            )}
+
+            {/* Guest checkout details — no account needed; one is created automatically after a successful payment. */}
+            {showGuestForm && (
+                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4" onClick={() => setShowGuestForm(false)}>
+                    <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+                    <div
+                        className="relative bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto"
+                        onClick={e => e.stopPropagation()}
+                    >
+                        <div className="bg-[var(--primary)] px-6 py-5 flex items-start justify-between sticky top-0">
+                            <div>
+                                <h3 className="text-white font-black text-xl">Checkout Details</h3>
+                                <p className="text-red-200 text-xs mt-0.5 line-clamp-1 max-w-[300px]">{courseTitle}</p>
+                            </div>
+                            <button onClick={() => setShowGuestForm(false)} className="text-white/70 hover:text-white transition-colors p-1 -mt-0.5 -mr-1 shrink-0">
+                                <X size={20} />
+                            </button>
+                        </div>
+                        <form onSubmit={handleGuestSubmit} className="p-6 space-y-4">
+                            <p className="text-sm text-gray-500 -mt-1 mb-2">
+                                No account needed — we&apos;ll set one up for you automatically once your payment succeeds.
+                            </p>
+                            {buyError && (
+                                <p className="text-xs text-red-500 font-semibold bg-red-50 border border-red-100 rounded-lg px-3 py-2">{buyError}</p>
+                            )}
+                            <div>
+                                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Full Name</label>
+                                <input
+                                    required
+                                    type="text"
+                                    value={guestForm.fullName}
+                                    onChange={e => setGuestForm(p => ({ ...p, fullName: e.target.value }))}
+                                    placeholder="e.g. John Smith"
+                                    className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 transition-all"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Email</label>
+                                <input
+                                    required
+                                    type="email"
+                                    value={guestForm.email}
+                                    onChange={e => setGuestForm(p => ({ ...p, email: e.target.value }))}
+                                    placeholder="e.g. john@email.com"
+                                    className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 transition-all"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Phone Number</label>
+                                <input
+                                    required
+                                    type="tel"
+                                    value={guestForm.phone}
+                                    onChange={e => setGuestForm(p => ({ ...p, phone: e.target.value }))}
+                                    placeholder="e.g. +1 234 567 8900"
+                                    className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm outline-none focus:border-[var(--primary)] focus:ring-2 focus:ring-[var(--primary)]/20 transition-all"
+                                />
+                            </div>
+                            <button
+                                type="submit"
+                                className="w-full bg-[var(--primary)] text-white py-3 rounded-xl font-bold text-sm hover:bg-[var(--primary-dark)] transition-colors"
+                            >
+                                Continue to Payment
+                            </button>
+                            <p className="text-center text-xs text-gray-400">
+                                Already have an account? <Link href="/login" className="text-[var(--primary)] font-bold hover:underline">Log in</Link> for faster checkout.
+                            </p>
+                        </form>
+                    </div>
+                </div>
             )}
         </div>
     );
