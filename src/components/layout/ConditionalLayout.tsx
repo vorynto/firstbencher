@@ -14,9 +14,9 @@ export default function ConditionalLayout({
     floatingContact?: React.ReactNode;
 }) {
     const pathname = usePathname();
-    const isAdminRoute = pathname?.startsWith("/admin");
+    const isChromeless = pathname?.startsWith("/admin") || pathname?.startsWith("/portal");
 
-    if (isAdminRoute) {
+    if (isChromeless) {
         return <main className="min-h-screen">{children}</main>;
     }
 

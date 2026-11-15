@@ -92,7 +92,7 @@ function VerifyEmailForm() {
 
             setSuccess(true);
             setTimeout(() => {
-                router.push("/success-stories");
+                router.push("/portal");
                 router.refresh();
             }, 2000);
         } catch {

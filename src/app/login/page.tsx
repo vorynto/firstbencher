@@ -16,7 +16,7 @@ function LoginForm({ logoUrl }: { logoUrl: string }) {
     const [error, setError] = useState<string | null>(null);
     const router = useRouter();
     const searchParams = useSearchParams();
-    const redirect = searchParams.get("redirect") || "/";
+    const redirect = searchParams.get("redirect") || "/portal";
     const errorParam = searchParams.get("error");
 
     const handleLogin = async (e: React.FormEvent) => {
@@ -82,7 +82,7 @@ function LoginForm({ logoUrl }: { logoUrl: string }) {
                 </div>
             )}
 
-            {!error && errorParam !== "disabled" && redirect !== "/" && (
+            {!error && errorParam !== "disabled" && !!searchParams.get("redirect") && (
                 <div className="flex items-center gap-3 bg-blue-50 border border-blue-100 text-blue-600 rounded-2xl px-5 py-4 mb-8 text-sm font-semibold">
                     <AlertCircle size={18} className="shrink-0" />
                     Please sign in to access that page.
